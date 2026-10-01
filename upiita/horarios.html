@@ -617,7 +617,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
     <p class="mapnote" id="mapnote"></p>
     <div class="below">
       <div class="card" data-personal hidden><h3 class="sub" id="h-sugg">Sugeridas</h3><div class="sugg" id="sugg"></div>
-        <div class="actions" style="margin-top:10px"><button class="btn" id="b-sugg">Elegir las sugeridas</button></div></div>
+        <div class="actions" style="margin-top:10px"><button class="btn" id="b-sugg">Elegir las sugeridas</button><button class="btn" id="b-all" title="Agrega al banco todas las materias que ya puedes cursar y tienen grupos; después indica en «Generar horarios» cuántas quieres llevar">Elegir todas las que puedes cursar</button></div></div>
       <div class="card" data-personal hidden><h3 class="sub">Seriación recomendada por nivel</h3><div class="lvls" id="lvls"></div></div>
       <div class="card wide" id="lineas-card"><h3 class="sub">Optativas y líneas de especialización</h3><div id="lineas"></div></div>
     </div>
@@ -662,6 +662,8 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
           <div class="gtime">
             <div class="field"><span>Días a la semana</span><div class="seg" role="group" aria-label="Días a la semana en la escuela" id="g-days">
               <button type="button" data-gdays="">Sin límite</button><button type="button" data-gdays="3">3</button><button type="button" data-gdays="4">4</button><button type="button" data-gdays="5">5</button></div></div>
+            <div class="field"><span>Materias por horario</span><div class="seg" role="group" aria-label="Materias por horario" id="g-n">
+              <button type="button" data-gn="">Todas</button><button type="button" data-gn="3">3</button><button type="button" data-gn="4">4</button><button type="button" data-gn="5">5</button><button type="button" data-gn="6">6</button><button type="button" data-gn="7">7</button><button type="button" data-gn="8">8</button></div></div>
             <div class="field"><span>Descansos</span><div class="gbreaks" id="gbreaks"></div></div>
           </div>
           <div class="active" id="gprefs" style="padding-top:8px"></div>
@@ -1387,13 +1389,14 @@ function renderOwnForm(){$('#own-d').innerHTML=DAYS.map((d,i)=>`<button type="bu
 
 /* ---------- generador de horarios ---------- */
 /* horario en la escuela y descansos: preferencias del alumno para el generador (se guardan en este navegador) */
-const GT=Object.assign({a:'',b:'',breaks:[],days:''},store.get('gtime',{}));
+const GT=Object.assign({a:'',b:'',breaks:[],days:'',n:''},store.get('gtime',{}));
 const daysOf=cs=>[...new Set(cs.flatMap(c=>c[6].map(x=>x[0])))].sort((a,b)=>a-b);
 const tmin=t=>{const m=String(t||'').match(/^(\d{1,2}):(\d{2})/);return m?+m[1]*60+ +m[2]:null}; // '' -> null
 const gtSave=()=>store.set('gtime',GT);
 function renderGTime(){
   $('#g-from').value=GT.a;$('#g-to').value=GT.b;
   document.querySelectorAll('[data-gdays]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.gdays===String(GT.days||''))));
+  document.querySelectorAll('[data-gn]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.gn===String(GT.n||''))));
   $('#gbreaks').innerHTML=GT.breaks.map((b,i)=>`<div class="gbrk" data-brk="${i}">al menos <select data-f="d" aria-label="Duración del descanso">${[30,60,90,120].map(m=>`<option value="${m}"${+b.d===m?' selected':''}>${({30:'30 min',60:'1 h',90:'1 h 30 min',120:'2 h'})[m]}</option>`).join('')}</select> libres entre <input type="time" step="1800" data-f="a" value="${b.a}" aria-label="Desde"> y <input type="time" step="1800" data-f="b" value="${b.b}" aria-label="Hasta"><span class="brkdays" role="group" aria-label="Días del descanso"><button type="button" class="chip" data-bday="all" aria-pressed="${!(b.days||[]).length}">Todos los días</button>${DAYS.slice(0,6).map((n,d)=>`<button type="button" class="chip" data-bday="${d}" aria-pressed="${(b.days||[]).includes(d)}">${n}</button>`).join('')}</span><button type="button" class="x" data-unbrk="${i}" aria-label="Quitar descanso">×</button></div>`).join('')+
     `<button type="button" class="link" id="b-addbrk">+ Agregar descanso</button>`;
 }
@@ -1424,6 +1427,8 @@ function generate(){
   function outside(c){return c[6].some(([d,a,b])=>(ga!=null&&a<ga)||(gb!=null&&b>gb))}
   const subj=want.map(k=>({k,must:tr().oblig.includes(k),opts:classes().filter(c=>c[0]===S.car&&c[8]===k&&!bad(c))})).filter(s=>cur()[s.k]||s.opts.length);
   if(!subj.length) return {msg:'Selecciona materias en «Mi trayectoria» o mediante el buscador para generar horarios.'};
+  const N=+GT.n||0;
+  if(N&&N<subj.length) return generateBank(subj,N,{marks,pscore});
   subj.sort((a,b)=>a.opts.length-b.opts.length);
   const res=[];let nodes=0, minDays=Infinity;const maxD=+GT.days||0;
   const pick=[];
@@ -1449,11 +1454,44 @@ function generate(){
   const top=res.sort((a,b)=>b.s-a.s).filter(r=>{const k=r.cs.map(keyOf).sort().join();if(seen.has(k))return false;seen.add(k);return true}).slice(0,6);
   return {top,subj,trunc:nodes>250000,minDays:minDays===Infinity?null:minDays,maxD};
 }
+/* Banco de materias: horarios con exactamente N materias tomadas de las seleccionadas. Recorre subconjuntos en orden
+   de prioridad (obligatoria por desfase siempre incluida; luego reprobadas, atrasadas, sugeridas y marcadas «Sí»),
+   descarta los que exceden la carga permitida y, para cada subconjunto, busca la mejor combinación de grupos.
+   Se muestran opciones con materias distintas (la mejor de cada subconjunto). */
+function generateBank(subj,N,{marks,pscore}){
+  const maxD=+GT.days||0, ci=cargaInfo(0), failS=new Set(tr().fail), sugS=new Set(MARK.sug);
+  const cost=k=>failS.has(k)?0:(cur()[k]?.[1]||0);
+  const prio=k=>{const st=statusOf(k);return (st==='late fail'?50:st==='fail'?35:st.startsWith('late')||st.startsWith('prev')?20:0)+(sugS.has(k)?10:0)};
+  const must=subj.filter(x=>x.must&&x.opts.length), free=subj.filter(x=>!x.must&&x.opts.length)
+    .sort((a,b)=>prio(b.k)-prio(a.k)||a.opts.length-b.opts.length);
+  const need=N-must.length;
+  if(need<0) return {top:[],subj,bank:{N,M:subj.length},msg:null,trunc:false,minDays:null,maxD};
+  const res=[];let subsets=0,trunc=false;
+  const score=cs=>{let s=0;cs.forEach(c=>{const m=marks[keyOf(c)]?.s;s+=m==='si'?6:m==='quiza'?2:0;s+=pscore(c)+prio(c[8])});
+    if($('#g-compact').checked){for(let d=0;d<6;d++){const b=cs.flatMap(c=>c[6].filter(x=>x[0]===d)).sort((x,y)=>x[1]-y[1]);if(b.length)s-=2;for(let i=1;i<b.length;i++)s-=Math.max(0,b[i][1]-b[i-1][2])/30}}
+    return s};
+  // mejor combinación de grupos para un subconjunto fijo de materias
+  const bestFor=set=>{const ord=set.slice().sort((a,b)=>a.opts.length-b.opts.length), pick=[];let best=null,nodes=0;
+    const rec=i=>{if(++nodes>4000)return;
+      if(i===ord.length){if(!breaksOk(pick))return;const days=daysOf(pick);if(maxD&&days.length>maxD)return;const s=score(pick);if(!best||s>best.s)best={cs:pick.slice(),s,days,miss:[]};return}
+      for(const c of ord[i].opts){if(pick.some(p=>overlaps(p,c)))continue;pick.push(c);rec(i+1);pick.pop()}};
+    rec(0);return best};
+  // subconjuntos de tamaño need en orden de prioridad (combinaciones lexicográficas sobre la lista ordenada)
+  const chosen=[];
+  const walk=start=>{if(subsets>=400){trunc=true;return}
+    if(chosen.length===need){const set=[...must,...chosen];
+      if(ci){const nuevos=set.reduce((s,x)=>s+cost(x.k),0);if(ci.ret+nuevos>ci.tope+0.01)return}
+      subsets++;const b=bestFor(set);if(b)res.push(b);return}
+    for(let i=start;i<=free.length-(need-chosen.length);i++){chosen.push(free[i]);walk(i+1);chosen.pop();if(subsets>=400){trunc=true;return}}};
+  walk(0);
+  const top=res.sort((a,b)=>b.s-a.s).slice(0,6);
+  return {top,subj,bank:{N,M:subj.length,tope:ci?.tope??null},trunc,minDays:null,maxD};
+}
 function renderGen(){
   const g=S.gen;
   if(!g){$('#genres').innerHTML='';return}
   if(g.msg){$('#genres').innerHTML=`<p class="empty">${g.msg}</p>`;return}
-  const dmsg=g.minDays!=null?`<p class="gdays-msg${g.maxD&&g.minDays>g.maxD?' warn':''}">Con todas las materias seleccionadas, el mínimo es de <b>${g.minDays} ${g.minDays>1?'días':'día'}</b> a la semana.${g.maxD&&g.minDays>g.maxD?` En ${g.maxD} días no es posible incluirlas todas; las opciones omiten al menos una materia.`:g.maxD?` Es posible en ${g.maxD} días o menos.`:''}</p>`:'';
+  const dmsg=g.bank?`<p class="gdays-msg">Horarios de <b>${g.bank.N} materias</b> elegidas entre tus <b>${g.bank.M}</b> seleccionadas${g.bank.tope!=null?`, sin rebasar tu carga permitida (${fmtCr(g.bank.tope)} cr en total)`:''}. Cada opción combina materias distintas.</p>`:g.minDays!=null?`<p class="gdays-msg${g.maxD&&g.minDays>g.maxD?' warn':''}">Con todas las materias seleccionadas, el mínimo es de <b>${g.minDays} ${g.minDays>1?'días':'día'}</b> a la semana.${g.maxD&&g.minDays>g.maxD?` En ${g.maxD} días no es posible incluirlas todas; las opciones omiten al menos una materia.`:g.maxD?` Es posible en ${g.maxD} días o menos.`:''}</p>`:'';
   const none=g.subj.filter(s=>!s.opts.length).map(s=>s.k), mustNone=g.subj.filter(s=>s.must&&!s.opts.length).map(s=>s.k);
   const must=g.subj.filter(s=>s.must&&s.opts.length).map(s=>s.k);
   const omsg=(mustNone.length?`<p class="gdays-msg warn"><b>${mustNone.map(k=>esc(pretty(cur()[k][0]))).join(', ')}</b> es obligatoria por desfase y ningún grupo cumple los filtros actuales. Ajusta el turno, el horario, los descansos o los días.</p>`:'')+
@@ -1464,7 +1502,7 @@ function renderGen(){
     g.top.map((r,i)=>{const cr=r.cs.reduce((s,c)=>s+c[7],0);
       return `<div class="gen"><div><b>Opción ${i+1}</b> · ${r.cs.length} ${r.cs.length>1?'materias':'materia'} · ${fmtCr(cr)} cr · ${r.days.length} ${r.days.length>1?'días':'día'}: ${r.days.map(d=>DAYS[d]).join(' ')}${r.miss.length?` · <span class="warn">sin ${r.miss.length}: ${r.miss.map(k=>esc((cur()[k]?.[0]||k).toLowerCase())).join(', ')}</span>`:''}<div class="ls">${r.cs.map(c=>`${c[3]} ${esc(name(c).toLowerCase())}`).join(' · ')}</div></div>
         <div class="acts">${PLANS.map(p=>`<button class="btn" data-useg="${i}" data-to="${p}">Usar en ${p}</button>`).join('')}<button class="btn" data-peekg="${i}">Ver</button></div></div>`}).join('')+
-    (g.trunc?'<small>Búsqueda limitada por el número de combinaciones; reduce las materias seleccionadas para un análisis completo.</small>':'');
+    (g.trunc?(g.bank?'<small>Se analizaron las combinaciones de mayor prioridad (desfasadas, reprobadas, atrasadas y sugeridas primero).</small>':'<small>Búsqueda limitada por el número de combinaciones; reduce las materias seleccionadas para un análisis completo.</small>'):'');
 }
 
 /* ---------- render general ---------- */
@@ -1575,6 +1613,7 @@ $('#lineas').addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')retur
 $('#lineas').addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'&&S.mapHover&&!S.mapFocus){S.mapHover=null;renderMap()}});
 $('#map').addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'&&S.mapHover&&!S.mapFocus){S.mapHover=null;renderMap()}});
 $('#f-carrera').addEventListener('change',e=>{S.car=e.target.value;store.set('car',S.car);S.chips=[];S.gen=null;ZOOM=null;render()});
+$('#b-all').addEventListener('click',()=>{const off=offeredClaves();tr().want=[...new Set([...tr().want,...Object.keys(cur()).filter(k=>available(k)&&off.has(k))])];saveT();renderTray()});
 $('#b-sugg').addEventListener('click',()=>{tr().want=[...new Set([...tr().want,...suggestions().list])];saveT();renderTray()});
 $('#sug-on').addEventListener('change',e=>{SHOWSUG=e.target.checked;store.set('verSug',SHOWSUG);renderMap()});
 // simulación de fin de semestre: recalcula mapa, sugerencias, créditos y desfase
@@ -1610,6 +1649,7 @@ for(const [id,list] of [['#g-pref','gpref'],['#g-avoid','gavoid']]){
 const gtChanged=()=>{gtSave();renderOffer();if(S.gen){S.gen=generate();renderGen()}};
 $('#g-from').addEventListener('change',e=>{GT.a=e.target.value;gtChanged()});
 $('#g-to').addEventListener('change',e=>{GT.b=e.target.value;gtChanged()});
+$('#g-n').addEventListener('click',e=>{const b=e.target.closest('[data-gn]');if(!b)return;GT.n=b.dataset.gn;renderGTime();gtChanged()});
 $('#g-days').addEventListener('click',e=>{const b=e.target.closest('[data-gdays]');if(!b)return;GT.days=b.dataset.gdays;renderGTime();gtChanged()});
 $('#gbreaks').addEventListener('click',e=>{
   if(e.target.id==='b-addbrk'){GT.breaks.push({d:30,a:'13:00',b:'15:00'});renderGTime();gtChanged()}
