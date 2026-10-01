@@ -103,7 +103,8 @@ input[type=number]{width:5rem}
 .legend span{display:inline-flex;gap:6px;align-items:center}
 .legend i{width:14px;height:14px;border-radius:3px;border:1px solid var(--line);display:inline-block}
 .mapwrap{touch-action:pan-x pan-y;overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);max-height:calc(88vh / var(--ui-zoom,1))}
-.map{position:relative}
+.map{position:relative;will-change:transform}
+.areas{will-change:transform}
 .map svg{position:absolute;inset:0;overflow:visible}
 .band{fill:var(--band)}
 .rowlbl{font-family:var(--f-display);font-weight:600;fill:var(--muted)}
@@ -1871,22 +1872,42 @@ $('#b-copy').addEventListener('click',async()=>{
   catch(err){box.hidden=false;box.select()}
 });
 /* Zoom del mapa con pellizco (dos dedos) y con el trackpad o Ctrl + rueda, centrado en el punto del gesto.
-   Usa el mismo ZOOM que los botones +/−; desplazar con un dedo sigue siendo nativo (touch-action: pan-x pan-y). */
+   Durante el pellizco solo se escala con CSS (instantáneo, sigue a los dedos); al soltar se redibuja una vez a la
+   escala final. La respuesta es proporcional y amplificada (exponente GAIN): un pellizco amplio acerca mucho más que
+   uno pequeño. Usa el mismo ZOOM que los botones +/−; desplazar con un dedo sigue siendo nativo. */
 (()=>{
-  const wrap=$('#mapwrap'), HEAD=30;   // HEAD: altura de la cabecera fija de áreas dentro del contenedor
+  const wrap=$('#mapwrap'), map=$('#map'), areas=$('#areas'), HEAD=30, GAIN=1.8, ZMAX=2.5;
   const fit=()=>{const L=MAP().layout;return L?(wrap.clientWidth-2)/L.w:.6};   // escala de «mapa completo»
-  const clampZ=z=>Math.min(2,Math.max(Math.min(.4,fit()),z)), dist=(a,b)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+  const clampZ=z=>Math.min(ZMAX,Math.max(Math.min(.4,fit()),z)), dist=(a,b)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
   const rel=(x,y)=>{const r=wrap.getBoundingClientRect();return[x-r.left,y-r.top]};
-  let pinch=null, raf=0, pend=null;
-  const apply=(z,cx,cy)=>{pend={z,cx,cy};if(raf)return;raf=requestAnimationFrame(()=>{raf=0;const {z,cx,cy}=pend, old=MAPSC;if(Math.abs(z-old)<.004)return;
+  // redibuja a la escala z manteniendo fijo el punto (cx,cy) del contenedor
+  const commit=(z,cx,cy)=>{const old=MAPSC;if(Math.abs(z-old)<.004)return;
     const x=(wrap.scrollLeft+cx)/old, y=(wrap.scrollTop+cy-HEAD)/old;
-    ZOOM=z;renderMap();wrap.scrollLeft=x*MAPSC-cx;wrap.scrollTop=y*MAPSC-cy+HEAD})};
-  wrap.addEventListener('touchstart',e=>{if(e.touches.length===2){const [a,b]=e.touches;pinch={d:dist(a,b)||1,z:MAPSC}}},{passive:true});
-  wrap.addEventListener('touchmove',e=>{if(!pinch||e.touches.length!==2)return;e.preventDefault();
-    const [a,b]=e.touches, [cx,cy]=rel((a.clientX+b.clientX)/2,(a.clientY+b.clientY)/2);apply(clampZ(pinch.z*dist(a,b)/pinch.d),cx,cy)},{passive:false});
-  wrap.addEventListener('touchend',e=>{if(e.touches.length<2)pinch=null});
-  wrap.addEventListener('touchcancel',()=>{pinch=null});
-  wrap.addEventListener('wheel',e=>{if(!e.ctrlKey)return;e.preventDefault();const [cx,cy]=rel(e.clientX,e.clientY);apply(clampZ(MAPSC*Math.exp(-e.deltaY/250)),cx,cy)},{passive:false});
+    ZOOM=z;renderMap();wrap.scrollLeft=x*MAPSC-cx;wrap.scrollTop=y*MAPSC-cy+HEAD};
+  let pinch=null;
+  const reset=()=>{map.style.transform=areas.style.transform='';map.style.transformOrigin=areas.style.transformOrigin=''};
+  const end=()=>{if(!pinch)return;const p=pinch;pinch=null;reset();commit(p.z,p.cx,p.cy)};
+  wrap.addEventListener('touchstart',e=>{
+    if(e.touches.length!==2){if(e.touches.length>2)end();return}
+    const [a,b]=e.touches, [cx,cy]=rel((a.clientX+b.clientX)/2,(a.clientY+b.clientY)/2);
+    pinch={d:dist(a,b)||1,z0:MAPSC,z:MAPSC,cx,cy};
+    const ox=wrap.scrollLeft+cx, oy=wrap.scrollTop+cy-HEAD;
+    map.style.transformOrigin=`${ox}px ${oy}px`;areas.style.transformOrigin=`${ox}px 0`;
+  },{passive:true});
+  wrap.addEventListener('touchmove',e=>{
+    if(!pinch||e.touches.length!==2)return;
+    if(e.cancelable)e.preventDefault();
+    const [a,b]=e.touches;
+    pinch.z=clampZ(pinch.z0*Math.pow(dist(a,b)/pinch.d,GAIN));
+    const k=pinch.z/pinch.z0;map.style.transform=`scale(${k})`;areas.style.transform=`scaleX(${k})`;
+  },{passive:false});
+  wrap.addEventListener('touchend',e=>{if(e.touches.length<2)end()});
+  wrap.addEventListener('touchcancel',end);               // si el navegador interrumpe el gesto, se conserva el zoom alcanzado
+  ['gesturestart','gesturechange'].forEach(t=>wrap.addEventListener(t,e=>e.preventDefault()));   // Safari (iOS)
+  let raf=0,pend=null;
+  wrap.addEventListener('wheel',e=>{if(!e.ctrlKey)return;e.preventDefault();const [cx,cy]=rel(e.clientX,e.clientY);
+    pend={z:clampZ((pend?.z??MAPSC)*Math.exp(-e.deltaY/200)),cx,cy};
+    if(!raf)raf=requestAnimationFrame(()=>{raf=0;const p=pend;pend=null;commit(p.z,p.cx,p.cy)})},{passive:false});
 })();
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(S.tab==='tray'&&ZOOM==null)renderMap()},150)});
 $('#foot').textContent='Herramienta de consulta para que el alumno planee su reinscripción. Los datos del SAES se consultan en modo de solo lectura y se almacenan únicamente en este navegador, al igual que las materias seleccionadas, marcas, notas y horarios. La reinscripción oficial se realiza en el SAES, donde deben verificarse la cita, la carga autorizada y el cupo.';
