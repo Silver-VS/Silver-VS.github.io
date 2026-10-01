@@ -810,13 +810,14 @@ const cargaDe=()=>isPersonal()&&ALUMNO.carga?.media?{min:ALUMNO.carga.min,media:
    - Las reprobadas pendientes retienen sus créditos de forma permanente hasta acreditarse; inscribirlas no suma de nuevo.
    - Carga total = créditos retenidos + créditos de las materias nuevas (no reprobadas).
    - Regular: entre la carga mínima y la máxima (fracción I). Con adeudos: al menos la mínima y sin rebasar la media
-     (fracción II), salvo que el SAES indique otra carga autorizada (créditos disponibles además de los retenidos). */
+     (fracción II), salvo que el SAES indique otra carga autorizada: esta ya incluye los créditos retenidos, por lo
+     que los créditos nuevos permitidos son la autorizada menos los retenidos. */
 const retenidos=()=>isPersonal()?tr().fail.filter(k=>cur()[k]).reduce((s,k)=>s+cur()[k][1],0):0;
 function cargaInfo(nuevos){
   const L=cargaDe();if(!L)return null;
   const ret=retenidos(), aut=isPersonal()?SAES.autorizada(ALUMNO):null, adeudo=ret>0;
-  const libre=aut!=null?aut:Math.max(0,(adeudo?L.media:L.max)-ret);      // créditos nuevos permitidos
-  const tope=ret+libre, total=ret+(nuevos||0);
+  const tope=aut!=null?aut:(adeudo?L.media:L.max), libre=Math.max(0,tope-ret);   // tope total y créditos nuevos permitidos
+  const total=ret+(nuevos||0);
   return {L,ret,aut,adeudo,libre,tope,total,nuevos:nuevos||0,faltaMin:Math.max(0,L.min-total)};
 }
 const saveT=()=>store.set('t.'+S.car,{want:tr().want});
@@ -1271,7 +1272,7 @@ function renderCal(){
     const bad=t<L.min||t>ci.tope+0.01;
     $('#load').innerHTML=`<span class="lbl${bad?' bad':''}">Carga total: ${fmtCr(t)} cr · ${tag}</span><div class="bar">${ci.ret?`<div class="fill ret" style="width:${pct(ci.ret)}%"></div>`:''}<div class="fill" style="left:${pct(ci.ret)}%;width:${Math.max(0,pct(t)-pct(ci.ret))}%"></div>${['min','media','max'].map(k=>`<div class="tick" style="left:${pct(L[k])}%"></div>`).join('')}${ci.tope!==L.max&&ci.tope!==L.media?`<div class="tick tope" style="left:${pct(ci.tope)}%"></div>`:''}</div>
       <div class="ticks">${[['min','mínima'],['media','media'],['max','máxima']].map(([k,l])=>`<span style="left:${pct(L[k])}%">${l} ${L[k]}</span>`).join('')}${ci.tope!==L.max&&ci.tope!==L.media?`<span class="bad" style="left:${pct(ci.tope)}%">autorizada ${fmtCr(ci.tope)}</span>`:''}</div>`+
-      (ci.ret?`<p class="load-note"><i class="sw-ret"></i>${fmtCr(ci.ret)} cr retenidos por reprobadas (cuentan aunque no las inscribas; recursarlas no suma de nuevo) · ${fmtCr(ci.nuevos)} cr de materias nuevas, de ${fmtCr(ci.libre)} permitidos${ci.aut!=null?' según tu carga autorizada':' (hasta la carga media)'}${ci.faltaMin?` · faltan ${fmtCr(ci.faltaMin)} cr para la mínima`:''}.</p>`:'');
+      (ci.ret?`<p class="load-note"><i class="sw-ret"></i>${fmtCr(ci.ret)} cr retenidos por reprobadas (cuentan aunque no las inscribas; recursarlas no suma de nuevo) · ${fmtCr(ci.nuevos)} cr de materias nuevas, de ${fmtCr(ci.libre)} permitidos (${ci.aut!=null?`carga autorizada de ${fmtCr(ci.aut)} cr`:'carga media'} menos los retenidos)${ci.faltaMin?` · faltan ${fmtCr(ci.faltaMin)} cr para la mínima`:''}.</p>`:'');
   }else $('#load').innerHTML='';
   $('#sel').hidden=!both.length;
   $('#sel').innerHTML=sel.map(c=>`<div><span class="sw" style="--h:${hue(c)}"></span><span class="grp">${c[3]}</span><span>${esc(name(c))}<br><small>${esc(profs(c))}</small></span><span class="cr">${fmtCr(c[7])} cr</span><button class="x" data-toggle="${keyOf(c)}" aria-label="Quitar ${esc(name(c))}">×</button></div>`).join('')+
