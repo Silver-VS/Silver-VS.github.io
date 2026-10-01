@@ -216,7 +216,8 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
 .inst-name{max-width:1480px;margin:0 auto;padding-block:0 10px;font:600 .95rem "Noto Sans",system-ui,sans-serif;color:var(--fg)}
 .inst-foot{background:#fff;margin-top:40px;border-top:1px solid var(--line)}
 .inst-foot img{display:block;width:min(1100px,100%);height:auto;margin:0 auto}
-@media (max-width:640px){.inst-in img{height:76px}.inst-in .unit img{height:60px}.inst-in .unit{margin-left:0}}
+@media (max-width:640px){.inst-in{flex-wrap:nowrap;gap:10px}.inst-in img{height:76px}.inst-in .unit img{height:44px}.inst-in .unit{margin-left:auto}.inst-name{font-size:.78rem;font-weight:500}}
+@media (max-height:520px) and (orientation:landscape){.inst-in{padding-block:6px}.inst-in img{height:76px}.inst-in .unit img{height:44px}.inst-name{display:none}}
 </style>
 <header class="inst" role="banner">
   <div class="inst-in">
