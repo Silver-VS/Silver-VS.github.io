@@ -176,6 +176,8 @@ input[type=number]{width:5rem}
 .box.hot{box-shadow:0 0 0 3px var(--accent);opacity:1}
 .box.offered-no{font-style:italic;color:var(--muted);font-weight:500}
 .box.want.offered-no{color:var(--accent-fg)}
+.legend i.l-niv{width:5px;height:15px;border:0;border-radius:2px;margin-left:4px}
+.legend .lg-niv{gap:3px;padding-right:6px;border-right:1px solid var(--line)}
 .legend i.l-want{background:var(--accent);border-color:var(--accent)}
 .legend i.l-req{background:var(--accent-soft)}
 .legend i.l-slot{background:var(--sunken);border-style:dashed}
@@ -982,7 +984,10 @@ function renderInsp(){
   $('#insp').title=l2.replace(/<[^>]+>/g,'');
 }
 function renderLegend(){
-  $('#legend').innerHTML='<span><i class="l-want"></i>Quiero cursarla</span><span><i class="l-req"></i>Conviene cursarla antes</span><span><i class="l-slot"></i>Optativa o electiva (libre)</span>'+
+  // franja de color a la izquierda de cada materia = nivel
+  const nivs=[...new Set(Object.values(cur()).map(v=>v[2]))].sort((a,b)=>a-b);
+  $('#legend').innerHTML=`<span class="lg-niv" title="Franja de color a la izquierda de cada materia">Nivel ${nivs.map(n=>`<i class="l-niv" style="background:var(--n${n})"></i>${n}`).join(' ')}</span>`+
+    '<span><i class="l-want"></i>Quiero cursarla</span><span><i class="l-req"></i>Conviene cursarla antes</span><span><i class="l-slot"></i>Optativa o electiva (libre)</span>'+
     (isPersonal()?(()=>{ // solo los estados que de verdad aparecen en el mapa del alumno
       const has=new Set(Object.keys(cur()).map(k=>statusOf(k)));const any=f=>[...has].some(f);
       return '<span><i class="l-done"></i>Ya acreditada</span>'+
@@ -995,7 +1000,7 @@ function renderLegend(){
 function renderSide(){
   const c=cur(), want=tr().want.filter(k=>c[k]), credWant=want.reduce((s,k)=>s+c[k][1],0), off=offeredClaves();
   const req=[...ancestors(want)].filter(k=>!want.includes(k)&&!tr().done.includes(k));
-  $('#chosen-help').textContent=want.length?`${want.length} materias · ${fmtCr(credWant)} créditos`:'Selecciona en el mapa las materias que deseas cursar; después consulta sus grupos para organizar tu horario.';
+  $('#chosen-help').textContent=want.length?`${want.length} ${want.length>1?'materias':'materia'} · ${fmtCr(credWant)} créditos`:'Selecciona en el mapa las materias que deseas cursar; después consulta sus grupos para organizar tu horario.';
   $('#chosen').innerHTML=want.sort((a,b)=>(semOf()[a]||99)-(semOf()[b]||99)).map(k=>`<span class="wchip"><span class="dot" style="background:var(--n${c[k][2]})"></span><span class="grp">${k}</span>${esc(c[k][0])}${off.has(k)?'':' <small>(sin grupos)</small>'}${tr().oblig.includes(k)?'<span class="tag bad" title="Obligatoria: al estar desfasada, el SAES no permite la reinscripción sin ella">obligatoria</span>':`<button class="x" data-unwant="${k}" aria-label="Quitar ${esc(c[k][0])}">×</button>`}</span>`).join('');
   $('#chosen-req').textContent=req.length&&!isPersonal()?`Según la seriación, conviene haber cursado antes: ${req.map(k=>c[k][0].toLowerCase()).join(', ')}.`:'';
   document.querySelectorAll('[data-personal]').forEach(e=>e.hidden=!isPersonal());
