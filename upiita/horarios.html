@@ -169,6 +169,7 @@ input[type=number]{width:5rem}
 .desf li{border-left:3px solid var(--line);padding-left:9px}
 .desf li.desfasada{border-color:var(--bad)} .desf li.riesgo{border-color:var(--warn)}
 .box.late::after{content:"!";position:absolute;top:0;right:4px;color:var(--st-late);font-weight:700}
+.box.elec{border-style:dashed;cursor:help}
 .box.slot{border-style:dashed;background:var(--sunken);color:var(--muted);font-weight:500}
 .box.req{background:var(--accent-soft)}
 .box.want{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
@@ -852,7 +853,7 @@ const tr=()=>{
     const curso=sim?[]:enCurso;
     // desfasada oficial (más de 2 periodos reprobada): sin ella el SAES no permite reinscribirse -> obligatoria
     const pmeta=perMeta(), oblig=Object.keys(failP).filter(k=>failP[k]!=null&&pmeta!=null&&pmeta>failP[k]+2);
-    T[S.car]={want:[...new Set([...(t.want||[]),...oblig])],oblig,done,fail:Object.keys(failP),failP,veces,curso,enCurso,sim,simOk,cursados:me?ALUMNO.avance?.cursados??null:null};
+    T[S.car]={want:[...new Set([...(t.want||[]),...oblig])].filter(k=>!isElec(k)),oblig,done,fail:Object.keys(failP),failP,veces,curso,enCurso,sim,simOk,cursados:me?ALUMNO.avance?.cursados??null:null};
   }
   return T[S.car];
 };
@@ -972,7 +973,10 @@ function statusOf(k){
   if(sn&&sp){if(sp<sn)st=DESFASE_SEM.has(S.car)?'late':'prev';else if(sp===sn)st='now'}
   return st+(lock?' lock':'');
 }
-function available(k){const s=statusOf(k);return !s.startsWith('done')&&!s.startsWith('curso')&&!s.includes('lock')}
+// Las electivas se acreditan por horas de actividades (DIE-03, Electivas UPIITA), nunca con un grupo del horario:
+// no se eligen para cursar, no suman créditos a la selección ni se sugieren.
+function isElec(k){return /^ELECTIVA/i.test(cur()[k]?.[0]||'')}
+function available(k){const s=statusOf(k);return !isElec(k)&&!s.startsWith('done')&&!s.startsWith('curso')&&!s.includes('lock')}
 
 function suggestions(){
   // prioridad: desfasadas, reprobadas, atrasadas; después todo lo que ya puedes cursar (de cualquier semestre),
@@ -1052,7 +1056,7 @@ function renderMap(){
   let html=svg;
   L.boxes.forEach(([x,y,w,h,k,slot,sem])=>{
     if(k) html+=boxHtml(k,x,y,w,h,sc,want,off,hot,sem,req);
-    else html+=`<div class="box slot${hot?' dim':''}" style="left:${x*sc}px;top:${y*sc}px;width:${w*sc}px;height:${h*sc}px;font-size:${9.5*sc}px" title="${esc(slot)}: cualquiera de las ofertadas">${esc(slot)}</div>`;
+    else html+=`<div class="box slot${hot?' dim':''}" style="left:${x*sc}px;top:${y*sc}px;width:${w*sc}px;height:${h*sc}px;font-size:${9.5*sc}px" title="${esc(slot)}: ${/^electiva/i.test(slot)?'se acredita con actividades validadas por horas (Electivas UPIITA), no con un grupo del horario':'cualquiera de las ofertadas'}">${esc(slot)}</div>`;
   });
   el.style.width=L.w*sc+'px';el.style.height=L.h*sc+'px';el.innerHTML=html;
   const ar=$('#areas');ar.hidden=!L.cols;ar.style.width=L.w*sc+'px';
@@ -1064,8 +1068,9 @@ function renderMap(){
 function boxHtml(k,x,y,w,h,sc,want,off,hot,sem,req){
   const [n,cr,niv]=cur()[k]||[k,0,1];
   const st=statusOf(k);
-  const cls=`box ${st}${MARK.avail.has(k)?' avail':''}${MARK.sug.has(k)?' sug':''}${want.has(k)?' want':req&&req.has(k)?' req':''}${hot?(hot.has(k)?(k===S.mapHover?' hot':''):' dim'):''}${off.has(k)?'':' offered-no'}`;
-  const tip=`${k} · ${n} · ${fmtCr(cr)} créditos · nivel ${niv}${sem?` · semestre propuesto ${sem}`:''}${off.has(k)?'':' · sin grupos este periodo'}${st.startsWith('late fail')?' · desfasada (SAES): inscripción obligatoria':st.startsWith('fail')?' · reprobada: por recursar':st==='curso'?' · en curso':st.startsWith('late')?' · atrasada según el semestre propuesto':st.includes('lock')?' · le faltan requisitos':MARK.avail.has(k)?' · puedes cursarla el siguiente periodo':''}${MARK.sug.has(k)?' · sugerida para tu carga':''}${req&&req.has(k)?' · conviene cursarla antes que una materia elegida':''}`;
+  const el=isElec(k);
+  const cls=`box ${st}${el?' elec':''}${MARK.avail.has(k)?' avail':''}${MARK.sug.has(k)?' sug':''}${want.has(k)?' want':req&&req.has(k)?' req':''}${hot?(hot.has(k)?(k===S.mapHover?' hot':''):' dim'):''}${off.has(k)||el?'':' offered-no'}`;
+  const tip=`${k} · ${n} · ${fmtCr(cr)} créditos · nivel ${niv}${sem?` · semestre propuesto ${sem}`:''}${el?' · se acredita por actividades (Electivas UPIITA)':off.has(k)?'':' · sin grupos este periodo'}${st.startsWith('late fail')?' · desfasada (SAES): inscripción obligatoria':st.startsWith('fail')?' · reprobada: por recursar':st==='curso'?' · en curso':st.startsWith('late')?' · atrasada según el semestre propuesto':st.includes('lock')?' · le faltan requisitos':MARK.avail.has(k)?' · puedes cursarla el siguiente periodo':''}${MARK.sug.has(k)?' · sugerida para tu carga':''}${req&&req.has(k)?' · conviene cursarla antes que una materia elegida':''}`;
   return `<div class="${cls}" data-box="${k}" role="button" tabindex="0" aria-pressed="${want.has(k)}" style="--nv:var(--n${niv});left:${x*sc}px;top:${y*sc}px;width:${w*sc}px;height:${h*sc}px;font-size:${Math.max(5.5,(n.length>34?9:10.5)*sc)}px" title="${esc(tip)}">${esc(n)}</div>`;
 }
 
@@ -1079,6 +1084,8 @@ function inspParts(k){
     const miss=pre.filter(x=>!dn.has(x)), lv=levelOpen(niv);
     ps=st==='done'?'Ya acreditada · ':st==='curso'?'En curso · ':st.includes('fail')?'Por recursar · ':
       st.includes('lock')?`<b>Requisitos pendientes: ${miss.map(nm).join(', ')}</b> · `:`<b>Puedes cursarla</b>${lv.ok?'':` (seriación recomendada por nivel: ${lv.miss.join(', ')})`} · `}
+  if(isElec(k)){const l1=`<b>${esc(n)}</b> <span class="mono">${k}</span> · ${fmtCr(cr)} créditos · nivel ${niv}`;
+    return {l1,l2:(statusOf(k)==='done'?'Ya acreditada · ':'')+'Se acredita con actividades validadas por horas (cursos, idiomas, congresos, prácticas, entre otras), no con un grupo del horario. Prepara tu solicitud en <a href="electivas.html">Electivas UPIITA</a>.'}}
   const l2=ps+`${pre.length?'Requisitos directos: '+pre.map(nm).join(', '):'Sin requisitos registrados'}${all.size>pre.length?` · ${all.size} en la cadena de requisitos`:''}${post.length?' · Es requisito de: '+post.map(nm).join(', '):''}`;
   const l1=`<b>${esc(n)}</b> <span class="mono">${k}</span> · ${fmtCr(cr)} créditos · nivel ${niv}${sem?' · semestre propuesto '+sem:''}${off?'':' · <i>sin grupos este periodo</i>'}`;
   return {l1,l2};
@@ -1090,7 +1097,7 @@ function renderInsp(){
     'Toca una materia para consultar sus datos y su cadena de requisitos; tócala de nuevo o usa «Quiero cursarla» para agregarla a tu plan. Pellizca el mapa para acercar o alejar.':
     'Coloca el cursor sobre una materia para consultar sus datos y su cadena de requisitos; selecciónala para agregarla a tu plan.')+'</span>';el.title='';return}
   const {l1,l2}=inspParts(k), w=tr().want.includes(k), ob=tr().oblig.includes(k), done=statusOf(k)==='done';
-  el.innerHTML=`<span>${l1}</span><span class="muted">${l2}</span>`+(S.mapFocus?`<span class="insp-act">${ob||done?'':`<button class="btn primary" type="button" data-fwant="${k}">${w?'Quitar de mi plan':'Quiero cursarla'}</button>`}<button class="btn" type="button" data-fclose="1">Cerrar</button></span>`:'');
+  el.innerHTML=`<span>${l1}</span><span class="muted">${l2}</span>`+(S.mapFocus?`<span class="insp-act">${ob||done||isElec(k)?'':`<button class="btn primary" type="button" data-fwant="${k}">${w?'Quitar de mi plan':'Quiero cursarla'}</button>`}<button class="btn" type="button" data-fclose="1">Cerrar</button></span>`:'');
   el.title=l2.replace(/<[^>]+>/g,'');
 }
 function renderLegend(){
@@ -1486,6 +1493,7 @@ function renderList(){
   Object.keys(c).forEach(k=>{const g=(useSem?sp[k]:null)||c[k][2];(by[g]=by[g]||[]).push(k)});
   const tag=k=>{const st=statusOf(k);
     if(st==='done')return['Acreditada','ok'];
+    if(isElec(k))return['Por actividades',''];
     if(st==='curso')return['En curso',''];
     if(st==='late fail')return['Desfasada','bad'];
     if(st==='fail')return['Por recursar','warn'];
@@ -1496,8 +1504,8 @@ function renderList(){
   $('#tlist').innerHTML=Object.keys(by).sort((a,b)=>a-b).map(g=>`<section class="tl-sem"><h4>${useSem?'Semestre propuesto '+g:'Nivel '+g}</h4><div class="tl-rows">`+
     by[g].sort((a,b)=>c[a][2]-c[b][2]||a.localeCompare(b)).map(k=>{const t=tag(k), w=want.has(k), done=statusOf(k)==='done', ob=oblig.has(k), open=S.lfocus===k;
       return `<div class="tl-row${done?' done':''}${w?' want':''}" style="--nv:var(--n${c[k][2]})"><span class="tl-bar"></span>`+
-        `<button type="button" class="tl-name" data-lfocus="${k}" aria-expanded="${open}"><b>${esc(pretty(c[k][0]))}</b><small>${k} · ${fmtCr(c[k][1])} cr${off.has(k)?'':' · sin grupos'}${t?` <span class="tl-tag ${t[1]}">${t[0]}</span>`:''}${ob?' <span class="tl-tag bad">Obligatoria</span>':''}</small></button>`+
-        `<button type="button" class="tl-want" data-lwant="${k}" aria-pressed="${w}"${done||ob?' disabled':''} aria-label="${w?'Quitar':'Agregar'} ${esc(pretty(c[k][0]))}">${w?'✓':'+'}</button>`+
+        `<button type="button" class="tl-name" data-lfocus="${k}" aria-expanded="${open}"><b>${esc(pretty(c[k][0]))}</b><small>${k} · ${fmtCr(c[k][1])} cr${off.has(k)||isElec(k)?'':' · sin grupos'}${t?` <span class="tl-tag ${t[1]}">${t[0]}</span>`:''}${ob?' <span class="tl-tag bad">Obligatoria</span>':''}</small></button>`+
+        `<button type="button" class="tl-want" data-lwant="${k}" aria-pressed="${w}"${done||ob||isElec(k)?' disabled':''} aria-label="${w?'Quitar':'Agregar'} ${esc(pretty(c[k][0]))}">${w?'✓':'+'}</button>`+
         (open?`<div class="tl-more">${inspParts(k).l2}</div>`:'')+'</div>'}).join('')+'</div></section>').join('');
 }
 function renderTray(){renderMap();renderList();renderSide()}
@@ -1511,7 +1519,9 @@ function toggle(k){const pl=plan(),i=pl.sel.indexOf(k);if(i>=0)pl.sel.splice(i,1
     // desde "llenar hueco": la materia pasa a las elegidas (para poder cambiar de grupo) y se suelta el hueco
     if(S.gap||S.fit){if(cur()[c[8]]&&!tr().want.includes(c[8])){tr().want.push(c[8]);saveT()}S.gap=null;renderActive()}}
   refresh()}
-function toggleBox(k){const w=tr().want,i=w.indexOf(k);
+function toggleBox(k){
+  if(isElec(k)){S.mapHover=k;S.mapFocus=true;renderMap();if(mview()==='lista'){S.lfocus=k;renderList()}return}   // se explica en el inspector
+  const w=tr().want,i=w.indexOf(k);
   if(i>=0&&tr().oblig.includes(k)){$('#insp').innerHTML=`<span><b>${esc(cur()[k][0])} es obligatoria</b></span><span class="muted">Al estar desfasada, el SAES no permite la reinscripción sin ella.</span>`;return}
   if(i>=0)w.splice(i,1);else w.push(k);saveT();renderTray()}
 
