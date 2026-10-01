@@ -299,7 +299,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
         <h2 id="h2s"><span class="n">2</span>Agrega tus actividades</h2>
         <p>Describe la actividad realizada (por ejemplo: <i>alemán</i>, <i>congreso</i>, <i>futbol</i>, <i>curso de SolidWorks</i>, <i>prácticas</i>). Se identifican la actividad del instructivo, su clave y las horas equivalentes a un crédito.</p>
         <div class="search">
-          <input type="search" id="q" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ac" aria-label="Buscar actividad" placeholder="¿Qué actividad hiciste?" autocomplete="off">
+          <input type="search" id="q" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ac" aria-label="Buscar actividad" placeholder="Describe la actividad realizada" autocomplete="off">
           <ul class="ac" id="ac" role="listbox" hidden></ul>
         </div>
         <details><summary class="link" style="list-style:none;cursor:pointer">Ver el catálogo completo de actividades</summary><div class="cat" id="cat" style="padding-top:8px"></div></details>
@@ -595,12 +595,12 @@ function renderSum(){
   $('#kv').innerHTML=`<span>De tus actividades</span><b>${fmt(t.cr)}</b>`+(t.sob?`<span>Sobrantes anteriores</span><b>${fmt(t.sob)}</b>`:'')+
     (r.lib?`<span>Liberadas en el SAES</span><b>${r.lib}</b>`:'')+`<span>Electivas cubiertas${r.lib?' (por liberar)':''}</span><b>${t.cubre} de ${r.n}</b>`+(t.cubre>=r.n&&t.rest>0?`<span>Te sobrarían</span><b>${fmt(t.rest)}</b>`:t.cubre<r.n?`<span>Faltan</span><b>${fmt(floor2(r.n*r.c-t.all))}</b>`:'');
   const d=S.d, hasD=d.ap&&d.no&&/^\d{10}$/.test(d.bo)&&d.co;
-  const evs=new Set(t.ok.map(a=>a.ev));
+  const evs=new Set(t.ok.map(a=>a.ev)), nMod=new Set(t.ok.map(a=>CATK[a.k].m)).size;
   const items=[
     [hasD,'Tus datos completos (boleta de 10 dígitos)'],
     [t.ok.length>0,'Al menos una actividad con horas'],
     [S.f.q5==='si','Estar inscrito (o dictamen que lo autorice)'],
-    [false,'DIE-03 impreso: original y 1 copia, firmado'],
+    [false,`DIE-03 impreso: original y 1 copia, firmado${nMod>1?` (uno por modalidad: ${nMod})`:''}`],
     [false,'Formulario impreso: solo original'],
     [false,`Evidencias en original y copia${evs.size?' ('+[...evs].join(', ')+')':''}; si son digitales, una impresión`],
   ];
@@ -611,6 +611,7 @@ function renderSum(){
   const off=S.acts.filter(a=>!valid(a)).length;
   $('#gen-msg').innerHTML=(!hasD?'<div class="note warn">Completa tus datos en el paso 1 para que aparezcan en los formatos.</div>':'')+
     (off?`<div class="note warn">${off} actividad(es) no cumplen las reglas y no se incluirán.</div>`:'')+
+    (nMod>1?`<div class="note">Tus actividades son de ${nMod} modalidades de aprendizaje: se genera un DIE-03 por modalidad, cada uno con sus horas y créditos.</div>`:'')+
     (t.ok.length>6?`<div class="note">Tienes ${t.ok.length} actividades: se agregan hojas extra a la tabla del DIE-03.</div>`:'');
 }
 
@@ -652,16 +653,19 @@ async function makePdf(kind){
   const MES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   const carN=CARN[S.car];
   if(kind==='die03'){
-    const t=totals(), acts=t.ok;
+    const t=totals();
+    // El DIE-03 admite una sola modalidad de aprendizaje: se genera un reporte por modalidad
+    const groups=['D','C','I'].map(m=>t.ok.filter(a=>CATK[a.k].m===m)).filter(g=>g.length);
+    for(const acts of groups){
+    const m=CATK[acts[0].k].m, crG=floor2(acts.reduce((s,a)=>s+credOf(a),0));
     // Hoja 1
     const p1=await page('die03',0);
     T(p1,full,130,172,10,250);T(p1,d.bo,410,172,10,120);T(p1,carN,200,188,9,110);
     T(p1,hoy.getDate(),350,188,10,20);T(p1,MES[hoy.getMonth()],392,188,10,80);T(p1,hoy.getFullYear(),488,188,10,40);
     T(p1,d.co,178,204,10,290);
-    const mods=new Set(acts.map(a=>CATK[a.k].m));
-    if(mods.has('D'))X(p1,153,288,20);if(mods.has('C'))X(p1,302,288,20);if(mods.has('I'))X(p1,453,288,20);
+    X(p1,{D:153,C:302,I:453}[m],288,20);
     const hrs=acts.filter(a=>!CATK[a.k].f.cc).reduce((s,a)=>s+hoursOf(a),0);
-    T(p1,fmt(hrs),252,340,14,60);T(p1,fmt(t.cr),468,340,14,60);
+    T(p1,fmt(hrs),252,340,14,60);T(p1,fmt(crG),468,340,14,60);
     const ev=new Set(acts.map(a=>a.ev)), evx={constancia:92,boleta:169,oficio:222,otro:298};
     Object.entries(evx).forEach(([k,x])=>{if(ev.has(k))X(p1,x,416,11)});
     if(ev.has('otro'))T(p1,acts.filter(a=>a.ev==='otro').map(a=>a.inst||a.desc).join(', '),392,414,8,140);
@@ -684,8 +688,9 @@ async function makePdf(kind){
       });
       if(p===pages-1){
         const tot=(c,txt)=>{const [y0]=COLS[c];p2.drawText(txt,{x:213/1.5-4-10,y:792-y0/1.5-6,size:10,font:bold,color:ink,rotate:degrees(-90)})};
-        tot(6,fmt(hrs));tot(7,fmt(t.cr));
+        tot(6,fmt(hrs));tot(7,fmt(crG));
       }
+    }
     }
     // Formulario
     const pf=await page('form',0);const f=S.f;
