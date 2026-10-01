@@ -176,6 +176,9 @@ input[type=number]{width:5rem}
 .box.hot{box-shadow:0 0 0 3px var(--accent);opacity:1}
 .box.offered-no{font-style:italic;color:var(--muted);font-weight:500}
 .box.want.offered-no{color:var(--accent-fg)}
+#load .fill.ret,.sw-ret{background:repeating-linear-gradient(135deg,var(--bad) 0 4px,color-mix(in srgb,var(--bad) 45%,transparent) 4px 8px)}
+#load .tick.tope{background:var(--bad)}#load .lbl.bad{color:var(--bad)}
+.load-note{margin:6px 0 0;font-size:.8rem;color:var(--muted);line-height:1.45}.sw-ret{display:inline-block;width:12px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
 .legend i.l-niv{width:5px;height:15px;border:0;border-radius:2px;margin-left:4px}
 .legend .lg-niv{gap:3px;padding-right:6px;border-right:1px solid var(--line)}
 .legend i.l-want{background:var(--accent);border-color:var(--accent)}
@@ -803,6 +806,19 @@ function failInfo(k){
   return {k,idx,limite,estado,veces:t.veces[k]??null,curso:t.curso.includes(k)};
 }
 const cargaDe=()=>isPersonal()&&ALUMNO.carga?.media?{min:ALUMNO.carga.min,media:ALUMNO.carga.media,max:ALUMNO.carga.max}:CARGA[S.car];
+/* Carga en créditos (Reglamento General de Estudios, art. 52):
+   - Las reprobadas pendientes retienen sus créditos de forma permanente hasta acreditarse; inscribirlas no suma de nuevo.
+   - Carga total = créditos retenidos + créditos de las materias nuevas (no reprobadas).
+   - Regular: entre la carga mínima y la máxima (fracción I). Con adeudos: al menos la mínima y sin rebasar la media
+     (fracción II), salvo que el SAES indique otra carga autorizada (créditos disponibles además de los retenidos). */
+const retenidos=()=>isPersonal()?tr().fail.filter(k=>cur()[k]).reduce((s,k)=>s+cur()[k][1],0):0;
+function cargaInfo(nuevos){
+  const L=cargaDe();if(!L)return null;
+  const ret=retenidos(), aut=isPersonal()?SAES.autorizada(ALUMNO):null, adeudo=ret>0;
+  const libre=aut!=null?aut:Math.max(0,(adeudo?L.media:L.max)-ret);      // créditos nuevos permitidos
+  const tope=ret+libre, total=ret+(nuevos||0);
+  return {L,ret,aut,adeudo,libre,tope,total,nuevos:nuevos||0,faltaMin:Math.max(0,L.min-total)};
+}
 const saveT=()=>store.set('t.'+S.car,{want:tr().want});
 
 /* ---------- oferta ---------- */
@@ -881,12 +897,14 @@ function available(k){const s=statusOf(k);return !s.startsWith('done')&&!s.start
 
 function suggestions(){
   const sp=semOf(), off=offeredClaves(), rank={late:0,fail:1,prev:2,now:3,rest:4};
-  const target=(isPersonal()&&SAES.autorizada(ALUMNO))||cargaDe()?.media||40;
+  const ci=cargaInfo(0), failS=new Set(tr().fail), cost=k=>failS.has(k)?0:cur()[k][1];
+  // meta de créditos nuevos: con adeudos, lo autorizado además de los retenidos; regular, la carga media
+  const target=ci?(ci.adeudo?ci.libre:Math.min(ci.libre,ci.L.media)):40;
   const cands=Object.keys(cur()).filter(k=>available(k)&&off.has(k)&&cur()[k][3]==='O')
     .sort((a,b)=>rank[statusOf(a).split(' ')[0]]-rank[statusOf(b).split(' ')[0]]||(sp[a]||99)-(sp[b]||99)||cur()[a][2]-cur()[b][2]);
   const out=[];let cr=0;
-  for(const k of cands){if(cr+cur()[k][1]>target+0.01)continue;out.push(k);cr+=cur()[k][1]}
-  return {list:out,cr,target,cands};
+  for(const k of cands){if(cr+cost(k)>target+0.01)continue;out.push(k);cr+=cost(k)}
+  return {list:out,cr,target,cands,ret:ci?.ret||0};
 }
 
 let ZOOM=null;
@@ -1046,7 +1064,7 @@ function renderSide(){
       return `<div class="lvl"><div class="lvl-top"><b>Nivel ${n}</b><span class="minibar"><i style="width:${s.ok/s.tot*100}%;background:var(--n${n})"></i></span><span class="lvl-num">${s.ok} de ${s.tot}</span></div>${req}</div>`}).join('');
     const sg=suggestions(), color={late:'var(--st-late)',fail:'var(--warn)',prev:'var(--line)',now:'var(--st-now)',rest:'var(--line)'};
     $('#sugg').innerHTML=sg.list.map(k=>`<label><span class="dot" style="background:${color[statusOf(k).split(' ')[0]]}"></span><span class="grp">${k}</span><span>${esc(c[k][0])}</span><span class="cr">${fmtCr(c[k][1])}</span></label>`).join('')+
-      `<small>${fmtCr(sg.cr)} de ${fmtCr(sg.target)} créditos; ${DESFASE_SEM.has(S.car)?'orden: desfasadas y reprobadas, después las del semestre propuesto.':'orden: desfasadas, reprobadas y pendientes según la trayectoria.'}${curso.length?' No incluye las materias en curso.':''}</small>`;
+      `<small>${fmtCr(sg.cr)} de ${fmtCr(sg.target)} créditos nuevos${sg.ret?` (además de ${fmtCr(sg.ret)} retenidos por reprobadas, que no se vuelven a contar al recursarlas)`:''}; ${DESFASE_SEM.has(S.car)?'orden: desfasadas y reprobadas, después las del semestre propuesto.':'orden: desfasadas, reprobadas y pendientes según la trayectoria.'}${curso.length?' No incluye las materias en curso.':''}</small>`;
   }
   renderLegend();renderLineas();
 }
@@ -1242,16 +1260,18 @@ function renderCal(){
   const both=[...sel,...own];let clashes=0;
   for(let i=0;i<both.length;i++)for(let j=i+1;j<both.length;j++)if(overlaps(both[i],both[j]))clashes++;
   const noSched=sel.filter(c=>!c[6].length).length;
-  $('#stats').innerHTML=sel.length||own.length?`<span><b>${fmtCr(cr)}</b> créditos</span><span><b>${sel.length}</b> materias</span><span><b>${(mins/60).toFixed(1)}</b> h de clase a la semana</span>`+
+  $('#stats').innerHTML=sel.length||own.length?`<span><b>${fmtCr(cr)}</b> créditos en el horario</span><span><b>${sel.length}</b> materias</span><span><b>${(mins/60).toFixed(1)}</b> h de clase a la semana</span>`+
     (clashes?`<span class="bad">${clashes} ${clashes>1?'traslapes':'traslape'}</span>`:'<span>Sin traslapes</span>')+(noSched?`<span>${noSched} sin horario publicado</span>`:'')+
     (()=>{const have=new Set(sel.map(c=>c[8])),miss=tr().oblig.filter(k=>!have.has(k));return miss.length?`<span class="bad">Falta ${miss.map(k=>esc(pretty(cur()[k][0]))).join(', ')}: obligatoria por desfase</span>`:''})():
     '<span>Agrega grupos desde la oferta o genera horarios automáticamente. Al colocar el cursor sobre un grupo se muestra su vista previa.</span>';
-  const L=cargaDe();
-  if(L&&sel.length){
-    const top=Math.max(L.max,cr)*1.05, pct=v=>Math.min(100,v/top*100);
-    const tag=cr<L.min?'Menor a la mínima':cr<=L.media?'Entre mínima y media':cr<=L.max?'Entre media y máxima':'Mayor a la máxima';
-    $('#load').innerHTML=`<span class="lbl">Carga: ${tag}</span><div class="bar"><div class="fill" style="width:${pct(cr)}%"></div>${['min','media','max'].map(k=>`<div class="tick" style="left:${pct(L[k])}%"></div>`).join('')}</div>
-      <div class="ticks">${[['min','mínima'],['media','media'],['max','máxima']].map(([k,l])=>`<span style="left:${pct(L[k])}%">${l} ${L[k]}</span>`).join('')}</div>`;
+  const failS=new Set(tr().fail), ci=cargaInfo(sel.filter(c=>!failS.has(c[8])).reduce((s,c)=>s+c[7],0));
+  if(ci&&(sel.length||ci.ret)){
+    const L=ci.L, t=ci.total, top=Math.max(L.max,t,ci.tope)*1.05, pct=v=>Math.min(100,v/top*100);
+    const tag=t<L.min?'Menor a la mínima':t>ci.tope+0.01?(ci.aut!=null?'Excede la carga autorizada':ci.adeudo?'Excede la carga media (con adeudos)':'Mayor a la máxima'):t<=L.media?'Entre mínima y media':'Entre media y máxima';
+    const bad=t<L.min||t>ci.tope+0.01;
+    $('#load').innerHTML=`<span class="lbl${bad?' bad':''}">Carga total: ${fmtCr(t)} cr · ${tag}</span><div class="bar">${ci.ret?`<div class="fill ret" style="width:${pct(ci.ret)}%"></div>`:''}<div class="fill" style="left:${pct(ci.ret)}%;width:${Math.max(0,pct(t)-pct(ci.ret))}%"></div>${['min','media','max'].map(k=>`<div class="tick" style="left:${pct(L[k])}%"></div>`).join('')}${ci.tope!==L.max&&ci.tope!==L.media?`<div class="tick tope" style="left:${pct(ci.tope)}%"></div>`:''}</div>
+      <div class="ticks">${[['min','mínima'],['media','media'],['max','máxima']].map(([k,l])=>`<span style="left:${pct(L[k])}%">${l} ${L[k]}</span>`).join('')}${ci.tope!==L.max&&ci.tope!==L.media?`<span class="bad" style="left:${pct(ci.tope)}%">autorizada ${fmtCr(ci.tope)}</span>`:''}</div>`+
+      (ci.ret?`<p class="load-note"><i class="sw-ret"></i>${fmtCr(ci.ret)} cr retenidos por reprobadas (cuentan aunque no las inscribas; recursarlas no suma de nuevo) · ${fmtCr(ci.nuevos)} cr de materias nuevas, de ${fmtCr(ci.libre)} permitidos${ci.aut!=null?' según tu carga autorizada':' (hasta la carga media)'}${ci.faltaMin?` · faltan ${fmtCr(ci.faltaMin)} cr para la mínima`:''}.</p>`:'');
   }else $('#load').innerHTML='';
   $('#sel').hidden=!both.length;
   $('#sel').innerHTML=sel.map(c=>`<div><span class="sw" style="--h:${hue(c)}"></span><span class="grp">${c[3]}</span><span>${esc(name(c))}<br><small>${esc(profs(c))}</small></span><span class="cr">${fmtCr(c[7])} cr</span><button class="x" data-toggle="${keyOf(c)}" aria-label="Quitar ${esc(name(c))}">×</button></div>`).join('')+
@@ -1722,7 +1742,7 @@ $('#b-copy').addEventListener('click',async()=>{
   catch(err){box.hidden=false;box.select()}
 });
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(S.tab==='tray'&&ZOOM==null)renderMap()},150)});
-$('#foot').textContent='Herramienta de consulta para la planeación académica. Los datos del SAES se consultan en modo de solo lectura y se almacenan únicamente en este navegador, al igual que las materias seleccionadas, marcas, notas y horarios. La reinscripción oficial se realiza en el SAES, donde deben verificarse la cita, la carga autorizada y el cupo.';
+$('#foot').textContent='Herramienta de consulta para que el alumno planee su reinscripción. Los datos del SAES se consultan en modo de solo lectura y se almacenan únicamente en este navegador, al igual que las materias seleccionadas, marcas, notas y horarios. La reinscripción oficial se realiza en el SAES, donde deben verificarse la cita, la carga autorizada y el cupo.';
 if(ALUMNO&&DATA.mapas[ALUMNO.carrera])S.car=ALUMNO.carrera;
 render();
 SAES.status(ALUMNO);
