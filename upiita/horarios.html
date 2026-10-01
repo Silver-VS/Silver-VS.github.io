@@ -271,6 +271,7 @@ textarea.paste{width:100%;min-height:5rem;font-family:var(--f-mono);font-size:.7
 .marks{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
 .marks button{border:0;background:var(--surface);padding:2px 8px;font-size:.72rem;cursor:pointer;color:var(--muted)}
 .marks button+button{border-left:1px solid var(--line)}
+.marks button:disabled{cursor:not-allowed;opacity:.6}
 .marks button[data-m="si"][aria-pressed="true"]{background:var(--ok-soft);color:var(--ok);font-weight:600}
 .marks button[data-m="quiza"][aria-pressed="true"]{background:var(--warn-soft);color:var(--warn);font-weight:600}
 .marks button[data-m="no"][aria-pressed="true"]{background:var(--bad-soft);color:var(--bad);font-weight:600}
@@ -1263,7 +1264,7 @@ function optRow(c,sel,inGroup){
   if(isExcl(c)) tags+='<span class="tag soft">profesor excluido</span>';
   return `<div class="opt${mk.s==='no'||isExcl(c)?' no':''}" data-k="${k}"><span class="grp">${inGroup?'':c[3]}</span><span class="who">${who}</span>
     <div class="right"><button class="add" data-toggle="${k}" aria-pressed="${on}">${on?'Quitar':'Agregar'}</button>
-      <span class="marks" role="group" aria-label="Marcar opción">${[['si','Sí'],['quiza','Quizá'],['no','No']].map(([m,l])=>`<button data-mark="${m}" data-k="${k}" aria-pressed="${mk.s===m}">${l}</button>`).join('')}</span></div>
+      <span class="marks" role="group" aria-label="Marcar opción"${isExcl(c)?' title="Profesor excluido: se trata como «No». Quítalo de «Excluir profesores» para marcar este grupo."':''}>${[['si','Sí'],['quiza','Quizá'],['no','No']].map(([m,l])=>isExcl(c)?`<button disabled data-m="${m}" aria-pressed="${m==='no'}">${l}</button>`:`<button data-mark="${m}" data-m="${m}" data-k="${k}" aria-pressed="${mk.s===m}">${l}</button>`).join('')}</span></div>
     <span class="when">${pattern(c).map(p=>`<span>${p}</span>`).join('')}</span>
     ${tags?`<span class="tags">${tags}</span>`:''}
     ${mk.s?`<input class="note" type="text" data-note="${k}" value="${esc(mk.n||'')}" placeholder="Nota sobre este grupo o profesor" aria-label="Nota">`:''}</div>`;
