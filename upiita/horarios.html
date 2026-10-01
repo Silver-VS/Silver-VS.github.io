@@ -102,7 +102,7 @@ input[type=number]{width:5rem}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.82rem}
 .legend span{display:inline-flex;gap:6px;align-items:center}
 .legend i{width:14px;height:14px;border-radius:3px;border:1px solid var(--line);display:inline-block}
-.mapwrap{overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);max-height:calc(88vh / var(--ui-zoom,1))}
+.mapwrap{touch-action:pan-x pan-y;overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);max-height:calc(88vh / var(--ui-zoom,1))}
 .map{position:relative}
 .map svg{position:absolute;inset:0;overflow:visible}
 .band{fill:var(--band)}
@@ -984,7 +984,7 @@ function suggestions(){
   return {list:out,cr,target,cands,ret:ci?.ret||0};
 }
 
-let ZOOM=null;
+let ZOOM=null, MAPSC=1;   // MAPSC: escala con la que se dibujó el mapa por última vez
 /* Bandas de semestre: el centro de cada fila es la mediana de sus bloques (las etiquetas del PDF pueden estar
    corridas) y cada banda llega a la mitad del espacio con la vecina, así ningún bloque se ve en la fila de al lado. */
 function rowBands(L){
@@ -1022,7 +1022,7 @@ function renderMap(){
     const by={};Object.entries(cur()).forEach(([k,v])=>(by[v[2]]=by[v[2]]||[]).push(k));
     const cols=Math.max(...Object.values(by).map(a=>a.length)), bw=118, bh=48, gx=10, gy=18, lw=40;
     const w=lw+cols*(bw+gx)+10, h=Object.keys(by).length*(bh+gy)+gy;
-    const sc=ZOOM??Math.min(1.2,Math.max(.6,(wrap.clientWidth-4)/w));
+    const sc=ZOOM??Math.min(1.2,Math.max(.6,(wrap.clientWidth-4)/w));MAPSC=sc;
     let html=`<svg width="${w*sc}" height="${h*sc}" aria-hidden="true">`;
     Object.keys(by).sort((a,b)=>a-b).forEach((n,i)=>{const y=gy/2+i*(bh+gy);html+=`<rect class="band" x="0" y="${y*sc}" width="${w*sc}" height="${(bh+gy/2)*sc}"/><text class="rowlbl" x="${12*sc}" y="${(y+bh/2+5)*sc}" font-size="${16*sc}">${n}</text>`});
     html+='</svg>';
@@ -1034,7 +1034,7 @@ function renderMap(){
     $('#mapnote').textContent='Esta carrera aún no tiene una trayectoria recomendada: se muestran sus materias por nivel según el SAES, sin seriación.';
     return;
   }
-  const sc=ZOOM??Math.min(1.1,(wrap.clientWidth-2)/L.w);
+  const sc=ZOOM??Math.min(1.1,(wrap.clientWidth-2)/L.w);MAPSC=sc;
   let svg=`<svg width="${L.w*sc}" height="${L.h*sc}" viewBox="0 0 ${L.w} ${L.h}" aria-hidden="true"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--edge)"/></marker><marker id="ahh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker></defs>`;
   rowBands(L).forEach(([n,y,a,b],i)=>{if(i%2===0)svg+=`<rect class="band" x="0" y="${a}" width="${L.w}" height="${b-a}"/>`;svg+=`<text class="rowlbl" x="12" y="${y+6}" font-size="18">${n}</text>`});
   L.edges.forEach(([s,d,p])=>{
@@ -1081,7 +1081,7 @@ function renderInsp(){
   const k=S.mapHover, c=cur(), el=$('#insp');
   el.classList.toggle('act',!!(S.mapFocus&&k&&c[k]));
   if(!k||!c[k]){el.innerHTML='<span><b>Explora el mapa</b></span><span class="muted">'+(tactil()?
-    'Toca una materia para consultar sus datos y su cadena de requisitos; tócala de nuevo o usa «Quiero cursarla» para agregarla a tu plan.':
+    'Toca una materia para consultar sus datos y su cadena de requisitos; tócala de nuevo o usa «Quiero cursarla» para agregarla a tu plan. Pellizca el mapa para acercar o alejar.':
     'Coloca el cursor sobre una materia para consultar sus datos y su cadena de requisitos; selecciónala para agregarla a tu plan.')+'</span>';el.title='';return}
   const {l1,l2}=inspParts(k), w=tr().want.includes(k), ob=tr().oblig.includes(k), done=statusOf(k)==='done';
   el.innerHTML=`<span>${l1}</span><span class="muted">${l2}</span>`+(S.mapFocus?`<span class="insp-act">${ob||done?'':`<button class="btn primary" type="button" data-fwant="${k}">${w?'Quitar de mi plan':'Quiero cursarla'}</button>`}<button class="btn" type="button" data-fclose="1">Cerrar</button></span>`:'');
@@ -1870,6 +1870,24 @@ $('#b-copy').addEventListener('click',async()=>{
   try{await navigator.clipboard.writeText(txt);$('#b-copy').textContent='Copiado';setTimeout(()=>$('#b-copy').textContent='Copiar texto',1500)}
   catch(err){box.hidden=false;box.select()}
 });
+/* Zoom del mapa con pellizco (dos dedos) y con el trackpad o Ctrl + rueda, centrado en el punto del gesto.
+   Usa el mismo ZOOM que los botones +/−; desplazar con un dedo sigue siendo nativo (touch-action: pan-x pan-y). */
+(()=>{
+  const wrap=$('#mapwrap'), HEAD=30;   // HEAD: altura de la cabecera fija de áreas dentro del contenedor
+  const fit=()=>{const L=MAP().layout;return L?(wrap.clientWidth-2)/L.w:.6};   // escala de «mapa completo»
+  const clampZ=z=>Math.min(2,Math.max(Math.min(.4,fit()),z)), dist=(a,b)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+  const rel=(x,y)=>{const r=wrap.getBoundingClientRect();return[x-r.left,y-r.top]};
+  let pinch=null, raf=0, pend=null;
+  const apply=(z,cx,cy)=>{pend={z,cx,cy};if(raf)return;raf=requestAnimationFrame(()=>{raf=0;const {z,cx,cy}=pend, old=MAPSC;if(Math.abs(z-old)<.004)return;
+    const x=(wrap.scrollLeft+cx)/old, y=(wrap.scrollTop+cy-HEAD)/old;
+    ZOOM=z;renderMap();wrap.scrollLeft=x*MAPSC-cx;wrap.scrollTop=y*MAPSC-cy+HEAD})};
+  wrap.addEventListener('touchstart',e=>{if(e.touches.length===2){const [a,b]=e.touches;pinch={d:dist(a,b)||1,z:MAPSC}}},{passive:true});
+  wrap.addEventListener('touchmove',e=>{if(!pinch||e.touches.length!==2)return;e.preventDefault();
+    const [a,b]=e.touches, [cx,cy]=rel((a.clientX+b.clientX)/2,(a.clientY+b.clientY)/2);apply(clampZ(pinch.z*dist(a,b)/pinch.d),cx,cy)},{passive:false});
+  wrap.addEventListener('touchend',e=>{if(e.touches.length<2)pinch=null});
+  wrap.addEventListener('touchcancel',()=>{pinch=null});
+  wrap.addEventListener('wheel',e=>{if(!e.ctrlKey)return;e.preventDefault();const [cx,cy]=rel(e.clientX,e.clientY);apply(clampZ(MAPSC*Math.exp(-e.deltaY/250)),cx,cy)},{passive:false});
+})();
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(S.tab==='tray'&&ZOOM==null)renderMap()},150)});
 $('#foot').textContent='Herramienta de consulta para que el alumno planee su reinscripción. Los datos del SAES se consultan en modo de solo lectura y se almacenan únicamente en este navegador, al igual que las materias seleccionadas, marcas, notas y horarios. La reinscripción oficial se realiza en el SAES, donde deben verificarse la cita, la carga autorizada y el cupo.';
 if(ALUMNO&&DATA.mapas[ALUMNO.carrera])S.car=ALUMNO.carrera;
