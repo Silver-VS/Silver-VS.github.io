@@ -1523,10 +1523,11 @@ async function drawTable(part,k=3){
   // proporciones del formato en tabla: lienzo angosto (letra grande en carta), líneas delgadas dentro y gruesas en
   // el contorno, debajo del título, debajo de los días y a la derecha de la columna de horas
   const {rows,days,cells,D}=weekGrid(), W=1000, PAD=40, F='Arial,"Noto Sans",system-ui,sans-serif', INK='#000', GRAY='#e7e7e7', OWN=EXP.own;
-  const THIN=1.4, THICK=3.4, HOURW=118, colW=(W-2*PAD-HOURW)/days, ROWH=46, TOP=PAD+58, LROW=40;
-  const tableH=part==='list'?0:(2+rows.length)*ROWH;
+  // HR: renglones de título y encabezado, delgados como en el formato del equipo
+  const THIN=1.4, THICK=3.4, HOURW=118, colW=(W-2*PAD-HOURW)/days, ROWH=46, HR=24, TOP=PAD+58, LROW=40;
+  const tableH=part==='list'?0:2*HR+rows.length*ROWH;
   const listTop=part==='list'?TOP:TOP+tableH+34;
-  const H=part==='week'?TOP+tableH+46:listTop+(2+D.sel.length)*LROW+70;
+  const H=part==='week'?TOP+tableH+46:listTop+2*HR+D.sel.length*LROW+70;
   const cv=document.createElement('canvas');cv.width=W*k;cv.height=H*k;const g=cv.getContext('2d');g.scale(k,k);
   g.fillStyle='#fff';g.fillRect(0,0,W,H);
   const carN=DATA.carreras[S.car]||'';
@@ -1540,28 +1541,28 @@ async function drawTable(part,k=3){
   // nombres propios del SAES (mayúsculas) a formato nombre: "CANUL GOMEZ GIMCIAN" -> "Canul Gomez Gimcian"
   const proper=t=>String(t).toLowerCase().replace(/(^|[\s,/(-])(\p{L})/gu,(m,a,b)=>a+b.toUpperCase());
   if(part!=='list'){
-    const X0=PAD, Y0=TOP, TW=HOURW+colW*days, TH=(2+rows.length)*ROWH, BY=Y0+2*ROWH;
+    const X0=PAD, Y0=TOP, TW=HOURW+colW*days, TH=2*HR+rows.length*ROWH, BY=Y0+2*HR;
     const NAMES=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
-    cellText('Horario',X0,Y0,TW,ROWH,true);
-    cellText('Hora',X0,Y0+ROWH,HOURW,ROWH);
-    for(let d=0;d<days;d++)cellText(NAMES[d],X0+HOURW+d*colW,Y0+ROWH,colW,ROWH);
+    cellText('Horario',X0,Y0,TW,HR,true);
+    cellText('Hora',X0,Y0+HR,HOURW,HR);
+    for(let d=0;d<days;d++)cellText(NAMES[d],X0+HOURW+d*colW,Y0+HR,colW,HR);
     rows.forEach(([a,b],r)=>cellText(`${hm(a)}-${hm(b)}`,X0,BY+r*ROWH,HOURW,ROWH));
     // celdas (con su color) y líneas delgadas
     cells.forEach(c=>{const x=X0+HOURW+c.d*colW,y=BY+c.r0*ROWH,w=colW*c.span,h=(c.r1-c.r0)*ROWH;
       fill(x,y,w,h,c.it?(c.it.own?OWN:'#fff'):GRAY);rect(x,y,w,h,THIN);if(c.it)cellText(c.it.t,x,y,w,h)});
-    for(let d=1;d<days;d++)line(X0+HOURW+d*colW,Y0+ROWH,X0+HOURW+d*colW,BY,THIN);
+    for(let d=1;d<days;d++)line(X0+HOURW+d*colW,Y0+HR,X0+HOURW+d*colW,BY,THIN);
     rows.forEach((_,r)=>line(X0,BY+(r+1)*ROWH,X0+HOURW,BY+(r+1)*ROWH,THIN));
     // líneas gruesas
-    rect(X0,Y0,TW,TH,THICK);line(X0,Y0+ROWH,X0+TW,Y0+ROWH,THICK);line(X0,BY,X0+TW,BY,THICK);line(X0+HOURW,Y0+ROWH,X0+HOURW,Y0+TH,THICK);
+    rect(X0,Y0,TW,TH,THICK);line(X0,Y0+HR,X0+TW,Y0+HR,THICK);line(X0,BY,X0+TW,BY,THICK);line(X0+HOURW,Y0+HR,X0+HOURW,Y0+TH,THICK);
   }
   if(part!=='week'){
-    const C=[['Grupo',70],['Materia',300],['Profesor',380],['Créd',64],['Salón',106]], X0=PAD, TW=C.reduce((t,c)=>t+c[1],0), TH=(2+D.sel.length)*LROW;
-    cellText('Lista de profesores por materia',X0,listTop,TW,LROW,true);
-    let x=X0;C.forEach(([t,w])=>{cellText(t,x,listTop+LROW,w,LROW,false,true);x+=w});
-    D.sel.forEach((c,i)=>{x=X0;const y=listTop+(2+i)*LROW;[c[3],pretty(name(c)),proper(profs(c)),fmtCr(c[7]),''].forEach((t,j)=>{cellText(t,x,y,C[j][1],LROW);x+=C[j][1]});
+    const C=[['Grupo',70],['Materia',300],['Profesor',380],['Créd',64],['Salón',106]], X0=PAD, TW=C.reduce((t,c)=>t+c[1],0), TH=2*HR+D.sel.length*LROW;
+    cellText('Lista de profesores por materia',X0,listTop,TW,HR,true);
+    let x=X0;C.forEach(([t,w])=>{cellText(t,x,listTop+HR,w,HR,false,true);x+=w});
+    D.sel.forEach((c,i)=>{x=X0;const y=listTop+2*HR+i*LROW;[c[3],pretty(name(c)),proper(profs(c)),fmtCr(c[7]),''].forEach((t,j)=>{cellText(t,x,y,C[j][1],LROW);x+=C[j][1]});
       line(X0,y,X0+TW,y,THIN)});
-    x=X0;C.slice(0,-1).forEach(([,w])=>{x+=w;line(x,listTop+LROW,x,listTop+TH,THIN)});
-    rect(X0,listTop,TW,TH,THICK);line(X0,listTop+LROW,X0+TW,listTop+LROW,THICK);line(X0,listTop+2*LROW,X0+TW,listTop+2*LROW,THICK);
+    x=X0;C.slice(0,-1).forEach(([,w])=>{x+=w;line(x,listTop+HR,x,listTop+TH,THIN)});
+    rect(X0,listTop,TW,TH,THICK);line(X0,listTop+HR,X0+TW,listTop+HR,THICK);line(X0,listTop+2*HR,X0+TW,listTop+2*HR,THICK);
     g.font=`400 14px ${F}`;g.fillStyle=INK;g.textAlign='center';g.fillText(fmtCr(D.cr),X0+C[0][1]+C[1][1]+C[2][1]+C[3][1]/2,listTop+TH+22);g.textAlign='left';
   }
   const cap=new Date(DATA.capturado).toLocaleDateString('es-MX',{dateStyle:'long'});
