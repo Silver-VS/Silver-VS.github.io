@@ -964,8 +964,9 @@ function statusOf(k){
   if(tr().curso.includes(k)) return 'curso';
   // las materias en curso cuentan como requisito cumplido (se planea suponiendo que se acreditan)
   const req=(prereqs()[k]||[]).filter(x=>!done.has(x)&&!tr().curso.includes(x));
-  const lv=levelOpen(cur()[k]?.[2]);
-  const lock=req.length>0||!lv.ok;
+  // solo la seriación directa bloquea: el plan es flexible y la oferta varía, así que si ya acreditaste los requisitos
+  // puedes cursar la materia aunque sea de otro semestre. La seriación por nivel queda como recomendación (inspector).
+  const lock=req.length>0;
   const sn=semNow(), sp=semOf()[k];
   let st='rest';
   if(sn&&sp){if(sp<sn)st=DESFASE_SEM.has(S.car)?'late':'prev';else if(sp===sn)st='now'}
@@ -974,12 +975,16 @@ function statusOf(k){
 function available(k){const s=statusOf(k);return !s.startsWith('done')&&!s.startsWith('curso')&&!s.includes('lock')}
 
 function suggestions(){
-  const sp=semOf(), off=offeredClaves(), rank={late:0,fail:1,prev:2,now:3,rest:4};
+  // prioridad: desfasadas, reprobadas, atrasadas; después todo lo que ya puedes cursar (de cualquier semestre),
+  // primero las que desbloquean más materias y luego por semestre propuesto
+  const sp=semOf(), off=offeredClaves(), rank={late:0,fail:1,prev:2,now:3,rest:3};
+  const dep=dependents(), memo={}, unlocks=k=>memo[k]??(memo[k]=(()=>{const seen=new Set(),walk=x=>(dep[x]||[]).forEach(y=>{if(!seen.has(y)){seen.add(y);walk(y)}});walk(k);return seen.size})());
   const ci=cargaInfo(0), failS=new Set(tr().fail), cost=k=>failS.has(k)?0:cur()[k][1];
   // meta de créditos nuevos: con adeudos, lo autorizado además de los retenidos; regular, la carga media
   const target=ci?(ci.adeudo?ci.libre:Math.min(ci.libre,ci.L.media)):40;
   const cands=Object.keys(cur()).filter(k=>available(k)&&off.has(k)&&cur()[k][3]==='O')
-    .sort((a,b)=>rank[statusOf(a).split(' ')[0]]-rank[statusOf(b).split(' ')[0]]||(sp[a]||99)-(sp[b]||99)||cur()[a][2]-cur()[b][2]);
+    .sort((a,b)=>{const ra=rank[statusOf(a).split(' ')[0]], rb=rank[statusOf(b).split(' ')[0]];
+      return ra-rb||(ra===3?unlocks(b)-unlocks(a):0)||(sp[a]||99)-(sp[b]||99)||cur()[a][2]-cur()[b][2]});
   const out=[];let cr=0;
   for(const k of cands){if(cr+cost(k)>target+0.01)continue;out.push(k);cr+=cost(k)}
   return {list:out,cr,target,cands,ret:ci?.ret||0};
@@ -1060,7 +1065,7 @@ function boxHtml(k,x,y,w,h,sc,want,off,hot,sem,req){
   const [n,cr,niv]=cur()[k]||[k,0,1];
   const st=statusOf(k);
   const cls=`box ${st}${MARK.avail.has(k)?' avail':''}${MARK.sug.has(k)?' sug':''}${want.has(k)?' want':req&&req.has(k)?' req':''}${hot?(hot.has(k)?(k===S.mapHover?' hot':''):' dim'):''}${off.has(k)?'':' offered-no'}`;
-  const tip=`${k} · ${n} · ${fmtCr(cr)} créditos · nivel ${niv}${sem?` · semestre propuesto ${sem}`:''}${off.has(k)?'':' · sin grupos este periodo'}${st.startsWith('late fail')?' · desfasada (SAES): recursar con prioridad':st.startsWith('fail')?' · reprobada: por recursar':st==='curso'?' · en curso':st.startsWith('late')?' · atrasada según el semestre propuesto':st.includes('lock')?' · le faltan requisitos':MARK.avail.has(k)?' · puedes cursarla el siguiente periodo':''}${MARK.sug.has(k)?' · sugerida para tu carga':''}${req&&req.has(k)?' · conviene cursarla antes que una materia elegida':''}`;
+  const tip=`${k} · ${n} · ${fmtCr(cr)} créditos · nivel ${niv}${sem?` · semestre propuesto ${sem}`:''}${off.has(k)?'':' · sin grupos este periodo'}${st.startsWith('late fail')?' · desfasada (SAES): inscripción obligatoria':st.startsWith('fail')?' · reprobada: por recursar':st==='curso'?' · en curso':st.startsWith('late')?' · atrasada según el semestre propuesto':st.includes('lock')?' · le faltan requisitos':MARK.avail.has(k)?' · puedes cursarla el siguiente periodo':''}${MARK.sug.has(k)?' · sugerida para tu carga':''}${req&&req.has(k)?' · conviene cursarla antes que una materia elegida':''}`;
   return `<div class="${cls}" data-box="${k}" role="button" tabindex="0" aria-pressed="${want.has(k)}" style="--nv:var(--n${niv});left:${x*sc}px;top:${y*sc}px;width:${w*sc}px;height:${h*sc}px;font-size:${Math.max(5.5,(n.length>34?9:10.5)*sc)}px" title="${esc(tip)}">${esc(n)}</div>`;
 }
 
@@ -1073,7 +1078,7 @@ function inspParts(k){
   if(isPersonal()){const st=statusOf(k),dn=new Set([...tr().done,...tr().curso]);
     const miss=pre.filter(x=>!dn.has(x)), lv=levelOpen(niv);
     ps=st==='done'?'Ya acreditada · ':st==='curso'?'En curso · ':st.includes('fail')?'Por recursar · ':
-      st.includes('lock')?`<b>Requisitos pendientes: ${[...miss.map(nm),...(lv.ok?[]:['se recomienda '+lv.miss.join(', ')])].join(', ')}</b> · `:'<b>Puedes cursarla</b> · '}
+      st.includes('lock')?`<b>Requisitos pendientes: ${miss.map(nm).join(', ')}</b> · `:`<b>Puedes cursarla</b>${lv.ok?'':` (seriación recomendada por nivel: ${lv.miss.join(', ')})`} · `}
   const l2=ps+`${pre.length?'Requisitos directos: '+pre.map(nm).join(', '):'Sin requisitos registrados'}${all.size>pre.length?` · ${all.size} en la cadena de requisitos`:''}${post.length?' · Es requisito de: '+post.map(nm).join(', '):''}`;
   const l1=`<b>${esc(n)}</b> <span class="mono">${k}</span> · ${fmtCr(cr)} créditos · nivel ${niv}${sem?' · semestre propuesto '+sem:''}${off?'':' · <i>sin grupos este periodo</i>'}`;
   return {l1,l2};
@@ -1151,7 +1156,7 @@ function renderSide(){
       return `<div class="lvl"><div class="lvl-top"><b>Nivel ${n}</b><span class="minibar"><i style="width:${s.ok/s.tot*100}%;background:var(--n${n})"></i></span><span class="lvl-num">${s.ok} de ${s.tot}</span></div>${req}</div>`}).join('');
     const sg=suggestions(), color={late:'var(--st-late)',fail:'var(--warn)',prev:'var(--line)',now:'var(--st-now)',rest:'var(--line)'};
     $('#sugg').innerHTML=sg.list.map(k=>`<label><span class="dot" style="background:${color[statusOf(k).split(' ')[0]]}"></span><span class="grp">${k}</span><span>${esc(c[k][0])}</span><span class="cr">${fmtCr(c[k][1])}</span></label>`).join('')+
-      `<small>${fmtCr(sg.cr)} de ${fmtCr(sg.target)} créditos nuevos${sg.ret?` (además de ${fmtCr(sg.ret)} retenidos por reprobadas, que no se vuelven a contar al recursarlas)`:''}; ${DESFASE_SEM.has(S.car)?'orden: desfasadas y reprobadas, después las del semestre propuesto.':'orden: desfasadas, reprobadas y pendientes según la trayectoria.'}${curso.length?' No incluye las materias en curso.':''}</small>`;
+      `<small>${fmtCr(sg.cr)} de ${fmtCr(sg.target)} créditos nuevos${sg.ret?` (además de ${fmtCr(sg.ret)} retenidos por reprobadas, que no se vuelven a contar al recursarlas)`:''}; orden: desfasadas y reprobadas; después las que ya puedes cursar de cualquier semestre, primero las que desbloquean más materias.${curso.length?' No incluye las materias en curso.':''}</small>`;
   }
   renderLegend();renderLineas();
 }
