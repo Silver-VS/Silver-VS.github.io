@@ -186,7 +186,13 @@ input[type=number]{width:5rem}
 .kv{display:grid;grid-template-columns:1fr auto;gap:2px 12px;font-size:.88rem;font-variant-numeric:tabular-nums}
 .kv b{font-weight:600}
 .lvls{display:flex;flex-direction:column;gap:6px;font-size:.84rem}
-.lvl{display:grid;grid-template-columns:3.2rem 1fr auto;gap:8px;align-items:center}
+.lvl{display:flex;flex-direction:column;gap:3px;padding-block:4px;border-top:1px solid var(--line)}
+.lvl:first-of-type{border-top:0}
+.lvl-top{display:grid;grid-template-columns:4.2rem minmax(0,1fr) 4.6rem;gap:10px;align-items:center}
+.lvl-num{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.lvl-req{font-size:.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:2px 10px;padding-left:4.2rem}
+.lvl-req span.ok{color:var(--ok)} .lvl-req span.warn{color:var(--warn)}
+.lvl-intro{margin:0 0 4px;font-size:.8rem;color:var(--muted)}
 .minibar{height:8px;background:var(--sunken);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
 .minibar i{display:block;height:100%;background:var(--accent)}
 .ok{color:var(--ok)} .bad{color:var(--bad)} .warn{color:var(--warn)}
@@ -1026,8 +1032,13 @@ function renderSide(){
       `<span class="sim-hint">${SIM.on?'Selecciona una materia para alternar entre aprobada y reprobada.':'Permite estimar el resultado del periodo en curso según apruebes o repruebes cada materia.'}</span>`:'';
     $('#h-sugg').textContent=meta!=null?'Sugeridas para '+perName(meta):'Sugeridas';
     const st=levelStats(), R=MAP().reglas;
-    $('#lvls').innerHTML=Object.keys(st).sort((a,b)=>a-b).map(n=>{const s=st[n], o=levelOpen(+n);
-      return `<div class="lvl"><b>N${n}</b><span class="minibar"><i style="width:${s.ok/s.tot*100}%;background:var(--n${n})"></i></span><span class="${R[n]&&o.ok?'ok':'muted'}">${s.ok}/${s.tot}${R[n]?(o.ok?' · recomendación cumplida':' · se recomienda '+o.miss.join(', ')):''}</span></div>`}).join('');
+    // por nivel: avance (barra de ancho fijo) y, debajo, el porcentaje recomendado de niveles previos frente al tuyo
+    const pct=k=>st[k]?Math.round(st[k].ok/st[k].tot*100):0;
+    $('#lvls').innerHTML=`<p class="lvl-intro">Avance por nivel y porcentaje recomendado de los niveles previos para cursar cada uno.</p>`+
+      Object.keys(st).sort((a,b)=>a-b).map(n=>{const s=st[n], rq=Object.entries(R[n]||{});
+      const req=rq.length?`<div class="lvl-req">Para cursarlo se recomienda: ${rq.map(([k,f])=>{const ok=pct(k)>=Math.round(f*100);
+          return `<span class="${ok?'ok':'warn'}">${ok?'✓':'·'} Nivel ${k} al ${Math.round(f*100)} %${ok?'':` (llevas ${pct(k)} %)`}</span>`}).join(' ')}</div>`:'';
+      return `<div class="lvl"><div class="lvl-top"><b>Nivel ${n}</b><span class="minibar"><i style="width:${s.ok/s.tot*100}%;background:var(--n${n})"></i></span><span class="lvl-num">${s.ok} de ${s.tot}</span></div>${req}</div>`}).join('');
     const sg=suggestions(), color={late:'var(--st-late)',fail:'var(--warn)',prev:'var(--line)',now:'var(--st-now)',rest:'var(--line)'};
     $('#sugg').innerHTML=sg.list.map(k=>`<label><span class="dot" style="background:${color[statusOf(k).split(' ')[0]]}"></span><span class="grp">${k}</span><span>${esc(c[k][0])}</span><span class="cr">${fmtCr(c[k][1])}</span></label>`).join('')+
       `<small>${fmtCr(sg.cr)} de ${fmtCr(sg.target)} créditos; ${DESFASE_SEM.has(S.car)?'orden: desfasadas y reprobadas, después las del semestre propuesto.':'orden: desfasadas, reprobadas y pendientes según la trayectoria.'}${curso.length?' No incluye las materias en curso.':''}</small>`;
