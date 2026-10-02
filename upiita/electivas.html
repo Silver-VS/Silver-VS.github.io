@@ -193,6 +193,8 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
 .saes-bm{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:var(--accent-fg);border-radius:999px;padding:5px 14px;font-weight:600;text-decoration:none;cursor:grab}
 .saes-paste{width:100%;min-height:2.8rem;resize:none;font-size:.9rem}
 .saes-note{font-size:.8rem;color:var(--muted)}
+.saes-code{display:flex;gap:8px;align-items:stretch;margin:6px 0 4px}
+.saes-code textarea{flex:1;min-width:0;font:12px/1.4 ui-monospace,Consolas,monospace;resize:vertical;word-break:break-all}
 .saes-mm[hidden]{display:none}
 .saes-mm{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-top:12px;padding:10px 12px 10px 14px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--r);background:var(--surface);font-size:.88rem}
 .saes-mm p{margin:0;flex:1 1 360px;min-width:0}
@@ -268,8 +270,10 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
         </ul></details>
         <details><summary>Instalación manual o en teléfono</summary>
           <ol>
-            <li><button class="link" id="saes-copybm" type="button" data-code="javascript:(function(){var s=document.createElement('script');s.src='https://silver-vs.github.io/upiita/lector.js?v='+Date.now();document.head.appendChild(s)})()">Copia el código del marcador</button> (versión corta: descarga el Lector desde este sitio).
-              <textarea id="saes-bmcode" class="saes-paste" readonly hidden aria-label="Código del marcador"></textarea></li>
+            <li>Copia el código del marcador (versión corta: descarga el Lector desde este sitio):
+              <div class="saes-code"><textarea id="saes-bmcode" readonly rows="3" aria-label="Código del marcador" onfocus="this.select()">javascript:(function(){var s=document.createElement(&#x27;script&#x27;);s.src=&#x27;https://silver-vs.github.io/upiita/lector.js?v=&#x27;+Date.now();document.head.appendChild(s)})()</textarea>
+                <button class="btn primary" id="saes-copybm" type="button">Copiar</button></div>
+              <small class="saes-note" id="saes-copymsg" aria-live="polite">Si el botón no copia, mantén presionado el recuadro y elige «Seleccionar todo» y después «Copiar».</small></li>
             <li>Guarda cualquier página como marcador (<kbd>Ctrl</kbd>+<kbd>D</kbd> o la estrella de la barra de direcciones).</li>
             <li>Edita el marcador: asigna el nombre <b>Lector UPIITA</b> y sustituye la <b>dirección (URL)</b> por el código copiado.</li>
           </ol>
@@ -287,6 +291,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
   <textarea class="saes-paste" id="saes-paste" placeholder="Pega aquí tus datos del SAES (Ctrl+V)" aria-label="Pegar datos del SAES"></textarea>
   <div class="actions" style="display:flex;gap:8px;align-items:center;margin-top:8px"><span id="saes-msg" aria-live="polite" style="font-size:.86rem"></span><button class="btn" id="saes-clear" type="button" style="margin-left:auto" hidden>Borrar mis datos</button></div>
   <p class="saes-note" style="margin:10px 0 0">El marcador solo consulta tu Kárdex, tu Estado general, tu horario actual y tu Cita de reinscripción; no inscribe, no modifica ni envía nada. Los datos se guardan únicamente en este navegador.</p>
+  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 02/10/2026 00:51</p>
 </dialog></div>
   </header>
   <div class="saes-mm" id="saes-mismatch" role="status" hidden></div>
@@ -418,8 +423,12 @@ const SAES={
       SAES.save(d);paste.value='';msg.innerHTML='<span class="ok">Datos del SAES cargados.</span>';onLoad(d);setTimeout(()=>SAES.close(),900)};
     paste.addEventListener('paste',e=>{e.preventDefault();take(e.clipboardData.getData('text'))});
     paste.addEventListener('input',()=>{if(paste.value.trim().startsWith('{'))take(paste.value)});
-    dl.querySelector('#saes-copybm').addEventListener('click',async e=>{const code=e.target.dataset.code||dl.querySelector('#saes-bm').getAttribute('href'),box=dl.querySelector('#saes-bmcode');
-      try{await navigator.clipboard.writeText(code);e.target.textContent='Código copiado'}catch(err){box.hidden=false;box.value=code;box.select()}});
+    // copiar el código: portapapeles moderno, luego execCommand; si ambos fallan, queda seleccionado para copiarlo a mano
+    dl.querySelector('#saes-copybm').addEventListener('click',async e=>{const b=e.currentTarget,box=dl.querySelector('#saes-bmcode'),m=dl.querySelector('#saes-copymsg');
+      let ok=false;try{await navigator.clipboard.writeText(box.value);ok=true}catch(err){}
+      if(!ok){box.focus();box.select();box.setSelectionRange(0,box.value.length);try{ok=document.execCommand('copy')}catch(err){}}
+      b.textContent=ok?'Copiado ✓':'Copiar';m.textContent=ok?'Código copiado. Pégalo como dirección (URL) del marcador.':'El navegador no permitió copiar: el código ya está seleccionado; mantén presionado y elige «Copiar».';
+      if(ok)setTimeout(()=>{b.textContent='Copiar'},2500)});
     dl.querySelector('#saes-again').addEventListener('click',()=>{dl.querySelector('#saes-steps').hidden=false});
     dl.querySelector('#saes-clear').addEventListener('click',e=>{
       if(!e.target.dataset.confirm){e.target.dataset.confirm='1';e.target.textContent='Confirmar: borrar mis datos';setTimeout(()=>{delete e.target.dataset.confirm;e.target.textContent='Borrar mis datos'},4000);return}
