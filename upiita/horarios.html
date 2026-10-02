@@ -183,6 +183,7 @@ input[type=number]{width:5rem}
 .load-note{margin:6px 0 0;font-size:.8rem;color:var(--muted);line-height:1.45}.sw-ret{display:inline-block;width:12px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
 .when .room{display:block;color:var(--muted);font-family:var(--f-ui,inherit);font-size:.8rem}
 .subj .lineas{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;width:100%}
+.subj>.more{display:block;margin:6px 12px 10px}
 .tag.lin{background:var(--accent-soft);color:var(--accent);font-weight:600}
 .legend i.l-niv{width:5px;height:15px;border:0;border-radius:2px;margin-left:4px}
 .legend .lg-niv{gap:3px;padding-right:6px;border-right:1px solid var(--line)}
@@ -667,7 +668,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
             <div class="field"><span>Días a la semana</span><div class="seg" role="group" aria-label="Días a la semana en la escuela" id="g-days">
               <button type="button" data-gdays="">Sin límite</button><button type="button" data-gdays="3">3</button><button type="button" data-gdays="4">4</button><button type="button" data-gdays="5">5</button></div></div>
             <div class="field"><span>Materias por horario</span><div class="seg" role="group" aria-label="Materias por horario" id="g-n">
-              <button type="button" data-gn="">Todas</button><button type="button" data-gn="3">3</button><button type="button" data-gn="4">4</button><button type="button" data-gn="5">5</button><button type="button" data-gn="6">6</button><button type="button" data-gn="7">7</button><button type="button" data-gn="8">8</button></div></div>
+              <button type="button" data-gn="auto" title="El generador elige cuántas y cuáles materias, buscando la carga media y un horario saludable: permanencia razonable, espacio para comer y sin bloques largos sin descanso">Automático</button><button type="button" data-gn="">Todas</button><button type="button" data-gn="3">3</button><button type="button" data-gn="4">4</button><button type="button" data-gn="5">5</button><button type="button" data-gn="6">6</button><button type="button" data-gn="7">7</button><button type="button" data-gn="8">8</button></div></div>
             <div class="field"><span>Descansos</span><div class="gbreaks" id="gbreaks"></div></div>
           </div>
           <div class="active" id="gprefs" style="padding-top:8px"></div>
@@ -768,7 +769,7 @@ const S={tab:store.get('tab','tray'),per:store.get('per','proximo'),car:store.ge
   hide:store.get('hide',false),fit:false,gap:null,onlyWant:store.get('onlyWant',true),weekend:store.get('weekend',false),chips:[],hover:null,acIdx:-1,acItems:[],ownDays:[],
   mode:'want',zoom:null,mapHover:null,gt:'*',gpref:[],gavoid:store.get('excl',[]),gen:null};
 if(!DATA.carreras[S.car]) S.car=Object.keys(DATA.carreras)[0];
-S.mview=store.get('mview',null);S.cview=store.get('cview',null);S.mapFocus=false;S.lfocus=null;
+S.expand=new Set();S.mview=store.get('mview',null);S.cview=store.get('cview',null);S.mapFocus=false;S.lfocus=null;
 // vista por defecto según el dispositivo; la elección explícita del usuario se recuerda
 const mview=()=>S.mview||(MQ_PHONE.matches?'lista':'mapa'), cview=()=>S.cview||(MQ_PHONE.matches?'dia':'semana');
 
@@ -1296,7 +1297,12 @@ function renderOffer(){
       const st=cur()[c[8]]?statusOf(c[8]).split(' ')[0]:'';
       const fl=cur()[c[8]]&&statusOf(c[8]).includes('fail');
       const badge=st==='late'?`<span class="tag bad">${fl?'desfasada: recursar':'desfasada'}</span> `:st==='fail'?'<span class="tag bad">por recursar</span> ':st==='now'?'<span class="tag good">de tu semestre</span> ':st==='curso'?'<span class="tag soft">en curso</span> ':st==='done'?'<span class="tag soft">ya acreditada</span> ':(isPersonal()&&cur()[c[8]]&&available(c[8]))?'<span class="tag good">puedes cursarla</span> ':'';
-      return `<article class="subj"><header><h3>${badge}${esc(name(c))}</h3><span class="meta">${c[8]} · ${fmtCr(c[7])} cr · Nivel ${c[2]}${c[9]&&c[9]!=='O'?' · '+TIPO[c[9]]:''}</span>${lineasDe(c[8]).length?`<span class="lineas">${lineasDe(c[8]).map(l=>`<span class="tag lin" title="Línea de especialización">${esc(l)}</span>`).join('')}</span>`:''}</header>${cs.map(x=>optRow(x,sel,false)).join('')}</article>`}).join('');
+      return `<article class="subj"><header><h3>${badge}${esc(name(c))}</h3><span class="meta">${c[8]} · ${fmtCr(c[7])} cr · Nivel ${c[2]}${c[9]&&c[9]!=='O'?' · '+TIPO[c[9]]:''}</span>${lineasDe(c[8]).length?`<span class="lineas">${lineasDe(c[8]).map(l=>`<span class="tag lin" title="Línea de especialización">${esc(l)}</span>`).join('')}</span>`:''}</header>${(()=>{
+        // con una opción marcada «Sí», la materia se colapsa a esa(s) opción(es) (y la que esté en el horario)
+        const mk=ws().marks, keep=cs.filter(x=>mk[keyOf(x)]?.s==='si'||plan().sel.includes(keyOf(x)));
+        const col=keep.length&&keep.some(x=>mk[keyOf(x)]?.s==='si')&&keep.length<cs.length, open=S.expand.has(c[4]);
+        const rows=(col&&!open?keep:cs).map(x=>optRow(x,sel,false)).join('');
+        return rows+(col?`<button type="button" class="link more" data-expand="${c[4]}">${open?'Mostrar solo la opción elegida':`Ver ${cs.length-keep.length} ${cs.length-keep.length>1?'opciones más':'opción más'}`}</button>`:'')})()}</article>`}).join('');
     $('#offer-count').textContent=`${g.size} materias · ${list.length} opciones`;
   }else{
     const g=new Map();list.forEach(c=>{(g.get(c[3])||g.set(c[3],[]).get(c[3])).push(c)});
@@ -1440,6 +1446,7 @@ function generate(){
   function outside(c){return c[6].some(([d,a,b])=>(ga!=null&&a<ga)||(gb!=null&&b>gb))}
   const subj=want.map(k=>({k,must:tr().oblig.includes(k),opts:classes().filter(c=>c[0]===S.car&&c[8]===k&&!bad(c))})).filter(s=>cur()[s.k]||s.opts.length);
   if(!subj.length) return {msg:'Selecciona materias en «Mi trayectoria» o mediante el buscador para generar horarios.'};
+  if(GT.n==='auto') return generateBank(subj,'auto',{marks,pscore});
   const N=+GT.n||0;
   if(N&&N<subj.length) return generateBank(subj,N,{marks,pscore});
   subj.sort((a,b)=>a.opts.length-b.opts.length);
@@ -1471,40 +1478,76 @@ function generate(){
    de prioridad (obligatoria por desfase siempre incluida; luego reprobadas, atrasadas, sugeridas y marcadas «Sí»),
    descarta los que exceden la carga permitida y, para cada subconjunto, busca la mejor combinación de grupos.
    Se muestran opciones con materias distintas (la mejor de cada subconjunto). */
+/* Calidad de un horario (modo Automático). Criterios basados en recomendaciones sobre sueño, atención y descanso:
+   permanencia diaria ≤ 8 h (ideal ≤ 6.5 h), a lo sumo 3 clases (4.5 h) seguidas, espacio de ≥ 1 h para comer entre
+   12:00 y 16:30 si el día cruza el mediodía, pocas horas libres largas, evitar entrar a las 7:00 y salir después de las
+   19:00 el mismo día, y repartir las clases entre los días. Devuelve {ok, pen, span, comida}. */
+function qualityOf(cs){
+  let pen=0, ok=true, span=0, comida=true;const per=[];
+  for(let d=0;d<6;d++){
+    const b=cs.flatMap(c=>c[6].filter(x=>x[0]===d)).sort((x,y)=>x[1]-y[1]);if(!b.length)continue;
+    const a0=b[0][1], z=Math.max(...b.map(x=>x[2]));span=Math.max(span,z-a0);per.push(b.length);
+    if(z-a0>480)ok=false; else if(z-a0>390)pen+=(z-a0-390)/30*2;
+    let run=b[0][2]-b[0][1], meal=false;
+    for(let i=1;i<b.length;i++){const g=b[i][1]-Math.max(...b.slice(0,i).map(x=>x[2]));
+      if(g>=30){run=0;if(g>90)pen+=(g-90)/30*3;
+        const ga=Math.max(...b.slice(0,i).map(x=>x[2])), gb=b[i][1];if(Math.min(gb,990)-Math.max(ga,720)>=60)meal=true}
+      run+=b[i][2]-b[i][1];if(run>270)ok=false;else if(run>180)pen+=4}
+    if(a0<780&&z>900&&!meal){ok=false;comida=false}
+    if(a0<=420&&z>=1140)pen+=8;
+  }
+  if(per.length>1){const m=per.reduce((x,y)=>x+y,0)/per.length;pen+=per.reduce((x,y)=>x+(y-m)**2,0)/per.length*2}
+  return {ok,pen,span,comida};
+}
 function generateBank(subj,N,{marks,pscore}){
+  const auto=N==='auto';
   const maxD=+GT.days||0, ci=cargaInfo(0), failS=new Set(tr().fail), sugS=new Set(MARK.sug);
   const cost=k=>failS.has(k)?0:(cur()[k]?.[1]||0);
   const prio=k=>{const st=statusOf(k);return (st==='late fail'?50:st==='fail'?35:st.startsWith('late')||st.startsWith('prev')?20:0)+(sugS.has(k)?10:0)};
-  const must=subj.filter(x=>x.must&&x.opts.length), free=subj.filter(x=>!x.must&&x.opts.length)
+  // en Automático las reprobadas también son fijas: no suman créditos nuevos (ya están retenidos) y conviene acreditarlas pronto
+  const fixed=x=>x.must||(auto&&statusOf(x.k).includes('fail'));
+  const must=subj.filter(x=>fixed(x)&&x.opts.length), free=subj.filter(x=>!fixed(x)&&x.opts.length)
     .sort((a,b)=>prio(b.k)-prio(a.k)||a.opts.length-b.opts.length);
-  const need=N-must.length;
-  if(need<0) return {top:[],subj,bank:{N,M:subj.length},msg:null,trunc:false,minDays:null,maxD};
-  const res=[];let subsets=0,trunc=false;
+  const nuevosDe=set=>set.reduce((s,x)=>s+cost(x.k),0);
+  // meta de créditos nuevos en modo Automático: carga media (con adeudos, sin rebasar lo permitido además de los retenidos)
+  const meta=ci?(ci.adeudo?Math.max(0,Math.min(ci.L.media,ci.tope)-ci.ret):ci.L.media):40;
+  const sizes=auto?[3,4,5,6,7,8].filter(n=>n>=must.length&&n<=must.length+free.length):[N];
+  if(!sizes.length||sizes[0]-must.length<0) return {top:[],subj,bank:{N,M:subj.length},msg:null,trunc:false,minDays:null,maxD};
+  const res=[];let subsets=0,trunc=false;const CAP=auto?160:400;
   const score=cs=>{let s=0;cs.forEach(c=>{const m=marks[keyOf(c)]?.s;s+=m==='si'?6:m==='quiza'?2:0;s+=pscore(c)+prio(c[8])});
     if($('#g-compact').checked){for(let d=0;d<6;d++){const b=cs.flatMap(c=>c[6].filter(x=>x[0]===d)).sort((x,y)=>x[1]-y[1]);if(b.length)s-=2;for(let i=1;i<b.length;i++)s-=Math.max(0,b[i][1]-b[i-1][2])/30}}
     return s};
   // mejor combinación de grupos para un subconjunto fijo de materias
   const bestFor=set=>{const ord=set.slice().sort((a,b)=>a.opts.length-b.opts.length), pick=[];let best=null,nodes=0;
     const rec=i=>{if(++nodes>4000)return;
-      if(i===ord.length){if(!breaksOk(pick))return;const days=daysOf(pick);if(maxD&&days.length>maxD)return;const s=score(pick);if(!best||s>best.s)best={cs:pick.slice(),s,days,miss:[]};return}
+      if(i===ord.length){if(!breaksOk(pick))return;const days=daysOf(pick);if(maxD&&days.length>maxD)return;
+        let s, q=null;
+        if(auto){q=qualityOf(pick);if(!q.ok)return;
+          // la cantidad la decide la meta de créditos: la prioridad cuenta como promedio, no como suma
+          const m=pick.reduce((t,c)=>{const mk=marks[keyOf(c)]?.s;return t+(mk==='si'?6:mk==='quiza'?2:0)+pscore(c)},0);
+          s=m+pick.reduce((t,c)=>t+prio(c[8]),0)/pick.length*2-q.pen*4}
+        else s=score(pick);
+        if(!best||s>best.s)best={cs:pick.slice(),s,days,miss:[],q};return}
       for(const c of ord[i].opts){if(pick.some(p=>overlaps(p,c)))continue;pick.push(c);rec(i+1);pick.pop()}};
     rec(0);return best};
   // subconjuntos de tamaño need en orden de prioridad (combinaciones lexicográficas sobre la lista ordenada)
-  const chosen=[];
-  const walk=start=>{if(subsets>=400){trunc=true;return}
-    if(chosen.length===need){const set=[...must,...chosen];
-      if(ci){const nuevos=set.reduce((s,x)=>s+cost(x.k),0);if(ci.ret+nuevos>ci.tope+0.01)return}
-      subsets++;const b=bestFor(set);if(b)res.push(b);return}
-    for(let i=start;i<=free.length-(need-chosen.length);i++){chosen.push(free[i]);walk(i+1);chosen.pop();if(subsets>=400){trunc=true;return}}};
-  walk(0);
+  const chosen=[];let need=0;
+  const walk=start=>{if(subsets>=CAP){trunc=true;return}
+    if(chosen.length===need){const set=[...must,...chosen], nuevos=nuevosDe(set);
+      if(ci&&ci.ret+nuevos>ci.tope+0.01)return;
+      if(auto&&(nuevos>meta+7.5||(ci&&ci.ret+nuevos<ci.L.min-0.01&&set.length<must.length+free.length)))return;   // cerca de la meta y al menos la mínima
+      subsets++;const b=bestFor(set);if(b){if(auto)b.s-=(nuevos<meta?(meta-nuevos)*8:(nuevos-meta)*3);res.push(b)}return}
+    for(let i=start;i<=free.length-(need-chosen.length);i++){chosen.push(free[i]);walk(i+1);chosen.pop();if(subsets>=CAP){trunc=true;return}}};
+  for(const n of sizes){need=n-must.length;subsets=0;walk(0)}
   const top=res.sort((a,b)=>b.s-a.s).slice(0,6);
-  return {top,subj,bank:{N,M:subj.length,tope:ci?.tope??null},trunc,minDays:null,maxD};
+  const best=top.length?Math.max(...top.map(r=>nuevosDe(r.cs.map(c=>({k:c[8]}))))):0;
+  return {top,subj,bank:{N,M:subj.length,tope:ci?.tope??null,auto,meta,best},trunc,minDays:null,maxD};
 }
 function renderGen(){
   const g=S.gen;
   if(!g){$('#genres').innerHTML='';return}
   if(g.msg){$('#genres').innerHTML=`<p class="empty">${g.msg}</p>`;return}
-  const dmsg=g.bank?`<p class="gdays-msg">Horarios de <b>${g.bank.N} materias</b> elegidas entre tus <b>${g.bank.M}</b> seleccionadas${g.bank.tope!=null?`, sin rebasar tu carga permitida (${fmtCr(g.bank.tope)} cr en total)`:''}. Cada opción combina materias distintas.</p>`:g.minDays!=null?`<p class="gdays-msg${g.maxD&&g.minDays>g.maxD?' warn':''}">Con todas las materias seleccionadas, el mínimo es de <b>${g.minDays} ${g.minDays>1?'días':'día'}</b> a la semana.${g.maxD&&g.minDays>g.maxD?` En ${g.maxD} días no es posible incluirlas todas; las opciones omiten al menos una materia.`:g.maxD?` Es posible en ${g.maxD} días o menos.`:''}</p>`:'';
+  const dmsg=g.bank?.auto?`<p class="gdays-msg">Selección automática entre tus <b>${g.bank.M}</b> materias: busca cerca de <b>${fmtCr(g.bank.meta)} créditos nuevos</b> (carga media${g.bank.tope!=null?`, sin rebasar ${fmtCr(g.bank.tope)} cr en total`:''}) con un horario saludable: hasta 8 h en la escuela (idealmente 6.5 h o menos), no más de 3 clases seguidas, al menos 1 h para comer entre 12:00 y 16:30, pocas horas libres y clases repartidas entre los días.</p>${g.top.length&&g.bank.best<g.bank.meta-4.5?`<p class="gdays-msg warn">Con la oferta actual, las combinaciones que cumplen estos criterios llegan a <b>${fmtCr(g.bank.best)} créditos nuevos</b>. Para una carga mayor elige un número de materias por horario; esas opciones pueden tener jornadas más largas.</p>`:''}`:g.bank?`<p class="gdays-msg">Horarios de <b>${g.bank.N} materias</b> elegidas entre tus <b>${g.bank.M}</b> seleccionadas${g.bank.tope!=null?`, sin rebasar tu carga permitida (${fmtCr(g.bank.tope)} cr en total)`:''}. Cada opción combina materias distintas.</p>`:g.minDays!=null?`<p class="gdays-msg${g.maxD&&g.minDays>g.maxD?' warn':''}">Con todas las materias seleccionadas, el mínimo es de <b>${g.minDays} ${g.minDays>1?'días':'día'}</b> a la semana.${g.maxD&&g.minDays>g.maxD?` En ${g.maxD} días no es posible incluirlas todas; las opciones omiten al menos una materia.`:g.maxD?` Es posible en ${g.maxD} días o menos.`:''}</p>`:'';
   const none=g.subj.filter(s=>!s.opts.length).map(s=>s.k), mustNone=g.subj.filter(s=>s.must&&!s.opts.length).map(s=>s.k);
   const must=g.subj.filter(s=>s.must&&s.opts.length).map(s=>s.k);
   const omsg=(mustNone.length?`<p class="gdays-msg warn"><b>${mustNone.map(k=>esc(pretty(cur()[k][0]))).join(', ')}</b> es obligatoria por desfase y ningún grupo cumple los filtros actuales. Ajusta el turno, el horario, los descansos o los días.</p>`:'')+
@@ -1513,7 +1556,7 @@ function renderGen(){
   $('#genres').innerHTML=dmsg+omsg+
     (none.length?`<small class="warn">Sin grupos que cumplan los filtros: ${none.map(k=>esc(cur()[k]?.[0]||k)).join(', ')}.</small>`:'')+
     g.top.map((r,i)=>{const cr=r.cs.reduce((s,c)=>s+c[7],0);
-      return `<div class="gen"><div><b>Opción ${i+1}</b> · ${r.cs.length} ${r.cs.length>1?'materias':'materia'} · ${fmtCr(cr)} cr · ${r.days.length} ${r.days.length>1?'días':'día'}: ${r.days.map(d=>DAYS[d]).join(' ')}${r.miss.length?` · <span class="warn">sin ${r.miss.length}: ${r.miss.map(k=>esc((cur()[k]?.[0]||k).toLowerCase())).join(', ')}</span>`:''}<div class="ls">${r.cs.map(c=>`${c[3]} ${esc(name(c).toLowerCase())}`).join(' · ')}</div></div>
+      return `<div class="gen"><div><b>Opción ${i+1}</b> · ${r.cs.length} ${r.cs.length>1?'materias':'materia'} · ${fmtCr(cr)} cr · ${r.days.length} ${r.days.length>1?'días':'día'}: ${r.days.map(d=>DAYS[d]).join(' ')}${r.q?` · hasta ${(r.q.span/60).toFixed(1).replace('.0','')} h en la escuela · con espacio para comer`:''}${r.miss.length?` · <span class="warn">sin ${r.miss.length}: ${r.miss.map(k=>esc((cur()[k]?.[0]||k).toLowerCase())).join(', ')}</span>`:''}<div class="ls">${r.cs.map(c=>`${c[3]} ${esc(name(c).toLowerCase())}`).join(' · ')}</div></div>
         <div class="acts">${PLANS.map(p=>`<button class="btn" data-useg="${i}" data-to="${p}">Usar en ${p}</button>`).join('')}<button class="btn" data-peekg="${i}">Ver</button></div></div>`}).join('')+
     (g.trunc?(g.bank?'<small>Se analizaron las combinaciones de mayor prioridad (desfasadas, reprobadas, atrasadas y sugeridas primero).</small>':'<small>Búsqueda limitada por el número de combinaciones; reduce las materias seleccionadas para un análisis completo.</small>'):'');
 }
@@ -1589,6 +1632,7 @@ document.addEventListener('click',e=>{
   const op=e.target.closest('#offer .opt');if(op&&tactil()&&!e.target.closest('button,input,a,label,select,textarea,summary')){S.hover=S.hover===op.dataset.k?null:op.dataset.k;renderCal();return}
   const t=e.target.closest('button');if(!t)return;
   const d=t.dataset;
+  if(d.expand!==undefined){const k=+d.expand;S.expand.has(k)?S.expand.delete(k):S.expand.add(k);renderOffer();return}
   if(d.lfocus){S.lfocus=S.lfocus===d.lfocus?null:d.lfocus;renderList();return}
   if(d.lwant){toggleBox(d.lwant);return}
   if(d.fwant){toggleBox(d.fwant);return}
