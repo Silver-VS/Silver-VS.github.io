@@ -2007,10 +2007,19 @@ async function exportPdfAll(){
   const ids=plansConContenido();
   if(!ids.length)return 'Agrega materias a algún horario para exportarlo.';
   const {PDFDocument,rgb}=await loadPdfLib(), doc=await PDFDocument.create(), prev=ws().plan;
-  try{for(const id of ids){ws().plan=id;await pdfPage(doc,rgb)}}finally{ws().plan=prev}
+  // acomoda los horarios uno debajo de otro al ancho de la hoja (sin reducir la letra) y abre hoja nueva solo si el
+  // siguiente no cabe; en el estilo minimalista (vertical) suelen caber dos horarios cortos por hoja
+  const [PW,PH]=EXP.style==='min'?[612,792]:[792,612], m=24, GAP=18;let pg=null, y=0;
+  const nueva=()=>{pg=doc.addPage([PW,PH]);if(EXP.dark)pg.drawRectangle({x:0,y:0,width:PW,height:PH,color:EXP.style==='min'?rgb(.078,.071,.078):rgb(.09,.078,.102)});y=PH-m};
+  try{for(const id of ids){ws().plan=id;
+    const cv=await drawFor('all',3), png=await doc.embedPng(new Uint8Array(await (await toBlob(cv)).arrayBuffer()));
+    const sc=Math.min((PW-2*m)/png.width,(PH-2*m)/png.height), w=png.width*sc, h=png.height*sc;
+    if(!pg||y-h<m)nueva();
+    pg.drawImage(png,{x:(PW-w)/2,y:y-h,width:w,height:h});y-=h+GAP}}finally{ws().plan=prev}
   doc.setTitle('Horarios UPIITA');
   const r=await saveFile('horarios-upiita.pdf',new Blob([await doc.save()],{type:'application/pdf'}));
-  return r.startsWith('Listo')?`${r} (${ids.length} ${ids.length>1?'horarios':'horario'})`:r;
+  const n=doc.getPageCount();
+  return r.startsWith('Listo')?`${r} (${ids.length} ${ids.length>1?'horarios':'horario'} en ${n} ${n>1?'hojas':'hoja'})`:r;
 }
 // módulo de exportación (ventana)
 $('#b-export').addEventListener('click',()=>{const dl=$('#exp-dlg'),n=plansConContenido().length;$('#b-pdfall').hidden=n<2;$('#b-pdfall').textContent=`PDF con todos los horarios (${n})`;$('#exp-dmsg').textContent=selected().length||plan().own.length?'':'Agrega materias a tu horario para exportarlo.';dl.showModal?dl.showModal():dl.setAttribute('open','')});
