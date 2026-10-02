@@ -183,6 +183,9 @@ input[type=number]{width:5rem}
 .load-note{margin:6px 0 0;font-size:.8rem;color:var(--muted);line-height:1.45}.sw-ret{display:inline-block;width:12px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
 .when .room{display:block;color:var(--muted);font-family:var(--f-ui,inherit);font-size:.8rem}
 .subj .lineas{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;width:100%}
+.plan-tab{display:inline-flex;align-items:center}
+.plan-tab .x.warn{color:var(--bad);font-size:.78rem;font-weight:600}
+.plan-new{border-style:dashed}
 .subj>.more{display:block;margin:6px 12px 10px}
 .tag.lin{background:var(--accent-soft);color:var(--accent);font-weight:600}
 .legend i.l-niv{width:5px;height:15px;border:0;border-radius:2px;margin-left:4px}
@@ -651,6 +654,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
       <div class="field"><span>En la escuela</span><div class="trange"><input type="time" id="g-from" step="1800" aria-label="Llegar desde"><span>a</span><input type="time" id="g-to" step="1800" aria-label="Salir a más tardar"></div></div>
       <label class="field"><span>Excluir profesores</span><input type="text" id="g-avoid" list="proflist" autocomplete="off"></label>
       <div class="active" id="active"></div>
+      <button type="button" class="btn" id="b-reset" title="Regresa a su valor inicial los filtros de la oferta, los profesores excluidos, el horario en la escuela y las preferencias del generador. No borra tus horarios ni tus marcas.">Restablecer filtros</button>
     </section>
 
     <div class="hlayout">
@@ -670,6 +674,8 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
           <div class="gtime">
             <div class="field"><span>Días a la semana</span><div class="seg" role="group" aria-label="Días a la semana en la escuela" id="g-days">
               <button type="button" data-gdays="">Sin límite</button><button type="button" data-gdays="3">3</button><button type="button" data-gdays="4">4</button><button type="button" data-gdays="5">5</button></div></div>
+            <div class="field"><span>Base para generar</span><div class="seg" role="group" aria-label="Base para generar" id="g-src">
+              <button type="button" data-gsrc="" title="Usa las materias y grupos que muestra la oferta con los filtros actuales">Filtros de la oferta</button><button type="button" data-gsrc="todo" title="Usa todas las materias elegidas y todos sus grupos, sin los filtros de la oferta (se respetan las marcas «No» y los profesores excluidos)">Todas las elegidas</button></div></div>
             <div class="field"><span>Materias por horario</span><div class="seg" role="group" aria-label="Materias por horario" id="g-n">
               <button type="button" data-gn="auto" title="El generador elige cuántas y cuáles materias, buscando la carga media y un horario saludable: permanencia razonable, espacio para comer y sin bloques largos sin descanso">Automático</button><button type="button" data-gn="">Todas</button><button type="button" data-gn="3">3</button><button type="button" data-gn="4">4</button><button type="button" data-gn="5">5</button><button type="button" data-gn="6">6</button><button type="button" data-gn="7">7</button><button type="button" data-gn="8">8</button></div></div>
             <div class="field"><span>Descansos</span><div class="gbreaks" id="gbreaks"></div></div>
@@ -758,7 +764,7 @@ const TURNOS={M:'Matutino',V:'Vespertino'};
 const TIPO={O:'Obligatoria',P:'Optativa',T:'Taller'};
 // Carga en créditos confirmada en SAES (Cita de reinscripción). Las demás carreras se agregan cuando se capturen.
 const CARGA={B:{min:27,media:40,max:80}};
-const PLANS=['A','B','C'];
+const LETRAS='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const START=7*60, END=22*60, SLOT=30, SLOTPX=22, BLOCK=90;  // una clase dura 1:30
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -779,9 +785,16 @@ const mview=()=>S.mview||(MQ_PHONE.matches?'lista':'mapa'), cview=()=>S.cview||(
 /* ---------- estado guardado ---------- */
 const W={};
 for(const p of ['proximo','actual']){
-  W[p]=store.get('w.'+p,{plan:'A',plans:{A:{sel:store.get('sel.'+p,[])||[],own:[]},B:{sel:[],own:[]},C:{sel:[],own:[]}},marks:{}});
+  W[p]=store.get('w.'+p,{plan:'A',plans:{A:{sel:store.get('sel.'+p,[])||[],own:[]}},marks:{}});
 }
+// horarios dinámicos: se empieza con A y el alumno agrega los que quiera; los vacíos heredados (B, C) se descartan
+for(const p in W){const w=W[p];Object.keys(w.plans).forEach(k=>{const x=w.plans[k];if(k!=='A'&&k!==w.plan&&!x.sel.length&&!(x.own||[]).length)delete w.plans[k]});
+  if(!w.plans[w.plan])w.plan=Object.keys(w.plans)[0]||'A';if(!w.plans.A&&!Object.keys(w.plans).length)w.plans.A={sel:[],own:[]}}
 const ws=()=>W[S.per], plan=()=>ws().plans[ws().plan];
+const planIds=()=>Object.keys(ws().plans).sort((a,b)=>a.length-b.length||a.localeCompare(b));
+// siguiente letra después de la última existente (A, B, C… Z, AA, AB…); nunca reutiliza ni sobrescribe un horario
+const planNum=id=>[...id].reduce((n,ch)=>n*26+LETRAS.indexOf(ch)+1,0);
+const nextPlan=()=>{let n=Math.max(0,...planIds().map(planNum))+1, id='';while(n>0){n--;id=LETRAS[n%26]+id;n=Math.floor(n/26)}return id};
 const save=()=>store.set('w.'+S.per,ws());
 
 /* ---------- datos del SAES (v2): solo en este navegador ---------- */
@@ -1345,9 +1358,10 @@ function loadInscrito(){
 }
 function renderPlans(){
   $('#b-saeshor').hidden=!(isPersonal()&&ALUMNO.horario_inscrito?.length);
-  $('#plans').innerHTML='<span class="lbl" style="margin-right:4px">Versión</span>'+PLANS.map(p=>{const pl=ws().plans[p];const cr=pl.sel.map(byKey).filter(Boolean).reduce((s,c)=>s+c[7],0);
-    return `<button class="chip" data-plan="${p}" aria-pressed="${ws().plan===p}">Horario ${p}<small>${pl.sel.length?fmtCr(cr)+' cr':'vacío'}</small></button>`}).join('')+
-    `<button class="link" data-dup style="margin-left:8px">Copiar ${ws().plan} a la siguiente</button>`;
+  const ids=planIds();
+  $('#plans').innerHTML='<span class="lbl" style="margin-right:4px">Versión</span>'+ids.map(p=>{const pl=ws().plans[p];const cr=pl.sel.map(byKey).filter(Boolean).reduce((s,c)=>s+c[7],0);
+    return `<span class="plan-tab"><button class="chip" data-plan="${p}" aria-pressed="${ws().plan===p}">Horario ${p}<small>${pl.sel.length?fmtCr(cr)+' cr':'vacío'}</small></button>${ids.length>1&&ws().plan===p?`<button class="x" data-delplan="${p}" aria-label="Eliminar el horario ${p}" title="Eliminar el horario ${p}">×</button>`:''}</span>`}).join('')+
+    `<button class="chip plan-new" data-newplan="1" title="Agregar un horario vacío">+ Nuevo</button><button class="link" data-dup style="margin-left:8px">Duplicar ${ws().plan}</button>`;
 }
 function renderCal(){
   const sel=selected(), own=ownAsClasses();
@@ -1411,13 +1425,14 @@ function renderOwnForm(){$('#own-d').innerHTML=DAYS.map((d,i)=>`<button type="bu
 
 /* ---------- generador de horarios ---------- */
 /* horario en la escuela y descansos: preferencias del alumno para el generador (se guardan en este navegador) */
-const GT=Object.assign({a:'',b:'',breaks:[],days:'',n:''},store.get('gtime',{}));
+const GT=Object.assign({a:'',b:'',breaks:[],days:'',n:'',src:''},store.get('gtime',{}));
 const daysOf=cs=>[...new Set(cs.flatMap(c=>c[6].map(x=>x[0])))].sort((a,b)=>a-b);
 const tmin=t=>{const m=String(t||'').match(/^(\d{1,2}):(\d{2})/);return m?+m[1]*60+ +m[2]:null}; // '' -> null
 const gtSave=()=>store.set('gtime',GT);
 function renderGTime(){
   $('#g-from').value=GT.a;$('#g-to').value=GT.b;
   document.querySelectorAll('[data-gdays]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.gdays===String(GT.days||''))));
+  document.querySelectorAll('[data-gsrc]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.gsrc===String(GT.src||''))));
   document.querySelectorAll('[data-gn]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.gn===String(GT.n||''))));
   $('#gbreaks').innerHTML=GT.breaks.map((b,i)=>`<div class="gbrk" data-brk="${i}">al menos <select data-f="d" aria-label="Duración del descanso">${[30,60,90,120].map(m=>`<option value="${m}"${+b.d===m?' selected':''}>${({30:'30 min',60:'1 h',90:'1 h 30 min',120:'2 h'})[m]}</option>`).join('')}</select> libres entre <input type="time" step="1800" data-f="a" value="${b.a}" aria-label="Desde"> y <input type="time" step="1800" data-f="b" value="${b.b}" aria-label="Hasta"><span class="brkdays" role="group" aria-label="Días del descanso"><button type="button" class="chip" data-bday="all" aria-pressed="${!(b.days||[]).length}">Todos los días</button>${DAYS.slice(0,6).map((n,d)=>`<button type="button" class="chip" data-bday="${d}" aria-pressed="${(b.days||[]).includes(d)}">${n}</button>`).join('')}</span><button type="button" class="x" data-unbrk="${i}" aria-label="Quitar descanso">×</button></div>`).join('')+
     `<button type="button" class="link" id="b-addbrk">+ Agregar descanso</button>`;
@@ -1442,9 +1457,10 @@ function renderGPrefs(){
 function generate(){
   // materias y grupos: los mismos que muestra la oferta con sus filtros (turno, nivel, búsqueda, materia, profesor, grupo,
   // «solo las elegidas», horario en la escuela, excluidos). «Solo lo que cabe» y la búsqueda de huecos no aplican aquí.
-  const pool=(()=>{const f=S.fit,g=S.gap;S.fit=false;S.gap=null;try{return filtered()}finally{S.fit=f;S.gap=g}})();
-  let want=[...new Set(pool.map(c=>c[8]))];
-  if(!S.onlyWant&&!S.chips.some(x=>x.t==='m')&&tr().want.length){const w=new Set(tr().want);want=want.filter(k=>w.has(k))}   // sin filtro de materias: las elegidas
+  const todo=GT.src==='todo';   // «Todas las elegidas»: sin los filtros de la oferta
+  const pool=todo?classes().filter(c=>c[0]===S.car):(()=>{const f=S.fit,g=S.gap;S.fit=false;S.gap=null;try{return filtered()}finally{S.fit=f;S.gap=g}})();
+  let want=todo?(tr().want.length?tr().want.slice():[...new Set(S.chips.filter(x=>x.t==='m').map(x=>classes().find(c=>c[4]===x.v)?.[8]).filter(Boolean))]):[...new Set(pool.map(c=>c[8]))];
+  if(!todo&&!S.onlyWant&&!S.chips.some(x=>x.t==='m')&&tr().want.length){const w=new Set(tr().want);want=want.filter(k=>w.has(k))}   // sin filtro de materias: las elegidas
   tr().oblig.forEach(k=>{if(!want.includes(k))want.unshift(k)});   // la desfasada siempre se considera
   const marks=ws().marks, own=ownAsClasses();
   const pref=S.gpref.map(norm), avoid=S.gavoid.map(norm);
@@ -1567,7 +1583,7 @@ function renderGen(){
     (none.length?`<small class="warn">Sin grupos que cumplan los filtros: ${none.map(k=>esc(cur()[k]?.[0]||k)).join(', ')}.</small>`:'')+
     g.top.map((r,i)=>{const cr=r.cs.reduce((s,c)=>s+c[7],0);
       return `<div class="gen"><div><b>Opción ${i+1}</b> · ${r.cs.length} ${r.cs.length>1?'materias':'materia'} · ${fmtCr(cr)} cr · ${r.days.length} ${r.days.length>1?'días':'día'}: ${r.days.map(d=>DAYS[d]).join(' ')}${r.q?` · hasta ${(r.q.span/60).toFixed(1).replace('.0','')} h en la escuela · con espacio para comer`:''}${r.miss.length?` · <span class="warn">sin ${r.miss.length}: ${r.miss.map(k=>esc((cur()[k]?.[0]||k).toLowerCase())).join(', ')}</span>`:''}<div class="ls">${r.cs.map(c=>`${c[3]} ${esc(name(c).toLowerCase())}`).join(' · ')}</div></div>
-        <div class="acts">${PLANS.map(p=>`<button class="btn" data-useg="${i}" data-to="${p}">Usar en ${p}</button>`).join('')}<button class="btn" data-peekg="${i}">Ver</button></div></div>`}).join('')+
+        <div class="acts"><button class="btn" data-useg="${i}" data-to="${ws().plan}">Usar en ${ws().plan}</button><button class="btn" data-useg="${i}" data-to="+">Usar en un horario nuevo</button><button class="btn" data-peekg="${i}">Ver</button></div></div>`}).join('')+
     (g.trunc?(g.bank?'<small>Se analizaron las combinaciones de mayor prioridad (desfasadas, reprobadas, atrasadas y sugeridas primero).</small>':'<small>Búsqueda limitada por el número de combinaciones; reduce las materias seleccionadas para un análisis completo.</small>'):'');
 }
 
@@ -1664,13 +1680,16 @@ document.addEventListener('click',e=>{
   else if(d.mark){const m=ws().marks;const c=m[d.k]||{};if(c.s===d.mark){delete c.s;if(!c.n)delete m[d.k];else m[d.k]=c}else m[d.k]={...c,s:d.mark};save();renderOffer();const n=document.querySelector(`[data-note="${CSS.escape(d.k)}"]`);if(n&&m[d.k]?.s)n.focus()}
   else if(d.group){filtered().filter(c=>c[3]===d.group).forEach(addClass);refresh()}
   else if(d.plan){ws().plan=d.plan;S.hover=null;refresh()}
-  else if('dup' in d){const i=PLANS.indexOf(ws().plan),to=PLANS[(i+1)%PLANS.length];ws().plans[to]=JSON.parse(JSON.stringify(plan()));ws().plan=to;refresh()}
+  else if(d.newplan){const id=nextPlan();ws().plans[id]={sel:[],own:[]};ws().plan=id;S.hover=null;refresh()}
+  else if(d.delplan){const id=d.delplan;if(t.dataset.confirm!=='1'){t.dataset.confirm='1';t.textContent='¿Eliminar?';t.classList.add('warn');setTimeout(()=>{if(t.isConnected){t.dataset.confirm='';t.textContent='×';t.classList.remove('warn')}},3000);return}
+    delete ws().plans[id];ws().plan=planIds()[0];S.hover=null;refresh()}
+  else if('dup' in d){const id=nextPlan();ws().plans[id]=JSON.parse(JSON.stringify(plan()));ws().plan=id;refresh()}
   else if(d.unown){plan().own.splice(+d.unown,1);refresh()}
   else if(d.oday){const i=+d.oday;S.ownDays=S.ownDays.includes(i)?S.ownDays.filter(x=>x!==i):[...S.ownDays,i];renderOwnForm()}
   else if(d.gt){S.gt=d.gt;renderHFilters()}
   else if(d.ungp){S.gpref.splice(+d.ungp,1);renderGPrefs()}
   else if(d.unga){S.gavoid.splice(+d.unga,1);store.set('excl',S.gavoid);renderActive();renderOffer()}
-  else if(d.useg!==undefined){const r=S.gen.top[+d.useg];ws().plans[d.to].sel=r.cs.map(keyOf);ws().plan=d.to;refresh()}
+  else if(d.useg!==undefined){const r=S.gen.top[+d.useg], to=d.to==='+'?nextPlan():d.to;ws().plans[to]=ws().plans[to]||{sel:[],own:[]};ws().plans[to].sel=r.cs.map(keyOf);ws().plan=to;refresh();renderGen()}
   else if(d.peekg!==undefined){const r=S.gen.top[+d.peekg];S.hover=null;const keep=plan().sel;plan().sel=r.cs.map(keyOf);renderCal();plan().sel=keep;$('#stats').insertAdjacentHTML('afterbegin','<span class="warn">Vista previa, no guardada.</span>')}
 });
 document.addEventListener('keydown',e=>{const bx=e.target.closest?.('[data-box]');if(bx&&(e.key==='Enter'||e.key===' ')){e.preventDefault();toggleBox(bx.dataset.box)}});
@@ -1716,6 +1735,12 @@ for(const [id,list] of [['#g-pref','gpref'],['#g-avoid','gavoid']]){
 const gtChanged=()=>{gtSave();renderOffer();if(S.gen){S.gen=generate();renderGen()}};
 $('#g-from').addEventListener('change',e=>{GT.a=e.target.value;gtChanged()});
 $('#g-to').addEventListener('change',e=>{GT.b=e.target.value;gtChanged()});
+$('#b-reset').addEventListener('click',()=>{
+  Object.assign(S,{tur:'*',niv:'*',q:'',chips:[],hide:false,fit:false,gap:null,onlyWant:true,gavoid:[],gt:'*',gpref:[],gen:null});S.expand=new Set();
+  ['tur','niv'].forEach(k=>store.set(k,'*'));store.set('hide',false);store.set('onlyWant',true);store.set('excl',[]);
+  Object.assign(GT,{a:'',b:'',breaks:[],days:'',n:'',src:''});gtSave();$('#f-q').value='';$('#g-avoid').value='';$('#g-pref').value='';
+  if($('#gen'))$('#gen').open=false;renderGTime();render()});
+$('#g-src').addEventListener('click',e=>{const b=e.target.closest('[data-gsrc]');if(!b)return;GT.src=b.dataset.gsrc;renderGTime();gtChanged()});
 $('#g-n').addEventListener('click',e=>{const b=e.target.closest('[data-gn]');if(!b)return;GT.n=b.dataset.gn;renderGTime();gtChanged()});
 $('#g-days').addEventListener('click',e=>{const b=e.target.closest('[data-gdays]');if(!b)return;GT.days=b.dataset.gdays;renderGTime();gtChanged()});
 $('#gbreaks').addEventListener('click',e=>{
