@@ -734,7 +734,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
       <div class="field"><span>Actividades extracurriculares</span>
         <label class="expcolor"><input type="color" id="exp-own" aria-label="Color de las actividades extracurriculares"><span>Color de resalte</span></label></div>
       <div class="field"><span>Formato</span>
-        <div class="exp-actions"><button class="btn primary" id="b-png" type="button">Imagen (PNG)</button><button class="btn primary" id="b-pdf" type="button">PDF</button><button class="btn primary" id="b-xlsx" type="button">Excel</button><button class="btn" id="b-copy" type="button">Copiar texto</button></div></div>
+        <div class="exp-actions"><button class="btn primary" id="b-png" type="button">Imagen (PNG)</button><button class="btn primary" id="b-pdf" type="button">PDF</button><button class="btn" id="b-pdfall" type="button" hidden>PDF con todos los horarios</button><button class="btn primary" id="b-xlsx" type="button">Excel</button><button class="btn" id="b-copy" type="button">Copiar texto</button></div></div>
     </div>
     <p class="saes-note" id="exp-dmsg" aria-live="polite" style="margin:12px 0 0;min-height:1.3em"></p>
   </dialog>
@@ -1986,22 +1986,34 @@ async function exportPng(){
   const cv=await drawFor('all',3);return saveFile(`horario-${ws().plan}-upiita.png`,await toBlob(cv));
 }
 async function loadPdfLib(){if(window.PDFLib)return window.PDFLib;await new Promise((ok,ko)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js';s.onload=ok;s.onerror=()=>ko(new Error('No se pudo cargar el generador de PDF.'));document.head.appendChild(s)});return window.PDFLib}
+// agrega una hoja carta al PDF con el horario dibujado (horizontal en colorido, vertical en minimalista)
+async function pdfPage(doc,rgb){
+  const cv=await drawFor('all',3), png=await doc.embedPng(new Uint8Array(await (await toBlob(cv)).arrayBuffer()));
+  const [PW,PH]=EXP.style==='min'?[612,792]:[792,612];
+  const pg=doc.addPage([PW,PH]), m=24, sc=Math.min((PW-2*m)/png.width,(PH-2*m)/png.height);
+  if(EXP.dark)pg.drawRectangle({x:0,y:0,width:PW,height:PH,color:EXP.style==='min'?rgb(.078,.071,.078):rgb(.09,.078,.102)});   // hoja oscura completa
+  pg.drawImage(png,{x:(PW-png.width*sc)/2,y:PH-m-png.height*sc,width:png.width*sc,height:png.height*sc});
+}
 async function exportPdf(){
   if(!selected().length&&!plan().own.length)return 'Agrega materias a tu horario para exportarlo.';
   const {PDFDocument,rgb}=await loadPdfLib(), doc=await PDFDocument.create();
-  for(const part of ['all']){   // una sola hoja con el horario y la lista
-    const cv=await drawFor(part,3), png=await doc.embedPng(new Uint8Array(await (await toBlob(cv)).arrayBuffer()));
-    // carta: horizontal para el colorido, vertical para el minimalista (como el formato en tabla)
-    const [PW,PH]=EXP.style==='min'?[612,792]:[792,612];
-    const pg=doc.addPage([PW,PH]), m=24, sc=Math.min((PW-2*m)/png.width,(PH-2*m)/png.height);
-    if(EXP.dark)pg.drawRectangle({x:0,y:0,width:PW,height:PH,color:EXP.style==='min'?rgb(.078,.071,.078):rgb(.09,.078,.102)});   // hoja oscura completa
-    pg.drawImage(png,{x:(PW-png.width*sc)/2,y:PH-m-png.height*sc,width:png.width*sc,height:png.height*sc});
-  }
+  await pdfPage(doc,rgb);   // una sola hoja con el horario y la lista
   doc.setTitle(`Horario ${ws().plan} UPIITA`);
   return saveFile(`horario-${ws().plan}-upiita.pdf`,new Blob([await doc.save()],{type:'application/pdf'}));
 }
+// todos los horarios con contenido en un solo PDF (una hoja por horario, en orden A, B, C…)
+const plansConContenido=()=>planIds().filter(id=>{const p=ws().plans[id];return p.sel.length||(p.own||[]).length});
+async function exportPdfAll(){
+  const ids=plansConContenido();
+  if(!ids.length)return 'Agrega materias a algún horario para exportarlo.';
+  const {PDFDocument,rgb}=await loadPdfLib(), doc=await PDFDocument.create(), prev=ws().plan;
+  try{for(const id of ids){ws().plan=id;await pdfPage(doc,rgb)}}finally{ws().plan=prev}
+  doc.setTitle('Horarios UPIITA');
+  const r=await saveFile('horarios-upiita.pdf',new Blob([await doc.save()],{type:'application/pdf'}));
+  return r.startsWith('Listo')?`${r} (${ids.length} ${ids.length>1?'horarios':'horario'})`:r;
+}
 // módulo de exportación (ventana)
-$('#b-export').addEventListener('click',()=>{const dl=$('#exp-dlg');$('#exp-dmsg').textContent=selected().length||plan().own.length?'':'Agrega materias a tu horario para exportarlo.';dl.showModal?dl.showModal():dl.setAttribute('open','')});
+$('#b-export').addEventListener('click',()=>{const dl=$('#exp-dlg'),n=plansConContenido().length;$('#b-pdfall').hidden=n<2;$('#b-pdfall').textContent=`PDF con todos los horarios (${n})`;$('#exp-dmsg').textContent=selected().length||plan().own.length?'':'Agrega materias a tu horario para exportarlo.';dl.showModal?dl.showModal():dl.setAttribute('open','')});
 $('#exp-x').addEventListener('click',()=>$('#exp-dlg').close());
 $('#exp-dlg').addEventListener('click',e=>{if(e.target.id==='exp-dlg')e.target.close()});
 const renderExpStyle=()=>{document.querySelectorAll('[data-exps]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.exps===EXP.style)));
@@ -2012,7 +2024,7 @@ renderExpStyle();
 $('#exp-own').value=EXP.own;
 document.querySelectorAll('[data-exshow]').forEach(i=>{i.checked=!!EXP.show[i.dataset.exshow];i.addEventListener('change',()=>{const v=EXP.show;v[i.dataset.exshow]=i.checked;store.set('expShow',v)})});
 $('#exp-own').addEventListener('input',e=>store.set('expOwn',e.target.value));
-for(const [id,fn] of [['#b-png',exportPng],['#b-pdf',exportPdf],['#b-xlsx',exportXlsx]]){
+for(const [id,fn] of [['#b-png',exportPng],['#b-pdf',exportPdf],['#b-pdfall',exportPdfAll],['#b-xlsx',exportXlsx]]){
   $(id).addEventListener('click',async e=>{const b=e.currentTarget,t=b.textContent;b.disabled=true;b.textContent='Generando…';
     let m;try{m=await fn()}catch(err){m='No se pudo exportar: '+err.message}$('#exp-msg').textContent=m;$('#exp-dmsg').textContent=m;
     b.disabled=false;b.textContent=t});
