@@ -577,7 +577,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
         </ul></details>
         <details><summary>Instalación manual o en teléfono</summary>
           <ol>
-            <li><button class="link" id="saes-copybm" type="button">Copia el código del marcador</button>.
+            <li><button class="link" id="saes-copybm" type="button" data-code="javascript:(function(){var s=document.createElement('script');s.src='https://silver-vs.github.io/upiita/lector.js?v='+Date.now();document.head.appendChild(s)})()">Copia el código del marcador</button> (versión corta: descarga el Lector desde este sitio).
               <textarea id="saes-bmcode" class="saes-paste" readonly hidden aria-label="Código del marcador"></textarea></li>
             <li>Guarda cualquier página como marcador (<kbd>Ctrl</kbd>+<kbd>D</kbd> o la estrella de la barra de direcciones).</li>
             <li>Edita el marcador: asigna el nombre <b>Lector UPIITA</b> y sustituye la <b>dirección (URL)</b> por el código copiado.</li>
@@ -829,7 +829,7 @@ const SAES={
       SAES.save(d);paste.value='';msg.innerHTML='<span class="ok">Datos del SAES cargados.</span>';onLoad(d);setTimeout(()=>SAES.close(),900)};
     paste.addEventListener('paste',e=>{e.preventDefault();take(e.clipboardData.getData('text'))});
     paste.addEventListener('input',()=>{if(paste.value.trim().startsWith('{'))take(paste.value)});
-    dl.querySelector('#saes-copybm').addEventListener('click',async e=>{const code=dl.querySelector('#saes-bm').getAttribute('href'),box=dl.querySelector('#saes-bmcode');
+    dl.querySelector('#saes-copybm').addEventListener('click',async e=>{const code=e.target.dataset.code||dl.querySelector('#saes-bm').getAttribute('href'),box=dl.querySelector('#saes-bmcode');
       try{await navigator.clipboard.writeText(code);e.target.textContent='Código copiado'}catch(err){box.hidden=false;box.value=code;box.select()}});
     dl.querySelector('#saes-again').addEventListener('click',()=>{dl.querySelector('#saes-steps').hidden=false});
     dl.querySelector('#saes-clear').addEventListener('click',e=>{
