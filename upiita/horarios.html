@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta charset="utf-8">
 <title>Horarios | UPIITA IPN</title>
-<script>(function(){var r=document.documentElement;r.setAttribute('data-skin','aurora');try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')r.setAttribute('data-theme',t)}catch(e){}var z=function(){var v=Math.min(1.35,Math.max(1,innerWidth/1550));r.style.setProperty('--ui-zoom',v.toFixed(3))};z();addEventListener('resize',z)})()</script>
+<script>(function(){var r=document.documentElement;r.setAttribute('data-skin','aurora');try{localStorage.removeItem('theme');var t=sessionStorage.getItem('theme');if(t==='light'||t==='dark')r.setAttribute('data-theme',t)}catch(e){}var z=function(){var v=Math.min(1.35,Math.max(1,innerWidth/1550));r.style.setProperty('--ui-zoom',v.toFixed(3))};z();addEventListener('resize',z)})()</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wdth,wght@0,62.5..100,300..800;1,100,400&family=Noto+Sans+Mono:wght@400;500&display=swap">
@@ -536,15 +536,18 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
   var r=document.documentElement,b=document.getElementById('theme-btn'),mq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null;
   var dark=function(){var t=r.getAttribute('data-theme');return t?t==='dark':!!(mq&&mq.matches)};
   var label=function(){var d=dark();b.title=d?'Cambiar a tema claro':'Cambiar a tema oscuro';b.setAttribute('aria-label',b.title);b.setAttribute('aria-pressed',String(d))};
-  b.addEventListener('click',function(){var n=dark()?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}label();window.dispatchEvent(new Event('resize'))});
-  if(mq&&mq.addEventListener)mq.addEventListener('change',label);
+  var auto=function(){r.removeAttribute('data-theme');try{sessionStorage.removeItem('theme')}catch(e){}};
+  b.addEventListener('click',function(){var n=dark()?'light':'dark',sys=mq&&mq.matches?'dark':'light';
+    if(n===sys)auto();else{r.setAttribute('data-theme',n);try{sessionStorage.setItem('theme',n)}catch(e){}}
+    label();window.dispatchEvent(new Event('resize'))});
+  if(mq&&mq.addEventListener)mq.addEventListener('change',function(){auto();label();window.dispatchEvent(new Event('resize'))});
   label();
 })();</script></div>
       <p>Consulta tu trayectoria académica, selecciona materias y organiza tu horario para la reinscripción.</p>
     </div>
     <nav class="tabs" role="tablist" aria-label="Pantallas">
-      <button role="tab" id="t-tray" data-tab="tray" aria-controls="v-tray"><b>1</b>Mi trayectoria</button>
-      <button role="tab" id="t-hor" data-tab="hor" aria-controls="v-hor"><b>2</b>Armar horario</button>
+      <button role="tab" id="t-tray" data-tab="tray" aria-controls="v-tray">Mi trayectoria</button>
+      <button role="tab" id="t-hor" data-tab="hor" aria-controls="v-hor">Planeación de horario</button>
     </nav>
   </header>
 
@@ -1437,14 +1440,21 @@ function renderGPrefs(){
   $('#gprefs').innerHTML=S.gpref.map((p,i)=>`<span class="pill"><i>priorizar</i>${esc(p)}<button data-ungp="${i}" aria-label="Quitar ${esc(p)}">×</button></span>`).join('');
 }
 function generate(){
-  const want=tr().want.length?tr().want:[...new Set(S.chips.filter(x=>x.t==='m').map(x=>classes().find(c=>c[4]===x.v)?.[8]).filter(Boolean))];
+  // materias y grupos: los mismos que muestra la oferta con sus filtros (turno, nivel, búsqueda, materia, profesor, grupo,
+  // «solo las elegidas», horario en la escuela, excluidos). «Solo lo que cabe» y la búsqueda de huecos no aplican aquí.
+  const pool=(()=>{const f=S.fit,g=S.gap;S.fit=false;S.gap=null;try{return filtered()}finally{S.fit=f;S.gap=g}})();
+  let want=[...new Set(pool.map(c=>c[8]))];
+  if(!S.onlyWant&&!S.chips.some(x=>x.t==='m')&&tr().want.length){const w=new Set(tr().want);want=want.filter(k=>w.has(k))}   // sin filtro de materias: las elegidas
+  tr().oblig.forEach(k=>{if(!want.includes(k))want.unshift(k)});   // la desfasada siempre se considera
   const marks=ws().marks, own=ownAsClasses();
   const pref=S.gpref.map(norm), avoid=S.gavoid.map(norm);
   const pscore=c=>c[5].reduce((s,i)=>s+(pref.some(p=>norm(DATA.prof[i]).includes(p))?4:0),0);
   const bad=c=>marks[keyOf(c)]?.s==='no'||c[5].some(i=>avoid.some(p=>norm(DATA.prof[i]).includes(p)))||(S.gt!=='*'&&c[1]!==S.gt)||own.some(o=>overlaps(o,c))||outside(c);
   const ga=tmin(GT.a), gb=tmin(GT.b);
   function outside(c){return c[6].some(([d,a,b])=>(ga!=null&&a<ga)||(gb!=null&&b>gb))}
-  const subj=want.map(k=>({k,must:tr().oblig.includes(k),opts:classes().filter(c=>c[0]===S.car&&c[8]===k&&!bad(c))})).filter(s=>cur()[s.k]||s.opts.length);
+  const inPool=new Set(pool.map(keyOf));
+  const subj=want.map(k=>{const all=classes().filter(c=>c[0]===S.car&&c[8]===k&&!bad(c)), f=all.filter(c=>inPool.has(keyOf(c)));
+    return {k,must:tr().oblig.includes(k),opts:f.length||!tr().oblig.includes(k)?f:all}}).filter(s=>cur()[s.k]||s.opts.length);
   if(!subj.length) return {msg:'Selecciona materias en «Mi trayectoria» o mediante el buscador para generar horarios.'};
   if(GT.n==='auto') return generateBank(subj,'auto',{marks,pscore});
   const N=+GT.n||0;
@@ -1569,7 +1579,7 @@ function renderTop(){
   document.querySelectorAll('[data-per]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.per===S.per));
   document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===S.tab));
   document.querySelectorAll('[data-view-panel]').forEach(p=>p.hidden=p.dataset.viewPanel!==S.tab);
-  $('#t-tray').innerHTML=isPersonal()?'<b>1</b>Mi trayectoria':'<b>1</b>Mapa curricular';
+  $('#t-tray').textContent=isPersonal()?'Mi trayectoria':'Mapa curricular';
   const cars=Object.entries(DATA.carreras).filter(([k])=>DATA.mapas[k]);
   if(!cars.some(([k])=>k===S.car)) S.car=cars[0][0];
   $('#f-carrera').innerHTML=cars.map(([k,v])=>`<option value="${k}"${k===S.car?' selected':''}>${v}</option>`).join('');

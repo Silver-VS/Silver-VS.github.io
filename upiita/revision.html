@@ -101,7 +101,7 @@ footer{margin-top:48px;padding-top:14px;border-top:1px solid var(--line);font-si
   </ol>
   <h3>3.3 Armar el horario</h3>
   <ol class="steps">
-    <li>Pulse <b>Ver sus horarios</b> o la pestaña <b>Armar horario</b>.</li>
+    <li>Pulse <b>Ver sus horarios</b> o la pestaña <b>Planeación de horario</b>.</li>
     <li>Filtros: turno, nivel, búsqueda, <i>En la escuela</i> (rango de horas) y <i>Excluir profesores</i>.</li>
     <li>Agregue grupos desde la oferta, o abra <b>Generar horarios automáticamente</b> (días a la semana, descansos, profesores a priorizar) y use una opción en la versión A, B o C.</li>
     <li>Para llenar un hueco, haga clic en un bloque vacío del calendario: la oferta muestra los grupos que caben en ese horario.</li>
@@ -180,11 +180,11 @@ const T=[
  ['S-03','S','Carga de datos y Estado general',['Pegar los datos (reales o del perfil de demostración) en «Usar mis datos del SAES».'],'Sobre el mapa aparece «Estado general» con promedio, créditos, periodo que se planea, carga autorizada, desfase oficial y cita.'],
  ['S-04','S','Desfase con el perfil de demostración',['Cargar el perfil de demostración.'],'«Desfase oficial»: 1 materia (Teoría de los circuitos, desfasada en 27/1); Física moderna y óptica: debe acreditarse en 27/1.'],
  ['S-05','S','Colores del mapa con datos',['Con datos cargados, revisar el mapa y su simbología.','Apagar «Ver sugeridas».'],'Verde: puede cursarse; anillo: sugerida; gris con punto: en curso; rojo: reprobada o desfasada. Al apagar «Ver sugeridas» desaparece solo el anillo.'],
- ['S-06','S','Materia desfasada y carga con reprobadas',['Con el perfil de demostración, revisar «Materias que quieres cursar».','Intentar quitar Teoría de los circuitos desde el mapa.','En «Armar horario», agregar solo dos grupos de materias nuevas y revisar la barra de carga.'],'La desfasada aparece con la etiqueta «obligatoria» y no puede retirarse. La carga total suma los 16.5 créditos retenidos por las reprobadas más los de las materias nuevas; al agregar una reprobada la carga total no aumenta.'],
+ ['S-06','S','Materia desfasada y carga con reprobadas',['Con el perfil de demostración, revisar «Materias que quieres cursar».','Intentar quitar Teoría de los circuitos desde el mapa.','En «Planeación de horario», agregar solo dos grupos de materias nuevas y revisar la barra de carga.'],'La desfasada aparece con la etiqueta «obligatoria» y no puede retirarse. La carga total suma los 16.5 créditos retenidos por las reprobadas más los de las materias nuevas; al agregar una reprobada la carga total no aumenta.'],
  ['S-07','S','Simulación de fin de semestre',['Activar «Simular fin de semestre».','Marcar «Dispositivos electrónicos» como reprobada.'],'Aparece la etiqueta «Simulación»; cambian los créditos al terminar, el mapa, las sugerencias y la lista de reprobadas.'],
  ['S-08','S','Otra carrera con datos cargados',['Con datos de Biónica, elegir Mecatrónica.','Pulsar «Volver a …».'],'Se muestra un aviso de que los datos corresponden a otra carrera; el botón regresa a Biónica.'],
  ['S-09','S','Borrado de datos',['Abrir «Mis datos del SAES» y pulsar «Borrar mis datos» (confirmar).'],'Desaparece «Estado general» y la página vuelve al modo de exploración.'],
- ['A-01','A','Orden de la oferta',['Con el perfil de demostración, abrir «Armar horario».'],'La oferta muestra primero la materia desfasada y después las reprobadas.'],
+ ['A-01','A','Orden de la oferta',['Con el perfil de demostración, abrir «Planeación de horario».'],'La oferta muestra primero la materia desfasada y después las reprobadas.'],
  ['A-02','A','Excluir profesores',['Escribir y seleccionar un profesor en «Excluir profesores».','Activar «Ocultar las marcadas como No».'],'Sus grupos aparecen como «profesor excluido» y se ocultan al activar la casilla.'],
  ['A-03','A','Horario en la escuela',['Definir «En la escuela» de 09:00 a 15:00.'],'La oferta deja de mostrar grupos fuera de ese rango.'],
  ['A-04','A','Llenar huecos',['Agregar al menos un grupo.','Hacer clic en un bloque vacío del calendario y agregar un grupo de la oferta.'],'La oferta muestra solo grupos compatibles con ese bloque; al agregar uno, su materia pasa a las elegidas y el filtro de hueco se retira.'],

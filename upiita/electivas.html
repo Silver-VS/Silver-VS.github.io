@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta charset="utf-8">
 <title>Electivas | UPIITA IPN</title>
-<script>(function(){var r=document.documentElement;r.setAttribute('data-skin','aurora');try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')r.setAttribute('data-theme',t)}catch(e){}var z=function(){var v=Math.min(1.35,Math.max(1,innerWidth/1550));r.style.setProperty('--ui-zoom',v.toFixed(3))};z();addEventListener('resize',z)})()</script>
+<script>(function(){var r=document.documentElement;r.setAttribute('data-skin','aurora');try{localStorage.removeItem('theme');var t=sessionStorage.getItem('theme');if(t==='light'||t==='dark')r.setAttribute('data-theme',t)}catch(e){}var z=function(){var v=Math.min(1.35,Math.max(1,innerWidth/1550));r.style.setProperty('--ui-zoom',v.toFixed(3))};z();addEventListener('resize',z)})()</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wdth,wght@0,62.5..100,300..800;1,100,400&family=Noto+Sans+Mono:wght@400;500&display=swap">
@@ -237,8 +237,11 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
   var r=document.documentElement,b=document.getElementById('theme-btn'),mq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null;
   var dark=function(){var t=r.getAttribute('data-theme');return t?t==='dark':!!(mq&&mq.matches)};
   var label=function(){var d=dark();b.title=d?'Cambiar a tema claro':'Cambiar a tema oscuro';b.setAttribute('aria-label',b.title);b.setAttribute('aria-pressed',String(d))};
-  b.addEventListener('click',function(){var n=dark()?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}label();window.dispatchEvent(new Event('resize'))});
-  if(mq&&mq.addEventListener)mq.addEventListener('change',label);
+  var auto=function(){r.removeAttribute('data-theme');try{sessionStorage.removeItem('theme')}catch(e){}};
+  b.addEventListener('click',function(){var n=dark()?'light':'dark',sys=mq&&mq.matches?'dark':'light';
+    if(n===sys)auto();else{r.setAttribute('data-theme',n);try{sessionStorage.setItem('theme',n)}catch(e){}}
+    label();window.dispatchEvent(new Event('resize'))});
+  if(mq&&mq.addEventListener)mq.addEventListener('change',function(){auto();label();window.dispatchEvent(new Event('resize'))});
   label();
 })();</script></div>
       <p>Identifica las actividades acreditables como electiva, calcula los créditos y genera el formato DIE-03 y el formulario, listos para firma y entrega.</p>
