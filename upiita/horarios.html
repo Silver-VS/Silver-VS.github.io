@@ -729,6 +729,8 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
         <div class="seg" role="group" aria-label="Estilo" id="exp-style"><button type="button" data-exps="color">Colorido</button><button type="button" data-exps="min">Minimalista</button></div></div>
       <div class="field"><span>Tema de la imagen y el PDF</span>
         <div class="seg" role="group" aria-label="Tema de la exportación" id="exp-theme"><button type="button" data-ext="">Claro</button><button type="button" data-ext="dark">Oscuro</button></div></div>
+      <div class="field"><span>PDF con todos los horarios</span>
+        <div class="seg" role="group" aria-label="Horarios por hoja" id="exp-per"><button type="button" data-exper="2">Dos por hoja</button><button type="button" data-exper="1">Uno por hoja</button></div></div>
       <div class="field"><span>Incluir en cada clase</span>
         <span class="expshow"><label><input type="checkbox" checked disabled> Materia</label><label><input type="checkbox" data-exshow="g"> Grupo</label><label><input type="checkbox" data-exshow="p"> Profesor</label></span></div>
       <div class="field"><span>Actividades extracurriculares</span>
@@ -1932,7 +1934,7 @@ async function drawTable(part,k=3){
   g.fillStyle=FOOT;g.font=`400 10.5px ${F}`;g.fillText(`Generado con Horarios UPIITA · Oferta del SAES capturada el ${cap}. Verifica cupo y horarios en el SAES antes de inscribirte.`,PAD,H-16);
   return cv;
 }
-const EXP={get dark(){return store.get('expDark',false)},get style(){return store.get('expStyle','color')},get own(){return store.get('expOwn','#dbe7f5')},get show(){return Object.assign({g:false,p:false},store.get('expShow',{}))}};
+const EXP={get perPage(){return store.get('expPer',2)},get dark(){return store.get('expDark',false)},get style(){return store.get('expStyle','color')},get own(){return store.get('expOwn','#dbe7f5')},get show(){return Object.assign({g:false,p:false},store.get('expShow',{}))}};
 const drawFor=(part,k)=>EXP.style==='min'?drawTable(part,k):drawSchedule(part,k);
 
 /* ---------- Excel (.xlsx, también se abre en Google Sheets): mismo formato que la tabla minimalista ---------- */
@@ -2007,15 +2009,16 @@ async function exportPdfAll(){
   const ids=plansConContenido();
   if(!ids.length)return 'Agrega materias a algún horario para exportarlo.';
   const {PDFDocument,rgb}=await loadPdfLib(), doc=await PDFDocument.create(), prev=ws().plan;
-  // acomoda los horarios uno debajo de otro al ancho de la hoja (sin reducir la letra) y abre hoja nueva solo si el
-  // siguiente no cabe; en el estilo minimalista (vertical) suelen caber dos horarios cortos por hoja
-  const [PW,PH]=EXP.style==='min'?[612,792]:[792,612], m=24, GAP=18;let pg=null, y=0;
-  const nueva=()=>{pg=doc.addPage([PW,PH]);if(EXP.dark)pg.drawRectangle({x:0,y:0,width:PW,height:PH,color:EXP.style==='min'?rgb(.078,.071,.078):rgb(.09,.078,.102)});y=PH-m};
+  // dos por hoja: carta horizontal con dos columnas (como «2 páginas por hoja» al imprimir); uno por hoja: tamaño completo
+  const two=EXP.perPage===2, [PW,PH]=two||EXP.style!=='min'?[792,612]:[612,792], m=24, GAP=20, colW=two?(PW-2*m-GAP)/2:PW-2*m;
+  let pg=null, col=0;
+  const nueva=()=>{pg=doc.addPage([PW,PH]);if(EXP.dark)pg.drawRectangle({x:0,y:0,width:PW,height:PH,color:EXP.style==='min'?rgb(.078,.071,.078):rgb(.09,.078,.102)});col=0};
   try{for(const id of ids){ws().plan=id;
     const cv=await drawFor('all',3), png=await doc.embedPng(new Uint8Array(await (await toBlob(cv)).arrayBuffer()));
-    const sc=Math.min((PW-2*m)/png.width,(PH-2*m)/png.height), w=png.width*sc, h=png.height*sc;
-    if(!pg||y-h<m)nueva();
-    pg.drawImage(png,{x:(PW-w)/2,y:y-h,width:w,height:h});y-=h+GAP}}finally{ws().plan=prev}
+    const sc=Math.min(colW/png.width,(PH-2*m)/png.height), w=png.width*sc, h=png.height*sc;
+    if(!pg||col>=(two?2:1))nueva();
+    const x0=m+col*(colW+GAP);
+    pg.drawImage(png,{x:x0+(colW-w)/2,y:PH-m-h,width:w,height:h});col++}}finally{ws().plan=prev}
   doc.setTitle('Horarios UPIITA');
   const r=await saveFile('horarios-upiita.pdf',new Blob([await doc.save()],{type:'application/pdf'}));
   const n=doc.getPageCount();
@@ -2026,7 +2029,9 @@ $('#b-export').addEventListener('click',()=>{const dl=$('#exp-dlg'),n=plansConCo
 $('#exp-x').addEventListener('click',()=>$('#exp-dlg').close());
 $('#exp-dlg').addEventListener('click',e=>{if(e.target.id==='exp-dlg')e.target.close()});
 const renderExpStyle=()=>{document.querySelectorAll('[data-exps]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.exps===EXP.style)));
-  document.querySelectorAll('[data-ext]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.ext==='dark')===EXP.dark)))};
+  document.querySelectorAll('[data-ext]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.ext==='dark')===EXP.dark)));
+  document.querySelectorAll('[data-exper]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.exper===EXP.perPage)))};
+$('#exp-per').addEventListener('click',e=>{const b=e.target.closest('[data-exper]');if(!b)return;store.set('expPer',+b.dataset.exper);renderExpStyle()});
 $('#exp-theme').addEventListener('click',e=>{const b=e.target.closest('[data-ext]');if(!b)return;store.set('expDark',b.dataset.ext==='dark');renderExpStyle()});
 $('#exp-style').addEventListener('click',e=>{const b=e.target.closest('[data-exps]');if(!b)return;store.set('expStyle',b.dataset.exps);renderExpStyle()});
 renderExpStyle();
