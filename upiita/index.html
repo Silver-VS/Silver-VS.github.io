@@ -147,8 +147,9 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:v
   <p class="lead">Herramientas digitales de libre acceso para el alumnado de la UPIITA-IPN. Apoyan la planeación de la reinscripción, el armado de horarios y la liberación de electivas, y se irán ampliando a otros procesos académicos. Versión de prueba.</p>
 
   <div class="grid">
-    <a class="card" href="horarios.html"><b>Horarios</b><span>Mapa curricular y trayectoria, oferta del SAES, armado y generación de horarios.</span></a>
-    <a class="card" href="electivas.html"><b>Electivas</b><span>Actividades acreditables, créditos y formatos DIE-03 y formulario llenos.</span></a>
+    <a class="card" href="horarios.html"><b>Horarios UPIITA</b><span>Mapa curricular y trayectoria, oferta del SAES, armado y generación de horarios.</span></a>
+    <a class="card" href="horarios-escom.html"><b>Horarios ESCOM</b><span>Versión de prueba para la Escuela Superior de Cómputo: mapas 2020, oferta y armado de horarios.</span></a>
+    <a class="card" href="electivas.html"><b>Electivas UPIITA</b><span>Actividades acreditables, créditos y formatos DIE-03 y formulario llenos.</span></a>
     <a class="card" href="revision.html"><b>Guía de revisión</b><span>Instructivo, perfil de demostración y casos de prueba.</span></a>
   </div>
 
@@ -166,10 +167,10 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:v
 
 /* ---------- perfil IPN-tools: respaldo y sincronización con la cuenta institucional (tools/cuenta.py) ---------- */
 var IPNT=window.IPNT=(()=>{
-  const CFG={"clientId": "7e8e5a95-4337-4652-8b07-3450306cda8f", "tenant": "common", "googleClientId": "959269733-d3h3qm0dtqpshebnabum1jr2g0l6geoa.apps.googleusercontent.com", "unidades": [{"id": "upiita", "siglas": "UPIITA", "nombre": "Unidad Profesional Interdisciplinaria en Ingenier\u00eda y Tecnolog\u00edas Avanzadas", "disponible": true}], "googlePrueba": true, "contacto": "vacevess1900@alumno.ipn.mx", "institucionalPendiente": true, "version": "1.1.0", "unidad": "upiita", "msal": "https://cdn.jsdelivr.net/npm/@azure/msal-browser@4.30.0/lib/msal-browser.min.js", "sri": "sha384-RGxxfG5yRS8DLU7ZJ8OoLhbV/BsJFHyPuMVHrTLbpj3t5Z15LnviJmaznKY/a7LZ"}, FILE='perfil.ipnt.json', MS_SCOPES=['Files.ReadWrite.AppFolder'],
+  const CFG={"clientId": "7e8e5a95-4337-4652-8b07-3450306cda8f", "tenant": "common", "googleClientId": "959269733-d3h3qm0dtqpshebnabum1jr2g0l6geoa.apps.googleusercontent.com", "unidades": [{"id": "upiita", "siglas": "UPIITA", "nombre": "Unidad Profesional Interdisciplinaria en Ingenier\u00eda y Tecnolog\u00edas Avanzadas", "disponible": true, "url": "horarios.html"}, {"id": "escom", "siglas": "ESCOM", "nombre": "Escuela Superior de C\u00f3mputo", "disponible": true, "url": "horarios-escom.html"}], "googlePrueba": true, "contacto": "vacevess1900@alumno.ipn.mx", "institucionalPendiente": true, "version": "1.2.0", "unidad": "upiita", "msal": "https://cdn.jsdelivr.net/npm/@azure/msal-browser@4.30.0/lib/msal-browser.min.js", "sri": "sha384-RGxxfG5yRS8DLU7ZJ8OoLhbV/BsJFHyPuMVHrTLbpj3t5Z15LnviJmaznKY/a7LZ"}, FILE='perfil.ipnt.json', MS_SCOPES=['Files.ReadWrite.AppFolder'],
     GO_SCOPES='openid email profile https://www.googleapis.com/auth/drive.appdata';
   // qué se guarda: todo lo de Horarios (hu.) y Electivas (ue.), menos el estado de pantalla de cada dispositivo
-  const SYNC=/^(hu\.|ue\.)|^saes\.alumno$|^perfil\.opciones$/, LOCAL=/^hu\.(tab|per|tur|niv|view|mview|cview|mobnote)$/;
+  const SYNC=/^(hu\.|ue\.)|^saes\.alumno$|^perfil\.opciones$/, LOCAL=/^hu\.(?:[a-z]+\.)?(tab|per|tur|niv|view|mview|cview|mobnote)$/;
   const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}},
     del(k){try{localStorage.removeItem(k)}catch(e){}},keys(){try{return Object.keys(localStorage)}catch(e){return[]}},
     obj(k,d){try{return JSON.parse(localStorage.getItem(k)||'null')||d}catch(e){return d}},put(k,o){try{localStorage.setItem(k,JSON.stringify(o))}catch(e){}}};
@@ -339,7 +340,7 @@ var IPNT=window.IPNT=(()=>{
      recarga si llegaron cambios de otro dispositivo), 'auto' (tras un cambio propio: solo se avisa) */
 
   /* ---- al iniciar sesión: si la cuenta y el navegador tienen datos distintos, el alumno elige ---- */
-  const ETQ=k=>/^hu\.w\./.test(k)?'planes de horario y marcas':/^hu\.t\./.test(k)?'materias elegidas en el mapa':/^ue\./.test(k)?'actividades de Electivas':
+  const ETQ=k=>/^hu\.(?:[a-z]+\.)?w\./.test(k)?'planes de horario y marcas':/^hu\.(?:[a-z]+\.)?t\./.test(k)?'materias elegidas en el mapa':/^ue\./.test(k)?'actividades de Electivas':
     k==='saes.alumno'?'datos del SAES':'preferencias y filtros';
   function diferencias(d){
     const out=new Set();
@@ -494,13 +495,17 @@ var IPNT=window.IPNT=(()=>{
     }).catch(e=>{st.fase='error';st.error=texto(e);pintar()});
   }
   /* ---- bienvenida: primera visita (sin carrera, planes, marcas, actividades ni sesión en este navegador) ---- */
-  const NUEVO=!ls.get('ipnt.bienvenida')&&!ls.get('ipnt.cuenta')&&!ls.keys().some(k=>/^(hu\.|ue\.|saes\.alumno$)/.test(k)&&!LOCAL.test(k));
+  // por unidad: la UPIITA usa hu./ue.; otras unidades, hu.<unidad>. (mismo sitio, datos separados)
+  const UNI=CFG.unidad||'upiita', BKEY=UNI==='upiita'?'ipnt.bienvenida':'ipnt.bienvenida.'+UNI;
+  const OTRAS=new RegExp('^hu[.]('+((CFG.unidades||[]).map(u=>u.id).filter(x=>x&&x!=='upiita').join('|')||'-')+')[.]');
+  const propia=k=>UNI==='upiita'?/^(hu\.|ue\.)/.test(k)&&!OTRAS.test(k):k.startsWith('hu.'+UNI+'.');
+  const NUEVO=!ls.get(BKEY)&&!ls.get('ipnt.cuenta')&&!ls.keys().some(k=>propia(k)&&!LOCAL.test(k));
   function bienvenida(o){
     const dl=$i('ipnt-hola'), sel=document.querySelector(o.select);
     if(!NUEVO||!dl||!sel) return;
     const UN=CFG.unidades||[], cars=[...sel.options].map(op=>[op.value,op.textContent.trim()]).filter(c=>c[0]);
     let uni=CFG.unidad;
-    const listo=()=>{ls.set('ipnt.bienvenida','1');if(dl.close)dl.close();else dl.removeAttribute('open')};
+    const listo=()=>{ls.set(BKEY,'1');if(dl.close)dl.close();else dl.removeAttribute('open')};
     const pintarH=()=>{
       $i('ipnt-h-uni').hidden=UN.length<2;
       if(UN.length<2)$i('ipnt-h-lead').textContent='Para empezar, elige tu carrera.';
@@ -508,7 +513,7 @@ var IPNT=window.IPNT=(()=>{
       const u=UN.find(x=>x.id===uni)||{};
       $i('ipnt-h-cars').innerHTML=u.id===CFG.unidad?
         `<h3>${UN.length>1?'2. ':''}Elige tu carrera</h3><div class="ipnt-cars">${cars.map(([k,v])=>`<button type="button" class="btn" data-car="${esc(k)}">${esc(v)}</button>`).join('')}</div>`:
-        u.url?`<p>La herramienta de ${esc(u.siglas)} está en <a href="${esc(u.url)}">${esc(u.url)}</a>.</p>`:
+        u.url?`<h3>${UN.length>1?'2. ':''}Continúa en la herramienta de tu unidad</h3><p><a class="btn primary" href="${esc(u.url)}">Ir a Horarios ${esc(u.siglas)}</a></p>`:
         `<p class="saes-note">La versión para ${esc(u.siglas||'tu unidad')} se está preparando con alumnos de la unidad. Mientras tanto puedes explorar la de la ${esc((UN.find(x=>x.id===CFG.unidad)||{}).siglas||'')}.</p>`;
       $i('ipnt-h-yo').hidden=!cuenta;
       if(cuenta)$i('ipnt-h-yo').textContent=`Sesión iniciada: ${cuenta.name||cuenta.username}. Si ya tenías datos guardados, la página se actualizará sola; si no, elige tu carrera.`;
@@ -522,11 +527,11 @@ var IPNT=window.IPNT=(()=>{
       if(b.dataset.prov){
         const m=$i('ipnt-h-msg');m.className='ipnt-state';m.textContent='Abriendo el inicio de sesión…';
         await entrar(b.dataset.prov);
-        if(cuenta){m.textContent='';ls.set('ipnt.bienvenida','1')}else{m.className='ipnt-state bad';m.textContent=st.error||''}
+        if(cuenta){m.textContent='';ls.set(BKEY,'1')}else{m.className='ipnt-state bad';m.textContent=st.error||''}
         pintarH();return}
       if(b.hasAttribute('data-hola-x'))listo();
     });
-    dl.addEventListener('cancel',()=>ls.set('ipnt.bienvenida','1'));   // Esc: no se vuelve a mostrar
+    dl.addEventListener('cancel',()=>ls.set(BKEY,'1'));   // Esc: no se vuelve a mostrar
     if(MS.disponible())MS.listo().catch(()=>{});if(GO.disponible())GO.listo().catch(()=>{});   // listas para el clic
     pintarH();
     if(dl.showModal)dl.showModal();else dl.setAttribute('open','');
