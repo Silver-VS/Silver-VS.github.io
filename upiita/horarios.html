@@ -505,6 +505,36 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
 .saes-mm .x{border:0;background:none;font-size:1.3rem;line-height:1;cursor:pointer;color:var(--muted);padding:2px 6px}
 #saes-msg .ok{color:var(--ok);font-weight:600} #saes-msg .bad{color:var(--bad);font-weight:600}
 
+
+.ipnt-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:4px 12px 4px 6px;font:inherit;font-size:.86rem;font-weight:600;cursor:pointer;white-space:nowrap;position:relative}
+.ipnt-btn:hover{border-color:var(--accent)}
+.ipnt-btn svg{flex:none;color:var(--muted)}
+.ipnt-btn.on svg{color:var(--ok)}
+.ipnt-btn.warn::after{content:"";position:absolute;top:1px;right:1px;width:8px;height:8px;border-radius:50%;background:var(--warn)}
+@media (max-width:600px){.ipnt-btn span{display:none}.ipnt-btn{padding:4px 6px}}
+.ipnt-dlg h3{margin:16px 0 6px;font-size:1rem}
+.ipnt-dlg .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ipnt-dlg .chk{display:flex;gap:8px;align-items:flex-start;font-size:.9rem;margin-top:10px}
+.ipnt-dlg .chk input{margin-top:3px}
+.ipnt-state{font-size:.88rem;min-height:1.3em;margin:8px 0 0}
+.ipnt-state.ok{color:var(--ok)} .ipnt-state.bad{color:var(--bad)} .ipnt-state.warn{color:var(--warn)}
+.ipnt-file{position:relative;overflow:hidden}
+.ipnt-file input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.ipnt-ms{display:inline-flex;align-items:center;gap:8px}
+.ipnt-dlg button:disabled{opacity:.5;cursor:not-allowed}
+.ipnt-conf-op{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:10px}
+.ipnt-conf-op .btn{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:10px 14px;border-radius:10px;height:auto;white-space:normal}
+.ipnt-conf-op small{font-weight:400;font-size:.8rem;color:inherit;opacity:.85}
+.ipnt-hola{width:min(640px,calc(100vw / var(--ui-zoom,1) - 32px))}
+.ipnt-hola .lead{margin:0;font-size:.95rem;color:var(--muted)}
+.ipnt-unis{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.ipnt-uni{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:10px 12px;font:inherit;cursor:pointer}
+.ipnt-uni b{font-size:1rem} .ipnt-uni small{color:var(--muted);font-size:.78rem;line-height:1.3}
+.ipnt-uni em{font-style:normal;font-size:.72rem;font-weight:600;color:var(--warn)}
+.ipnt-uni[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.ipnt-cars{display:flex;flex-wrap:wrap;gap:8px}
+.ipnt-hola .alt{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+
 </style>
 
 <style>
@@ -547,7 +577,59 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
     label();window.dispatchEvent(new Event('resize'))});
   if(mq&&mq.addEventListener)mq.addEventListener('change',function(){auto();label();window.dispatchEvent(new Event('resize'))});
   label();
-})();</script></div>
+})();</script><button class="ipnt-btn" id="ipnt-open" type="button" aria-haspopup="dialog" title="Inicia sesión para guardar tus datos en tu nube">
+<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4s6.3 1.8 7.5 5.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Iniciar sesión</span></button>
+<dialog class="saes-dlg ipnt-dlg" id="ipnt-dlg" aria-labelledby="ipnt-h">
+  <div class="dl-head"><h2 id="ipnt-h">Tu cuenta y tus datos</h2><button class="x" id="ipnt-x" type="button" aria-label="Cerrar">×</button></div>
+  <div id="ipnt-out">
+    <p style="margin:0;font-size:.92rem">Sin sesión, tus planes, marcas y actividades se guardan solo en este navegador. Inicia sesión para conservarlos en tu propia nube y usarlos en cualquier dispositivo.</p>
+    <div class="row" style="margin-top:12px"><button class="btn primary ipnt-ms" id="ipnt-login" type="button">
+      <svg viewBox="0 0 21 21" width="16" height="16" aria-hidden="true"><path fill="#f25022" d="M1 1h9v9H1z"/><path fill="#7fba00" d="M11 1h9v9h-9z"/><path fill="#00a4ef" d="M1 11h9v9H1z"/><path fill="#ffb900" d="M11 11h9v9h-9z"/></svg>
+      Continuar con Microsoft</button>
+      <button class="btn ipnt-ms" id="ipnt-glogin" type="button" hidden>
+      <svg viewBox="0 0 48 48" width="16" height="16" aria-hidden="true"><path fill="#ea4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.2C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285f4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.5 5.8c4.4-4 6.8-10 6.8-17.2z"/><path fill="#fbbc05" d="M10.6 28.5c-.5-1.4-.8-2.9-.8-4.5s.3-3.1.8-4.5l-7.9-6.2C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.2z"/><path fill="#34a853" d="M24 48c6.5 0 11.9-2.1 15.8-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.3 2.3-6.2 0-11.5-4.1-13.4-9.8l-7.9 6.2C6.6 42.6 14.6 48 24 48z"/></svg>
+      Continuar con Google</button></div>
+    <p class="saes-note" style="margin:8px 0 0">Microsoft: cuenta institucional (@alumno.ipn.mx, @ipn.mx) o personal; se guarda en tu OneDrive.<span id="ipnt-gnote" hidden> Google: se guarda en el espacio privado de la aplicación en tu Google Drive.</span></p>
+    <p class="saes-note" id="ipnt-soon" style="margin:8px 0 0">El inicio de sesión estará disponible próximamente. Mientras tanto, usa el respaldo en archivo.</p>
+  </div>
+  <div id="ipnt-in" hidden>
+    <p style="margin:0;font-size:.92rem"><b id="ipnt-who"></b></p>
+    <div class="row" style="margin-top:10px"><button class="btn" id="ipnt-sync" type="button">Sincronizar ahora</button><button class="btn primary" id="ipnt-relogin" type="button" hidden>Volver a iniciar sesión</button><button class="btn" id="ipnt-logout" type="button">Cerrar sesión</button><button class="link" id="ipnt-wipe" type="button">Cerrar sesión y borrar mis datos de este navegador</button></div>
+    <div class="row" id="ipnt-wipe-ok" hidden style="margin-top:8px;font-size:.88rem">¿Borrar de este navegador tus planes, marcas, actividades y datos del SAES? Tu copia en <span id="ipnt-where">la nube</span> se conserva. <button class="btn" id="ipnt-wipe-yes" type="button">Sí, borrar</button></div>
+    <label class="chk"><input type="checkbox" id="ipnt-saes"><span>Guardar también mis datos del SAES (kárdex, estado general y cita) en mi nube.</span></label>
+  </div>
+  <p class="ipnt-state" id="ipnt-state" aria-live="polite"></p>
+  <h3>Respaldo en archivo</h3>
+  <p class="saes-note" style="margin:0 0 8px">Descarga tus datos para guardarlos o pasarlos a otro navegador. Restaurar reemplaza los datos de este navegador por los del archivo.</p>
+  <div class="row"><button class="btn" id="ipnt-down" type="button">Descargar respaldo</button><label class="btn ipnt-file">Restaurar desde archivo<input type="file" id="ipnt-file" accept=".json,application/json"></label></div>
+  <p class="ipnt-state" id="ipnt-filemsg" aria-live="polite"></p>
+  <p class="saes-note" style="margin:14px 0 0">Tus datos se guardan en tu propia nube: en OneDrive, en la carpeta <b>Aplicaciones › IPN-tools</b>; en Google Drive, en un espacio privado de la aplicación que no aparece entre tus archivos. La herramienta solo tiene acceso a ese espacio. No hay servidor intermedio: nadie más puede consultarlos.</p>
+</dialog>
+<dialog class="saes-dlg ipnt-dlg" id="ipnt-conf" aria-labelledby="ipnt-conf-h">
+  <div class="dl-head"><h2 id="ipnt-conf-h">Ya hay datos en tu cuenta</h2></div>
+  <p id="ipnt-conf-txt" style="margin:0;font-size:.95rem"></p>
+  <p style="margin:10px 0 0;font-size:.92rem">¿Cuáles quieres conservar?</p>
+  <div class="ipnt-conf-op">
+    <button class="btn primary" type="button" data-conf="nube"><b>Usar los datos de mi cuenta</b><small>Reemplazan lo que hay en este navegador.</small></button>
+    <button class="btn" type="button" data-conf="local"><b>Conservar los de este navegador</b><small>Reemplazan lo guardado en tu cuenta.</small></button>
+  </div>
+  <p class="saes-note" style="margin:10px 0 0">En ambos casos se suma lo que solo exista de un lado (por ejemplo, tus actividades de Electivas si aquí no las tienes).</p>
+</dialog>
+<dialog class="saes-dlg ipnt-dlg ipnt-hola" id="ipnt-hola" aria-labelledby="ipnt-hola-h">
+  <div class="dl-head"><h2 id="ipnt-hola-h">Bienvenida</h2><button class="x" type="button" data-hola-x aria-label="Cerrar">×</button></div>
+  <p class="lead" id="ipnt-h-lead">Para empezar, dinos de qué unidad y carrera eres. Puedes cambiarlo después.</p>
+  <div id="ipnt-h-uni"><h3>1. Elige tu unidad académica</h3>
+  <div class="ipnt-unis" id="ipnt-h-unis"></div></div>
+  <div id="ipnt-h-cars"></div>
+  <div class="alt">
+    <div id="ipnt-h-login"><p style="margin:0 0 8px;font-size:.92rem">¿Ya la usaste en otro dispositivo? Inicia sesión y se cargan tus datos.</p>
+      <div class="row"><button class="btn ipnt-ms" id="ipnt-h-ms" type="button" data-prov="ms"><svg viewBox="0 0 21 21" width="16" height="16" aria-hidden="true"><path fill="#f25022" d="M1 1h9v9H1z"/><path fill="#7fba00" d="M11 1h9v9h-9z"/><path fill="#00a4ef" d="M1 11h9v9H1z"/><path fill="#ffb900" d="M11 11h9v9h-9z"/></svg>Continuar con Microsoft</button>
+      <button class="btn ipnt-ms" id="ipnt-h-go" type="button" data-prov="google"><svg viewBox="0 0 48 48" width="16" height="16" aria-hidden="true"><path fill="#ea4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.2C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285f4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.5 5.8c4.4-4 6.8-10 6.8-17.2z"/><path fill="#fbbc05" d="M10.6 28.5c-.5-1.4-.8-2.9-.8-4.5s.3-3.1.8-4.5l-7.9-6.2C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.2z"/><path fill="#34a853" d="M24 48c6.5 0 11.9-2.1 15.8-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.3 2.3-6.2 0-11.5-4.1-13.4-9.8l-7.9 6.2C6.6 42.6 14.6 48 24 48z"/></svg>Continuar con Google</button></div></div>
+    <p id="ipnt-h-yo" hidden style="margin:0;font-size:.92rem"></p>
+    <p class="ipnt-state" id="ipnt-h-msg" aria-live="polite"></p>
+    <p style="margin:6px 0 0"><button class="link" type="button" data-hola-x>Explorar sin elegir</button></p>
+  </div>
+</dialog></div>
       <p>Consulta tu trayectoria académica, selecciona materias y organiza tu horario para la reinscripción.</p>
     </div>
     <nav class="tabs" role="tablist" aria-label="Pantallas">
@@ -571,7 +653,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
     <ol>
       <li><b>Guarda el Lector UPIITA en tu navegador</b> (solo la primera vez).
         <p class="muted">Un <b>marcador</b> (favorito) es un acceso guardado en el navegador. El Lector UPIITA, en lugar de abrir una página, consulta tu información dentro del SAES.</p>
-        <p>Arrastra este botón a tu barra de marcadores: <a class="saes-bm" id="saes-bm" href="javascript:%28async%20function%20%28%29%20%7B%0Avar%20TOOL%20%3D%20%27https%3A%2F%2Fsilver-vs.github.io%2Fupiita%2Fhorarios.html%27%3B%0Aif%20%28%21%2Fsaes%5C.upiita%5C.ipn%5C.mx%24%2Fi.test%28location.hostname%29%29%20%7B%0Aalert%28%27Abre%20este%20marcador%20dentro%20del%20SAES%20de%20la%20UPIITA%20%28saes.upiita.ipn.mx%29%2C%20con%20tu%20sesi%C3%B3n%20iniciada.%27%29%3B%0Areturn%3B%0A%7D%0Avar%20old%20%3D%20document.getElementById%28%27upiita-lector%27%29%3B%0Aif%20%28old%29%20old.remove%28%29%3B%0Avar%20clean%20%3D%20function%20%28s%29%20%7B%20return%20String%28s%20%7C%7C%20%27%27%29.replace%28%2F%5Cs%2B%2Fg%2C%20%27%20%27%29.trim%28%29%3B%20%7D%3B%0Avar%20num%20%3D%20function%20%28s%29%20%7B%20var%20m%20%3D%20clean%28s%29.replace%28%2F%2C%2Fg%2C%20%27%27%29.match%28%2F-%3F%5Cd%2B%28%5C.%5Cd%2B%29%3F%2F%29%3B%20return%20m%20%3F%20%2Bm%5B0%5D%20%3A%20null%3B%20%7D%3B%0Avar%20getRaw%20%3D%20async%20function%20%28path%29%20%7B%0Avar%20r%20%3D%20await%20fetch%28path%2C%20%7B%20credentials%3A%20%27same-origin%27%20%7D%29%3B%0Areturn%20new%20DOMParser%28%29.parseFromString%28await%20r.text%28%29%2C%20%27text%2Fhtml%27%29%3B%0A%7D%3B%0Avar%20get%20%3D%20async%20function%20%28path%29%20%7B%0Avar%20d%20%3D%20await%20getRaw%28path%29%3B%0Aif%20%28%21d.getElementById%28%27ctl00_mainCopy_Lbl_Nombre%27%29%20%26%26%20%21d.querySelector%28%27%5Bid%2A%3D%22Lbl_Kardex%22%5D%27%29%29%20throw%20new%20Error%28%27sesion%27%29%3B%0Areturn%20d%3B%0A%7D%3B%0Avar%20pairs%20%3D%20function%20%28d%29%20%7B%0Avar%20out%20%3D%20%7B%7D%3B%0Ad.querySelectorAll%28%27table%27%29.forEach%28function%20%28t%29%20%7B%0Avar%20rows%20%3D%20Array.prototype.slice.call%28t.rows%29%3B%0Afor%20%28var%20i%20%3D%200%3B%20i%20%3C%20rows.length%20-%201%3B%20i%2B%2B%29%20%7B%0Avar%20h%20%3D%20Array.prototype.map.call%28rows%5Bi%5D.cells%2C%20function%20%28c%29%20%7B%20return%20clean%28c.textContent%29%3B%20%7D%29%3B%0Avar%20v%20%3D%20Array.prototype.map.call%28rows%5Bi%20%2B%201%5D.cells%2C%20function%20%28c%29%20%7B%20return%20clean%28c.textContent%29%3B%20%7D%29%3B%0Aif%20%28h.length%20%3E%201%20%26%26%20h.length%20%3D%3D%3D%20v.length%20%26%26%20h.every%28function%20%28x%29%20%7B%20return%20%2F%5Ba-z%5D%2Fi.test%28x%29%20%26%26%20%21%2F%5E%5Cd%2F.test%28x%29%3B%20%7D%29%29%20%7B%0Ah.forEach%28function%20%28k%2C%20j%29%20%7B%20if%20%28%21%28k%20in%20out%29%29%20out%5Bk%5D%20%3D%20v%5Bj%5D%3B%20%7D%29%3B%0A%7D%0A%7D%0A%7D%29%3B%0Areturn%20out%3B%0A%7D%3B%0Avar%20pick%20%3D%20function%20%28o%2C%20re%29%20%7B%20for%20%28var%20k%20in%20o%29%20if%20%28re.test%28k%29%29%20return%20o%5Bk%5D%3B%20return%20null%3B%20%7D%3B%0Avar%20label%20%3D%20function%20%28d%2C%20re%29%20%7B%0Avar%20cells%20%3D%20d.querySelectorAll%28%27td%27%29%3B%0Afor%20%28var%20i%20%3D%200%3B%20i%20%3C%20cells.length%20-%201%3B%20i%2B%2B%29%20if%20%28re.test%28clean%28cells%5Bi%5D.textContent%29%29%29%20return%20clean%28cells%5Bi%20%2B%201%5D.textContent%29%20%7C%7C%20null%3B%0Areturn%20null%3B%0A%7D%3B%0Avar%20box%20%3D%20document.createElement%28%27div%27%29%3B%0Abox.id%20%3D%20%27upiita-lector%27%3B%0Abox.setAttribute%28%27role%27%2C%20%27dialog%27%29%3B%0Abox.setAttribute%28%27aria-label%27%2C%20%27Lector%20UPIITA%27%29%3B%0Abox.style.cssText%20%3D%20%27position%3Afixed%3Bz-index%3A2147483647%3Bright%3A16px%3Btop%3A16px%3Bwidth%3Amin%28420px%2Ccalc%28100vw%20-%2032px%29%29%3Bmax-height%3Acalc%28100vh%20-%2032px%29%3Boverflow%3Aauto%3Bbackground%3A%23fff%3Bcolor%3A%2318181b%3Bborder%3A1px%20solid%20%23d9d9de%3Bborder-radius%3A12px%3Bbox-shadow%3A0%2018px%2050px%20-12px%20rgba%280%2C0%2C0%2C.35%29%3Bfont%3A14px%2F1.5%20system-ui%2C-apple-system%2CSegoe%20UI%2Csans-serif%3Bpadding%3A16px%27%3B%0Abox.innerHTML%20%3D%20%27%3Cb%20style%3D%22font-size%3A16px%22%3ELector%20UPIITA%3C%2Fb%3E%3Cp%20style%3D%22margin%3A6px%200%200%3Bcolor%3A%2352525b%22%3ELeyendo%20tu%20K%C3%A1rdex%20y%20tu%20Cita%20de%20reinscripci%C3%B3n%20%28solo%20lectura%29%E2%80%A6%3C%2Fp%3E%27%3B%0Adocument.body.appendChild%28box%29%3B%0Atry%20%7B%0Avar%20cita%20%3D%20await%20get%28%27%2FAlumnos%2FReinscripciones%2Ffichas_reinscripcion.aspx%27%29%3B%0Avar%20kx%20%3D%20await%20get%28%27%2FAlumnos%2Fboleta%2Fkardex.aspx%27%29%3B%0Avar%20gen%20%3D%20clean%28%28cita.getElementById%28%27ctl00_mainCopy_Lbl_General%27%29%20%7C%7C%20%7B%7D%29.textContent%29%3B%0Avar%20p%20%3D%20pairs%28cita%29%3B%0Avar%20acred%20%3D%20%5B%5D%3B%0Akx.querySelectorAll%28%27%5Bid%2A%3D%22Lbl_Kardex%22%5D%20table%20tr%27%29.forEach%28function%20%28tr%29%20%7B%0Avar%20c%20%3D%20Array.prototype.map.call%28tr.cells%2C%20function%20%28x%29%20%7B%20return%20clean%28x.textContent%29%3B%20%7D%29%3B%0Aif%20%28c.length%20%3E%3D%206%20%26%26%20%2F%5E%5BA-Z%5D%5Cd%7B3%7D%24%2Fi.test%28c%5B0%5D%29%29%20%7B%0Avar%20cal%20%3D%20num%28c%5B5%5D%29%3B%0Aif%20%28cal%20%21%3D%3D%20null%20%26%26%20cal%20%3E%3D%206%29%20acred.push%28%5Bc%5B0%5D.toUpperCase%28%29%2C%20cal%2C%20c%5B3%5D%2C%20c%5B4%5D%5D%29%3B%0A%7D%0A%7D%29%3B%0Avar%20repro%20%3D%20%5B%5D%3B%0Acita.querySelectorAll%28%27table%27%29.forEach%28function%20%28t%29%20%7B%0Avar%20rows%20%3D%20Array.prototype.slice.call%28t.rows%29%2C%20on%20%3D%20false%3B%0Arows.forEach%28function%20%28r%29%20%7B%0Avar%20c%20%3D%20Array.prototype.map.call%28r.cells%2C%20function%20%28x%29%20%7B%20return%20clean%28x.textContent%29%3B%20%7D%29%3B%0Aif%20%28%2F%5Edescripci%2Fi.test%28c%5B0%5D%20%7C%7C%20%27%27%29%29%20%7B%20on%20%3D%20true%3B%20return%3B%20%7D%0Aif%20%28on%20%26%26%20c.length%20%3E%3D%202%20%26%26%20%21%2Ftotal%2Fi.test%28c%5B0%5D%29%20%26%26%20num%28c%5B1%5D%29%20%21%3D%3D%20null%29%20repro.push%28%5Bc%5B0%5D%2C%20num%28c%5B1%5D%29%5D%29%3B%0A%7D%29%3B%0A%7D%29%3B%0Avar%20estado%20%3D%20%5B%5D%2C%20curso%20%3D%20%5B%5D%2C%20horario%20%3D%20%5B%5D%3B%0Atry%20%7B%0Avar%20est%20%3D%20await%20getRaw%28%27%2FAlumnos%2Fboleta%2FEstado_Alumno.aspx%27%29%3B%0Avar%20gv%20%3D%20est.getElementById%28%27ctl00_mainCopy_GV_Reprobadas%27%29%3B%0Aif%20%28gv%29%20Array.prototype.slice.call%28gv.rows%2C%201%29.forEach%28function%20%28r%29%20%7B%0Avar%20c%20%3D%20Array.prototype.map.call%28r.cells%2C%20function%20%28x%29%20%7B%20return%20clean%28x.textContent%29%3B%20%7D%29%3B%0Aif%20%28%2F%5E%5BA-Z%5D%5Cd%7B3%7D%24%2Fi.test%28c%5B1%5D%20%7C%7C%20%27%27%29%29%20estado.push%28%5Bc%5B1%5D.toUpperCase%28%29%2C%20c%5B3%5D%2C%20num%28c%5B4%5D%29%5D%29%3B%0A%7D%29%3B%0A%7D%20catch%20%28e%29%20%7B%20estado%20%3D%20null%3B%20%7D%0Atry%20%7B%0Avar%20hor%20%3D%20await%20getRaw%28%27%2FAlumnos%2FInformacion_semestral%2FHorario_Alumno.aspx%27%29%3B%0Ahor.querySelectorAll%28%27%5Bid%2A%3D%22GV_Horario%22%5D%20%5Bid%24%3D%22Lbl_Materia%22%5D%27%29.forEach%28function%20%28s%29%20%7B%0Avar%20m%20%3D%20clean%28s.textContent%29.match%28%2F%5E%28%5BA-Z%5D%5Cd%7B3%7D%29%5Cb%2Fi%29%3B%0Aif%20%28m%29%20curso.push%28m%5B1%5D.toUpperCase%28%29%29%3B%0A%7D%29%3B%0Avar%20gvh%20%3D%20hor.getElementById%28%27ctl00_mainCopy_GV_Horario%27%29%3B%0Aif%20%28gvh%20%26%26%20gvh.rows.length%20%3E%201%29%20%7B%0Avar%20DIAS%20%3D%20%5B%27lunes%27%2C%20%27martes%27%2C%20%27miercoles%27%2C%20%27jueves%27%2C%20%27viernes%27%2C%20%27sabado%27%5D%3B%0Avar%20hdr%20%3D%20Array.prototype.map.call%28gvh.rows%5B0%5D.cells%2C%20function%20%28c%29%20%7B%20return%20clean%28c.textContent%29.toLowerCase%28%29.normalize%28%27NFD%27%29.replace%28%2F%5B%CC%80-%CD%AF%5D%2Fg%2C%20%27%27%29%3B%20%7D%29%3B%0Avar%20mins%20%3D%20function%20%28t%29%20%7B%20var%20x%20%3D%20t.split%28%27%3A%27%29%3B%20return%20%2Bx%5B0%5D%20%2A%2060%20%2B%20%2Bx%5B1%5D%3B%20%7D%3B%0AArray.prototype.slice.call%28gvh.rows%2C%201%29.forEach%28function%20%28r%29%20%7B%0Avar%20c%20%3D%20Array.prototype.map.call%28r.cells%2C%20function%20%28x%29%20%7B%20return%20clean%28x.textContent%29%3B%20%7D%29%3B%0Avar%20m%20%3D%20%28c%5B1%5D%20%7C%7C%20%27%27%29.match%28%2F%5E%28%5BA-Z%5D%5Cd%7B3%7D%29%5Cs%2A-%5Cs%2A%28.%2A%29%24%2Fi%29%3B%0Aif%20%28%21m%29%20return%3B%0Avar%20ses%20%3D%20%5B%5D%3B%0Ahdr.forEach%28function%20%28h%2C%20i%29%20%7B%0Avar%20d%20%3D%20DIAS.indexOf%28h%29%2C%20t%20%3D%20%28c%5Bi%5D%20%7C%7C%20%27%27%29.match%28%2F%28%5Cd%7B1%2C2%7D%3A%5Cd%7B2%7D%29%5Cs%2A-%5Cs%2A%28%5Cd%7B1%2C2%7D%3A%5Cd%7B2%7D%29%2F%29%3B%0Aif%20%28d%20%3E%3D%200%20%26%26%20t%29%20ses.push%28%5Bd%2C%20mins%28t%5B1%5D%29%2C%20mins%28t%5B2%5D%29%5D%29%3B%0A%7D%29%3B%0Ahorario.push%28%5Bc%5B0%5D%2C%20m%5B1%5D.toUpperCase%28%29%2C%20m%5B2%5D%2C%20c%5B2%5D%20%7C%7C%20%27%27%2C%20ses%5D%29%3B%0A%7D%29%3B%0A%7D%0A%7D%20catch%20%28e%29%20%7B%20curso%20%3D%20null%3B%20horario%20%3D%20null%3B%20%7D%0Avar%20claveCar%20%3D%20acred.length%20%3F%20acred%5B0%5D%5B0%5D%5B0%5D%20%3A%20null%3B%0Avar%20data%20%3D%20%7B%0Aupiita_saes%3A%201%2C%0Aleido%3A%20new%20Date%28%29.toISOString%28%29%2C%0Aboleta%3A%20%28gen.match%28%2FBOLETA%3A%5Cs%2A%28%5Cd%7B10%7D%29%2Fi%29%20%7C%7C%20%5B%5D%29%5B1%5D%20%7C%7C%20%28%28label%28cita%2C%20%2F%5EBOLETA%3A%3F%24%2Fi%29%20%7C%7C%20%27%27%29.match%28%2F%5Cd%7B10%7D%2F%29%20%7C%7C%20%5B%5D%29%5B0%5D%20%7C%7C%20null%2C%0Anombre%3A%20%28gen.match%28%2FNOMBRE%3A%5Cs%2A%28.%2B%3F%29%5Cs%2A%28CARRERA%7CPLAN%7C%24%29%2Fi%29%20%7C%7C%20%5B%5D%29%5B1%5D%20%7C%7C%20label%28cita%2C%20%2F%5ENOMBRE%3A%3F%24%2Fi%29%20%7C%7C%20clean%28%28cita.getElementById%28%27ctl00_mainCopy_Lbl_Nombre%27%29%20%7C%7C%20%7B%7D%29.textContent%29%2C%0Acarrera%3A%20claveCar%2C%0Acarrera_nombre%3A%20clean%28%28cita.querySelector%28%27%23ctl00_mainCopy_DpdCarrera%20option%3Achecked%27%29%20%7C%7C%20%7B%7D%29.textContent%29%2C%0Aplan%3A%20%28cita.querySelector%28%27%23ctl00_mainCopy_dpdPlanEstudios%20option%3Achecked%27%29%20%7C%7C%20%7B%7D%29.value%20%7C%7C%20null%2C%0Apromedio%3A%20num%28pick%28p%2C%20%2F%5Epromedio%2Fi%29%29%2C%0Areprobadas_num%3A%20num%28pick%28p%2C%20%2Freprobadas%24%2Fi%29%29%2C%0Acita%3A%20%7B%20inicio%3A%20pick%28p%2C%20%2Ffecha%20inscrip%2Fi%29%2C%20fin%3A%20pick%28p%2C%20%2Fcaducidad%2Fi%29%20%7D%2C%0Acarga%3A%20%7B%0Atotal%3A%20num%28pick%28p%2C%20%2F%5Etotal%20de%20creditos%24%2Fi%29%29%2C%20max%3A%20num%28pick%28p%2C%20%2Fm.xima%20de%20creditos%2Fi%29%29%2C%0Amedia%3A%20num%28pick%28p%2C%20%2Fmedia%20de%20creditos%2Fi%29%29%2C%20min%3A%20num%28pick%28p%2C%20%2Fm.nima%20de%20creditos%2Fi%29%29%2C%0Aduracion%3A%20num%28pick%28p%2C%20%2Fduraci.n%20de%20la%20carrera%20en%2Fi%29%29%2C%20duracion_max%3A%20num%28pick%28p%2C%20%2Fduraci.n%20m.xima%2Fi%29%29%0A%7D%2C%0Aavance%3A%20%7B%0Aobtenidos%3A%20num%28pick%28p%2C%20%2Fhas%20obtenido%2Fi%29%29%2C%20faltan%3A%20num%28pick%28p%2C%20%2Fte%20faltan%2Fi%29%29%2C%0Acursados%3A%20num%28pick%28p%2C%20%2Fque%20cursaste%2Fi%29%29%2C%20disponibles%3A%20num%28pick%28p%2C%20%2Fdisponibles%2Fi%29%29%2C%0Aautorizada%3A%20pick%28p%2C%20%2Fcarga%20autorizada%2Fi%29%0A%7D%2C%0Areprobadas%3A%20repro%2C%0Adesfase_saes%3A%20pick%28p%2C%20%2Freprobadas%20de%20%5Cd%2Fi%29%2C%0Areprobadas_periodo%3A%20estado%2C%0Aen_curso%3A%20curso%2C%0Ahorario_inscrito%3A%20horario%2C%0Aacreditadas%3A%20acred%0A%7D%3B%0Avar%20json%20%3D%20JSON.stringify%28data%29%3B%0Avar%20row%20%3D%20function%20%28k%2C%20v%29%20%7B%20return%20%27%3Ctr%3E%3Ctd%20style%3D%22color%3A%2352525b%3Bpadding%3A2px%2012px%202px%200%22%3E%27%20%2B%20k%20%2B%20%27%3C%2Ftd%3E%3Ctd%20style%3D%22font-weight%3A600%22%3E%27%20%2B%20%28v%20%3D%3D%20null%20%7C%7C%20v%20%3D%3D%3D%20%27%27%20%3F%20%27%E2%80%94%27%20%3A%20v%29%20%2B%20%27%3C%2Ftd%3E%3C%2Ftr%3E%27%3B%20%7D%3B%0Abox.innerHTML%20%3D%20%27%3Cdiv%20style%3D%22display%3Aflex%3Bjustify-content%3Aspace-between%3Bgap%3A8px%3Balign-items%3Acenter%22%3E%3Cb%20style%3D%22font-size%3A16px%22%3ELector%20UPIITA%3C%2Fb%3E%3Cbutton%20id%3D%22ul-x%22%20style%3D%22border%3A0%3Bbackground%3Anone%3Bfont-size%3A20px%3Bcursor%3Apointer%22%20aria-label%3D%22Cerrar%22%3E%C3%97%3C%2Fbutton%3E%3C%2Fdiv%3E%27%20%2B%0A%27%3Cp%20style%3D%22margin%3A4px%200%2010px%3Bcolor%3A%2352525b%22%3EResumen%20de%20la%20informaci%C3%B3n%20consultada%20en%20el%20SAES.%20No%20se%20envi%C3%B3%20a%20ning%C3%BAn%20servidor.%3C%2Fp%3E%27%20%2B%0A%27%3Ctable%20style%3D%22border-collapse%3Acollapse%3Bfont-size%3A13px%22%3E%27%20%2B%0Arow%28%27Boleta%27%2C%20data.boleta%29%20%2B%20row%28%27Carrera%27%2C%20data.carrera_nombre%20%2B%20%28data.plan%20%3F%20%27%20%28plan%20%27%20%2B%20data.plan%20%2B%20%27%29%27%20%3A%20%27%27%29%29%20%2B%0Arow%28%27Promedio%27%2C%20data.promedio%29%20%2B%20row%28%27Materias%20acreditadas%27%2C%20acred.length%29%20%2B%20row%28%27Materias%20en%20curso%27%2C%20curso%20%3F%20curso.length%20%3A%20null%29%20%2B%0Arow%28%27Cr%C3%A9ditos%20obtenidos%27%2C%20data.avance.obtenidos%29%20%2B%20row%28%27Periodos%20cursados%27%2C%20data.avance.cursados%29%20%2B%0Arow%28%27Carga%20autorizada%27%2C%20data.avance.autorizada%29%20%2B%20row%28%27Reprobadas%27%2C%20repro.length%20%3F%20repro.map%28function%20%28r%29%20%7B%20return%20r%5B0%5D.toLowerCase%28%29%3B%20%7D%29.join%28%27%2C%20%27%29%20%3A%20%27ninguna%27%29%20%2B%0Arow%28%27Cita%20de%20reinscripci%C3%B3n%27%2C%20data.cita.inicio%29%20%2B%20%27%3C%2Ftable%3E%27%20%2B%0A%27%3Cdiv%20style%3D%22display%3Aflex%3Bflex-wrap%3Awrap%3Bgap%3A8px%3Bmargin-top%3A12px%22%3E%27%20%2B%0A%27%3Cbutton%20id%3D%22ul-copy%22%20style%3D%22background%3A%23750946%3Bcolor%3A%23fff%3Bborder%3A0%3Bborder-radius%3A999px%3Bpadding%3A8px%2016px%3Bfont-weight%3A600%3Bcursor%3Apointer%22%3ECopiar%20mis%20datos%3C%2Fbutton%3E%27%20%2B%0A%28TOOL%20%3F%20%27%3Ca%20id%3D%22ul-open%22%20href%3D%22%27%20%2B%20TOOL%20%2B%20%27%22%20target%3D%22_blank%22%20rel%3D%22noopener%22%20style%3D%22border%3A1px%20solid%20%23d9d9de%3Bborder-radius%3A999px%3Bpadding%3A8px%2016px%3Bcolor%3A%2318181b%3Btext-decoration%3Anone%3Bfont-weight%3A500%22%3EAbrir%20Horarios%20UPIITA%3C%2Fa%3E%27%20%3A%20%27%27%29%20%2B%20%27%3C%2Fdiv%3E%27%20%2B%0A%27%3Cp%20id%3D%22ul-msg%22%20style%3D%22margin%3A10px%200%200%3Bcolor%3A%2352525b%3Bfont-size%3A13px%22%3EDespu%C3%A9s%2C%20en%20la%20herramienta%2C%20pulsa%20%3Cb%3EUsar%20mis%20datos%20del%20SAES%3C%2Fb%3E%20y%20pega%20con%20Ctrl%2BV.%3C%2Fp%3E%27%20%2B%0A%27%3Ctextarea%20id%3D%22ul-txt%22%20readonly%20style%3D%22position%3Aabsolute%3Bleft%3A-9999px%3Bwidth%3A1px%3Bheight%3A1px%22%3E%3C%2Ftextarea%3E%27%3B%0Adocument.getElementById%28%27ul-x%27%29.onclick%20%3D%20function%20%28%29%20%7B%20box.remove%28%29%3B%20%7D%3B%0Adocument.getElementById%28%27ul-copy%27%29.onclick%20%3D%20async%20function%20%28%29%20%7B%0Avar%20msg%20%3D%20document.getElementById%28%27ul-msg%27%29%3B%0Atry%20%7B%20await%20navigator.clipboard.writeText%28json%29%3B%20%7D%0Acatch%20%28e%29%20%7B%20var%20t%20%3D%20document.getElementById%28%27ul-txt%27%29%3B%20t.value%20%3D%20json%3B%20t.select%28%29%3B%20document.execCommand%28%27copy%27%29%3B%20%7D%0Amsg.innerHTML%20%3D%20%27%3Cb%20style%3D%22color%3A%2315803d%22%3ECopiado.%3C%2Fb%3E%20Ahora%20abre%20la%20herramienta%2C%20pulsa%20%3Cb%3EUsar%20mis%20datos%20del%20SAES%3C%2Fb%3E%20y%20pega%20con%20Ctrl%2BV.%27%3B%0A%7D%3B%0A%7D%20catch%20%28e%29%20%7B%0Abox.innerHTML%20%3D%20%27%3Cb%20style%3D%22font-size%3A16px%22%3ELector%20UPIITA%3C%2Fb%3E%3Cp%20style%3D%22margin%3A6px%200%200%22%3E%27%20%2B%0A%28e.message%20%3D%3D%3D%20%27sesion%27%20%3F%20%27No%20se%20detect%C3%B3%20una%20sesi%C3%B3n%20activa%20del%20SAES.%20Inicia%20sesi%C3%B3n%20y%20ejecuta%20nuevamente%20el%20marcador.%27%20%3A%20%27No%20fue%20posible%20leer%20la%20informaci%C3%B3n%3A%20%27%20%2B%20e.message%29%20%2B%0A%27%3C%2Fp%3E%3Cbutton%20onclick%3D%22this.parentNode.remove%28%29%22%20style%3D%22margin-top%3A10px%3Bborder%3A1px%20solid%20%23d9d9de%3Bbackground%3A%23fff%3Bborder-radius%3A999px%3Bpadding%3A6px%2014px%3Bcursor%3Apointer%22%3ECerrar%3C%2Fbutton%3E%27%3B%0A%7D%0A%7D%29%28%29%3B" draggable="true" onclick="event.preventDefault()">Lector UPIITA</a></p>
+        <p>Arrastra este botón a tu barra de marcadores: <a class="saes-bm" id="saes-bm" href="javascript:%28async%20function%20%28%29%20%7B%0Avar%20TOOL%20%3D%20%27https%3A%2F%2Fsilver-vs.github.io%2Fupiita%2Fhorarios.html%27%3B%0Avar%20UM%20%3D%20location.hostname.match%28%2F%28%3F%3A%5E%7C%5C.%29saes%5C.%28%5Ba-z0-9-%5D%2B%29%5C.ipn%5C.mx%24%2Fi%29%3B%0Aif%20%28%21UM%29%20%7B%0Aalert%28%27Abre%20este%20marcador%20dentro%20del%20SAES%20de%20tu%20unidad%20%28por%20ejemplo%2C%20saes.upiita.ipn.mx%29%2C%20con%20tu%20sesi%C3%B3n%20iniciada.%27%29%3B%0Areturn%3B%0A%7D%0Avar%20UNIDAD%20%3D%20UM%5B1%5D.toLowerCase%28%29%3B%0A%2F%2F%20claves%3A%20letra%20%2B%203%20d%C3%ADgitos%20%28B101%29%20o%20con%20letras%20%28optativas%20de%20la%20ESCOM%29%3B%20siempre%20con%20al%20menos%20un%20d%C3%ADgito%0Avar%20CLAVE%20%3D%20%2F%5E%28%3F%3D%5BA-Z0-9%5D%2A%5Cd%29%5BA-Z%5D%5BA-Z0-9%5D%7B2%2C6%7D%24%2Fi%3B%0Avar%20byId%20%3D%20function%20%28d%2C%20id%29%20%7B%20return%20d.querySelector%28%27%5Bid%24%3D%22mainCopy_%27%20%2B%20id%20%2B%20%27%22%5D%27%29%3B%20%7D%3B%0Avar%20old%20%3D%20document.getElementById%28%27upiita-lector%27%29%3B%0Aif%20%28old%29%20old.remove%28%29%3B%0Avar%20clean%20%3D%20function%20%28s%29%20%7B%20return%20String%28s%20%7C%7C%20%27%27%29.replace%28%2F%5Cs%2B%2Fg%2C%20%27%20%27%29.trim%28%29%3B%20%7D%3B%0Avar%20num%20%3D%20function%20%28s%29%20%7B%20var%20m%20%3D%20clean%28s%29.replace%28%2F%2C%2Fg%2C%20%27%27%29.match%28%2F-%3F%5Cd%2B%28%5C.%5Cd%2B%29%3F%2F%29%3B%20return%20m%20%3F%20%2Bm%5B0%5D%20%3A%20null%3B%20%7D%3B%0Avar%20getRaw%20%3D%20async%20function%20%28path%29%20%7B%0Avar%20r%20%3D%20await%20fetch%28path%2C%20%7B%20credentials%3A%20%27same-origin%27%20%7D%29%3B%0Areturn%20new%20DOMParser%28%29.parseFromString%28await%20r.text%28%29%2C%20%27text%2Fhtml%27%29%3B%0A%7D%3B%0Avar%20get%20%3D%20async%20function%20%28path%29%20%7B%0Avar%20d%20%3D%20await%20getRaw%28path%29%3B%0Aif%20%28%21byId%28d%2C%20%27Lbl_Nombre%27%29%20%26%26%20%21d.querySelector%28%27%5Bid%2A%3D%22Lbl_Kardex%22%5D%27%29%29%20throw%20new%20Error%28%27sesion%27%29%3B%0Areturn%20d%3B%0A%7D%3B%0Avar%20pairs%20%3D%20function%20%28d%29%20%7B%0Avar%20out%20%3D%20%7B%7D%3B%0Ad.querySelectorAll%28%27table%27%29.forEach%28function%20%28t%29%20%7B%0Avar%20rows%20%3D%20Array.prototype.slice.call%28t.rows%29%3B%0Afor%20%28var%20i%20%3D%200%3B%20i%20%3C%20rows.length%20-%201%3B%20i%2B%2B%29%20%7B%0Avar%20h%20%3D%20Array.prototype.map.call%28rows%5Bi%5D.cells%2C%20function%20%28c%29%20%7B%20return%20clean%28c.textContent%29%3B%20%7D%29%3B%0Avar%20v%20%3D%20Array.prototype.map.call%28rows%5Bi%20%2B%201%5D.cells%2C%20function%20%28c%29%20%7B%20return%20clean%28c.textContent%29%3B%20%7D%29%3B%0Aif%20%28h.length%20%3E%201%20%26%26%20h.length%20%3D%3D%3D%20v.length%20%26%26%20h.every%28function%20%28x%29%20%7B%20return%20%2F%5Ba-z%5D%2Fi.test%28x%29%20%26%26%20%21%2F%5E%5Cd%2F.test%28x%29%3B%20%7D%29%29%20%7B%0Ah.forEach%28function%20%28k%2C%20j%29%20%7B%20if%20%28%21%28k%20in%20out%29%29%20out%5Bk%5D%20%3D%20v%5Bj%5D%3B%20%7D%29%3B%0A%7D%0A%7D%0A%7D%29%3B%0Areturn%20out%3B%0A%7D%3B%0Avar%20pick%20%3D%20function%20%28o%2C%20re%29%20%7B%20for%20%28var%20k%20in%20o%29%20if%20%28re.test%28k%29%29%20return%20o%5Bk%5D%3B%20return%20null%3B%20%7D%3B%0Avar%20label%20%3D%20function%20%28d%2C%20re%29%20%7B%0Avar%20cells%20%3D%20d.querySelectorAll%28%27td%27%29%3B%0Afor%20%28var%20i%20%3D%200%3B%20i%20%3C%20cells.length%20-%201%3B%20i%2B%2B%29%20if%20%28re.test%28clean%28cells%5Bi%5D.textContent%29%29%29%20return%20clean%28cells%5Bi%20%2B%201%5D.textContent%29%20%7C%7C%20null%3B%0Areturn%20null%3B%0A%7D%3B%0Avar%20box%20%3D%20document.createElement%28%27div%27%29%3B%0Abox.id%20%3D%20%27upiita-lector%27%3B%0Abox.setAttribute%28%27role%27%2C%20%27dialog%27%29%3B%0Abox.setAttribute%28%27aria-label%27%2C%20%27Lector%20UPIITA%27%29%3B%0Abox.style.cssText%20%3D%20%27position%3Afixed%3Bz-index%3A2147483647%3Bright%3A16px%3Btop%3A16px%3Bwidth%3Amin%28420px%2Ccalc%28100vw%20-%2032px%29%29%3Bmax-height%3Acalc%28100vh%20-%2032px%29%3Boverflow%3Aauto%3Bbackground%3A%23fff%3Bcolor%3A%2318181b%3Bborder%3A1px%20solid%20%23d9d9de%3Bborder-radius%3A12px%3Bbox-shadow%3A0%2018px%2050px%20-12px%20rgba%280%2C0%2C0%2C.35%29%3Bfont%3A14px%2F1.5%20system-ui%2C-apple-system%2CSegoe%20UI%2Csans-serif%3Bpadding%3A16px%27%3B%0Abox.innerHTML%20%3D%20%27%3Cb%20style%3D%22font-size%3A16px%22%3ELector%20UPIITA%3C%2Fb%3E%3Cp%20style%3D%22margin%3A6px%200%200%3Bcolor%3A%2352525b%22%3ELeyendo%20tu%20K%C3%A1rdex%20y%20tu%20Cita%20de%20reinscripci%C3%B3n%20%28solo%20lectura%29%E2%80%A6%3C%2Fp%3E%27%3B%0Adocument.body.appendChild%28box%29%3B%0Atry%20%7B%0Avar%20cita%20%3D%20await%20get%28%27%2FAlumnos%2FReinscripciones%2Ffichas_reinscripcion.aspx%27%29%3B%0Avar%20kx%20%3D%20await%20get%28%27%2FAlumnos%2Fboleta%2Fkardex.aspx%27%29%3B%0Avar%20gen%20%3D%20clean%28%28byId%28cita%2C%20%27Lbl_General%27%29%20%7C%7C%20%7B%7D%29.textContent%29%3B%0Avar%20p%20%3D%20pairs%28cita%29%3B%0Avar%20acred%20%3D%20%5B%5D%3B%0Akx.querySelectorAll%28%27%5Bid%2A%3D%22Lbl_Kardex%22%5D%20table%20tr%27%29.forEach%28function%20%28tr%29%20%7B%0Avar%20c%20%3D%20Array.prototype.map.call%28tr.cells%2C%20function%20%28x%29%20%7B%20return%20clean%28x.textContent%29%3B%20%7D%29%3B%0Aif%20%28c.length%20%3E%3D%206%20%26%26%20CLAVE.test%28c%5B0%5D%29%29%20%7B%0Avar%20cal%20%3D%20num%28c%5B5%5D%29%3B%0Aif%20%28cal%20%21%3D%3D%20null%20%26%26%20cal%20%3E%3D%206%29%20acred.push%28%5Bc%5B0%5D.toUpperCase%28%29%2C%20cal%2C%20c%5B3%5D%2C%20c%5B4%5D%5D%29%3B%0A%7D%0A%7D%29%3B%0Avar%20repro%20%3D%20%5B%5D%3B%0Acita.querySelectorAll%28%27table%27%29.forEach%28function%20%28t%29%20%7B%0Avar%20rows%20%3D%20Array.prototype.slice.call%28t.rows%29%2C%20on%20%3D%20false%3B%0Arows.forEach%28function%20%28r%29%20%7B%0Avar%20c%20%3D%20Array.prototype.map.call%28r.cells%2C%20function%20%28x%29%20%7B%20return%20clean%28x.textContent%29%3B%20%7D%29%3B%0Aif%20%28%2F%5Edescripci%2Fi.test%28c%5B0%5D%20%7C%7C%20%27%27%29%29%20%7B%20on%20%3D%20true%3B%20return%3B%20%7D%0Aif%20%28on%20%26%26%20c.length%20%3E%3D%202%20%26%26%20%21%2Ftotal%2Fi.test%28c%5B0%5D%29%20%26%26%20num%28c%5B1%5D%29%20%21%3D%3D%20null%29%20repro.push%28%5Bc%5B0%5D%2C%20num%28c%5B1%5D%29%5D%29%3B%0A%7D%29%3B%0A%7D%29%3B%0Avar%20estado%20%3D%20%5B%5D%2C%20curso%20%3D%20%5B%5D%2C%20horario%20%3D%20%5B%5D%2C%20secc%20%3D%20%7B%20reprobadas%3A%20%5B%5D%2C%20no_cursadas%3A%20%5B%5D%2C%20desfasadas%3A%20%5B%5D%20%7D%3B%0Atry%20%7B%0Avar%20est%20%3D%20await%20getRaw%28%27%2FAlumnos%2Fboleta%2FEstado_Alumno.aspx%27%29%2C%20sec%20%3D%20%27reprobadas%27%3B%0Aest.querySelectorAll%28%27%5Bid%2A%3D%22mainCopy_%22%5D%27%29.forEach%28function%20%28el%29%20%7B%0Avar%20t%20%3D%20clean%28el.value%20%7C%7C%20%28el.tagName%20%3D%3D%3D%20%27TABLE%27%20%3F%20%27%27%20%3A%20el.textContent%29%29%3B%0Aif%20%28el.tagName%20%21%3D%3D%20%27TABLE%27%20%26%26%20%21el.closest%28%27%5Bid%2A%3D%22GV_%22%5D%27%29%20%26%26%20%21el.querySelector%28%27table%27%29%20%26%26%20%2F%5EMATERIAS%5Cs%2Fi.test%28t%29%29%20%7B%20sec%20%3D%20%2FNO%20CURSADAS%2Fi.test%28t%29%20%3F%20%27no_cursadas%27%20%3A%20%2FDESFASADAS%2Fi.test%28t%29%20%3F%20%27desfasadas%27%20%3A%20%27reprobadas%27%3B%20return%3B%20%7D%0Aif%20%28el.tagName%20%21%3D%3D%20%27TABLE%27%20%7C%7C%20%21%2FGV_%2Fi.test%28el.id%29%29%20return%3B%0Avar%20dest%20%3D%20%2FReprobadas%2Fi.test%28el.id%29%20%3F%20%27reprobadas%27%20%3A%20sec%3B%20%20%20%2F%2F%20UPIITA%3A%20GV_Reprobadas%0AArray.prototype.slice.call%28el.rows%2C%201%29.forEach%28function%20%28r%29%20%7B%0Avar%20c%20%3D%20Array.prototype.map.call%28r.cells%2C%20function%20%28x%29%20%7B%20return%20clean%28x.textContent%29%3B%20%7D%29%3B%0Aif%20%28CLAVE.test%28c%5B1%5D%20%7C%7C%20%27%27%29%29%20secc%5Bdest%5D.push%28%5Bc%5B1%5D.toUpperCase%28%29%2C%20c%5B3%5D%20%7C%7C%20null%2C%20num%28c%5B4%5D%29%2C%20num%28c%5B0%5D%29%5D%29%3B%0A%7D%29%3B%0A%7D%29%3B%0Aestado%20%3D%20secc.reprobadas.map%28function%20%28r%29%20%7B%20return%20r.slice%280%2C%203%29%3B%20%7D%29%3B%0A%7D%20catch%20%28e%29%20%7B%20estado%20%3D%20null%3B%20secc%20%3D%20null%3B%20%7D%0Atry%20%7B%0Avar%20hor%20%3D%20await%20getRaw%28%27%2FAlumnos%2FInformacion_semestral%2FHorario_Alumno.aspx%27%29%3B%0Ahor.querySelectorAll%28%27%5Bid%2A%3D%22GV_Horario%22%5D%20%5Bid%24%3D%22Lbl_Materia%22%5D%27%29.forEach%28function%20%28s%29%20%7B%0Avar%20m%20%3D%20clean%28s.textContent%29.match%28%2F%5E%28%28%3F%3D%5BA-Z0-9%5D%2A%5Cd%29%5BA-Z%5D%5BA-Z0-9%5D%7B2%2C6%7D%29%5Cb%2Fi%29%3B%0Aif%20%28m%29%20curso.push%28m%5B1%5D.toUpperCase%28%29%29%3B%0A%7D%29%3B%0Avar%20gvh%20%3D%20byId%28hor%2C%20%27GV_Horario%27%29%3B%0Aif%20%28gvh%20%26%26%20gvh.rows.length%20%3E%201%29%20%7B%0Avar%20DIAS%20%3D%20%5B%27lunes%27%2C%20%27martes%27%2C%20%27miercoles%27%2C%20%27jueves%27%2C%20%27viernes%27%2C%20%27sabado%27%5D%3B%0Avar%20hdr%20%3D%20Array.prototype.map.call%28gvh.rows%5B0%5D.cells%2C%20function%20%28c%29%20%7B%20return%20clean%28c.textContent%29.toLowerCase%28%29.normalize%28%27NFD%27%29.replace%28%2F%5B%CC%80-%CD%AF%5D%2Fg%2C%20%27%27%29%3B%20%7D%29%3B%0Avar%20mins%20%3D%20function%20%28t%29%20%7B%20var%20x%20%3D%20t.split%28%27%3A%27%29%3B%20return%20%2Bx%5B0%5D%20%2A%2060%20%2B%20%2Bx%5B1%5D%3B%20%7D%3B%0AArray.prototype.slice.call%28gvh.rows%2C%201%29.forEach%28function%20%28r%29%20%7B%0Avar%20c%20%3D%20Array.prototype.map.call%28r.cells%2C%20function%20%28x%29%20%7B%20return%20clean%28x.textContent%29%3B%20%7D%29%3B%0Avar%20m%20%3D%20%28c%5B1%5D%20%7C%7C%20%27%27%29.match%28%2F%5E%28%28%3F%3D%5BA-Z0-9%5D%2A%5Cd%29%5BA-Z%5D%5BA-Z0-9%5D%7B2%2C6%7D%29%5Cs%2A-%5Cs%2A%28.%2A%29%24%2Fi%29%3B%0Aif%20%28%21m%29%20return%3B%0Avar%20ses%20%3D%20%5B%5D%3B%0Ahdr.forEach%28function%20%28h%2C%20i%29%20%7B%0Avar%20d%20%3D%20DIAS.indexOf%28h%29%2C%20t%20%3D%20%28c%5Bi%5D%20%7C%7C%20%27%27%29.match%28%2F%28%5Cd%7B1%2C2%7D%3A%5Cd%7B2%7D%29%5Cs%2A-%5Cs%2A%28%5Cd%7B1%2C2%7D%3A%5Cd%7B2%7D%29%2F%29%3B%0Aif%20%28d%20%3E%3D%200%20%26%26%20t%29%20ses.push%28%5Bd%2C%20mins%28t%5B1%5D%29%2C%20mins%28t%5B2%5D%29%5D%29%3B%0A%7D%29%3B%0Ahorario.push%28%5Bc%5B0%5D%2C%20m%5B1%5D.toUpperCase%28%29%2C%20m%5B2%5D%2C%20c%5B2%5D%20%7C%7C%20%27%27%2C%20ses%5D%29%3B%0A%7D%29%3B%0A%7D%0A%7D%20catch%20%28e%29%20%7B%20curso%20%3D%20null%3B%20horario%20%3D%20null%3B%20%7D%0Avar%20freq%20%3D%20%7B%7D%3B%20acred.forEach%28function%20%28a%29%20%7B%20freq%5Ba%5B0%5D%5B0%5D%5D%20%3D%20%28freq%5Ba%5B0%5D%5B0%5D%5D%20%7C%7C%200%29%20%2B%201%3B%20%7D%29%3B%0Avar%20claveCar%20%3D%20Object.keys%28freq%29.sort%28function%20%28a%2C%20b%29%20%7B%20return%20freq%5Bb%5D%20-%20freq%5Ba%5D%3B%20%7D%29%5B0%5D%20%7C%7C%20null%3B%0Avar%20data%20%3D%20%7B%0Aupiita_saes%3A%201%2C%0Aunidad%3A%20UNIDAD%2C%0Aleido%3A%20new%20Date%28%29.toISOString%28%29%2C%0Aboleta%3A%20%28gen.match%28%2FBOLETA%3A%5Cs%2A%28%5Cd%7B10%7D%29%2Fi%29%20%7C%7C%20%5B%5D%29%5B1%5D%20%7C%7C%20%28%28label%28cita%2C%20%2F%5EBOLETA%3A%3F%24%2Fi%29%20%7C%7C%20%27%27%29.match%28%2F%5Cd%7B10%7D%2F%29%20%7C%7C%20%5B%5D%29%5B0%5D%20%7C%7C%20null%2C%0Anombre%3A%20%28gen.match%28%2FNOMBRE%3A%5Cs%2A%28.%2B%3F%29%5Cs%2A%28CARRERA%7CPLAN%7C%24%29%2Fi%29%20%7C%7C%20%5B%5D%29%5B1%5D%20%7C%7C%20label%28cita%2C%20%2F%5ENOMBRE%3A%3F%24%2Fi%29%20%7C%7C%20clean%28%28byId%28cita%2C%20%27Lbl_Nombre%27%29%20%7C%7C%20%7B%7D%29.textContent%29%2C%0Acarrera%3A%20claveCar%2C%0Acarrera_nombre%3A%20clean%28%28cita.querySelector%28%27%5Bid%24%3D%22mainCopy_DpdCarrera%22%5D%20option%3Achecked%27%29%20%7C%7C%20%7B%7D%29.textContent%29%2C%0Aplan%3A%20%28cita.querySelector%28%27%5Bid%24%3D%22mainCopy_dpdPlanEstudios%22%5D%20option%3Achecked%27%29%20%7C%7C%20%7B%7D%29.value%20%7C%7C%20null%2C%0Apromedio%3A%20num%28pick%28p%2C%20%2F%5Epromedio%2Fi%29%29%2C%0Areprobadas_num%3A%20num%28pick%28p%2C%20%2Freprobadas%24%2Fi%29%29%2C%0Acita%3A%20%7B%20inicio%3A%20pick%28p%2C%20%2Ffecha%20inscrip%2Fi%29%2C%20fin%3A%20pick%28p%2C%20%2Fcaducidad%2Fi%29%20%7D%2C%0Acarga%3A%20%7B%0Atotal%3A%20num%28pick%28p%2C%20%2F%5Etotal%20de%20creditos%24%2Fi%29%29%2C%20max%3A%20num%28pick%28p%2C%20%2Fm.xima%20de%20creditos%2Fi%29%29%2C%0Amedia%3A%20num%28pick%28p%2C%20%2Fmedia%20de%20creditos%2Fi%29%29%2C%20min%3A%20num%28pick%28p%2C%20%2Fm.nima%20de%20creditos%2Fi%29%29%2C%0Aduracion%3A%20num%28pick%28p%2C%20%2Fduraci.n%20de%20la%20carrera%20en%2Fi%29%29%2C%20duracion_max%3A%20num%28pick%28p%2C%20%2Fduraci.n%20m.xima%2Fi%29%29%0A%7D%2C%0Aavance%3A%20%7B%0Aobtenidos%3A%20num%28pick%28p%2C%20%2Fhas%20obtenido%2Fi%29%29%2C%20faltan%3A%20num%28pick%28p%2C%20%2Fte%20faltan%2Fi%29%29%2C%0Acursados%3A%20num%28pick%28p%2C%20%2Fque%20cursaste%2Fi%29%29%2C%20disponibles%3A%20num%28pick%28p%2C%20%2Fdisponibles%2Fi%29%29%2C%0Aautorizada%3A%20pick%28p%2C%20%2Fcarga%20autorizada%2Fi%29%0A%7D%2C%0Areprobadas%3A%20repro%2C%0Adesfase_saes%3A%20pick%28p%2C%20%2Freprobadas%20de%20%5Cd%2Fi%29%2C%0Areprobadas_periodo%3A%20estado%2C%0Ano_cursadas%3A%20secc%20%3F%20secc.no_cursadas%20%3A%20null%2C%0Adesfasadas_saes%3A%20secc%20%3F%20secc.desfasadas%20%3A%20null%2C%0Aen_curso%3A%20curso%2C%0Ahorario_inscrito%3A%20horario%2C%0Aacreditadas%3A%20acred%0A%7D%3B%0Avar%20json%20%3D%20JSON.stringify%28data%29%3B%0Avar%20row%20%3D%20function%20%28k%2C%20v%29%20%7B%20return%20%27%3Ctr%3E%3Ctd%20style%3D%22color%3A%2352525b%3Bpadding%3A2px%2012px%202px%200%22%3E%27%20%2B%20k%20%2B%20%27%3C%2Ftd%3E%3Ctd%20style%3D%22font-weight%3A600%22%3E%27%20%2B%20%28v%20%3D%3D%20null%20%7C%7C%20v%20%3D%3D%3D%20%27%27%20%3F%20%27%E2%80%94%27%20%3A%20v%29%20%2B%20%27%3C%2Ftd%3E%3C%2Ftr%3E%27%3B%20%7D%3B%0Abox.innerHTML%20%3D%20%27%3Cdiv%20style%3D%22display%3Aflex%3Bjustify-content%3Aspace-between%3Bgap%3A8px%3Balign-items%3Acenter%22%3E%3Cb%20style%3D%22font-size%3A16px%22%3ELector%20UPIITA%3C%2Fb%3E%3Cbutton%20id%3D%22ul-x%22%20style%3D%22border%3A0%3Bbackground%3Anone%3Bfont-size%3A20px%3Bcursor%3Apointer%22%20aria-label%3D%22Cerrar%22%3E%C3%97%3C%2Fbutton%3E%3C%2Fdiv%3E%27%20%2B%0A%27%3Cp%20style%3D%22margin%3A4px%200%2010px%3Bcolor%3A%2352525b%22%3EResumen%20de%20la%20informaci%C3%B3n%20consultada%20en%20el%20SAES.%20No%20se%20envi%C3%B3%20a%20ning%C3%BAn%20servidor.%3C%2Fp%3E%27%20%2B%0A%27%3Ctable%20style%3D%22border-collapse%3Acollapse%3Bfont-size%3A13px%22%3E%27%20%2B%0Arow%28%27Boleta%27%2C%20data.boleta%29%20%2B%20row%28%27Carrera%27%2C%20data.carrera_nombre%20%2B%20%28data.plan%20%3F%20%27%20%28plan%20%27%20%2B%20data.plan%20%2B%20%27%29%27%20%3A%20%27%27%29%29%20%2B%0Arow%28%27Promedio%27%2C%20data.promedio%29%20%2B%20row%28%27Materias%20acreditadas%27%2C%20acred.length%29%20%2B%20row%28%27Materias%20en%20curso%27%2C%20curso%20%3F%20curso.length%20%3A%20null%29%20%2B%0Arow%28%27Cr%C3%A9ditos%20obtenidos%27%2C%20data.avance.obtenidos%29%20%2B%20row%28%27Periodos%20cursados%27%2C%20data.avance.cursados%29%20%2B%0Arow%28%27Carga%20autorizada%27%2C%20data.avance.autorizada%29%20%2B%20row%28%27Reprobadas%27%2C%20repro.length%20%3F%20repro.map%28function%20%28r%29%20%7B%20return%20r%5B0%5D.toLowerCase%28%29%3B%20%7D%29.join%28%27%2C%20%27%29%20%3A%20%27ninguna%27%29%20%2B%0Arow%28%27Cita%20de%20reinscripci%C3%B3n%27%2C%20data.cita.inicio%29%20%2B%20%27%3C%2Ftable%3E%27%20%2B%0A%27%3Cdiv%20style%3D%22display%3Aflex%3Bflex-wrap%3Awrap%3Bgap%3A8px%3Bmargin-top%3A12px%22%3E%27%20%2B%0A%27%3Cbutton%20id%3D%22ul-copy%22%20style%3D%22background%3A%23750946%3Bcolor%3A%23fff%3Bborder%3A0%3Bborder-radius%3A999px%3Bpadding%3A8px%2016px%3Bfont-weight%3A600%3Bcursor%3Apointer%22%3ECopiar%20mis%20datos%3C%2Fbutton%3E%27%20%2B%0A%28TOOL%20%3F%20%27%3Ca%20id%3D%22ul-open%22%20href%3D%22%27%20%2B%20TOOL%20%2B%20%27%22%20target%3D%22_blank%22%20rel%3D%22noopener%22%20style%3D%22border%3A1px%20solid%20%23d9d9de%3Bborder-radius%3A999px%3Bpadding%3A8px%2016px%3Bcolor%3A%2318181b%3Btext-decoration%3Anone%3Bfont-weight%3A500%22%3EAbrir%20Horarios%20UPIITA%3C%2Fa%3E%27%20%3A%20%27%27%29%20%2B%20%27%3C%2Fdiv%3E%27%20%2B%0A%27%3Cp%20id%3D%22ul-msg%22%20style%3D%22margin%3A10px%200%200%3Bcolor%3A%2352525b%3Bfont-size%3A13px%22%3EDespu%C3%A9s%2C%20en%20la%20herramienta%2C%20pulsa%20%3Cb%3EUsar%20mis%20datos%20del%20SAES%3C%2Fb%3E%20y%20pega%20con%20Ctrl%2BV.%3C%2Fp%3E%27%20%2B%0A%27%3Ctextarea%20id%3D%22ul-txt%22%20readonly%20style%3D%22position%3Aabsolute%3Bleft%3A-9999px%3Bwidth%3A1px%3Bheight%3A1px%22%3E%3C%2Ftextarea%3E%27%3B%0Adocument.getElementById%28%27ul-x%27%29.onclick%20%3D%20function%20%28%29%20%7B%20box.remove%28%29%3B%20%7D%3B%0Adocument.getElementById%28%27ul-copy%27%29.onclick%20%3D%20async%20function%20%28%29%20%7B%0Avar%20msg%20%3D%20document.getElementById%28%27ul-msg%27%29%3B%0Atry%20%7B%20await%20navigator.clipboard.writeText%28json%29%3B%20%7D%0Acatch%20%28e%29%20%7B%20var%20t%20%3D%20document.getElementById%28%27ul-txt%27%29%3B%20t.value%20%3D%20json%3B%20t.select%28%29%3B%20document.execCommand%28%27copy%27%29%3B%20%7D%0Amsg.innerHTML%20%3D%20%27%3Cb%20style%3D%22color%3A%2315803d%22%3ECopiado.%3C%2Fb%3E%20Ahora%20abre%20la%20herramienta%2C%20pulsa%20%3Cb%3EUsar%20mis%20datos%20del%20SAES%3C%2Fb%3E%20y%20pega%20con%20Ctrl%2BV.%27%3B%0A%7D%3B%0A%7D%20catch%20%28e%29%20%7B%0Abox.innerHTML%20%3D%20%27%3Cb%20style%3D%22font-size%3A16px%22%3ELector%20UPIITA%3C%2Fb%3E%3Cp%20style%3D%22margin%3A6px%200%200%22%3E%27%20%2B%0A%28e.message%20%3D%3D%3D%20%27sesion%27%20%3F%20%27No%20se%20detect%C3%B3%20una%20sesi%C3%B3n%20activa%20del%20SAES.%20Inicia%20sesi%C3%B3n%20y%20ejecuta%20nuevamente%20el%20marcador.%27%20%3A%20%27No%20fue%20posible%20leer%20la%20informaci%C3%B3n%3A%20%27%20%2B%20e.message%29%20%2B%0A%27%3C%2Fp%3E%3Cbutton%20onclick%3D%22this.parentNode.remove%28%29%22%20style%3D%22margin-top%3A10px%3Bborder%3A1px%20solid%20%23d9d9de%3Bbackground%3A%23fff%3Bborder-radius%3A999px%3Bpadding%3A6px%2014px%3Bcursor%3Apointer%22%3ECerrar%3C%2Fbutton%3E%27%3B%0A%7D%0A%7D%29%28%29%3B" draggable="true" onclick="event.preventDefault()">Lector UPIITA</a></p>
         <details><summary>Mostrar la barra de marcadores</summary><ul>
           <li><b>Chrome, Edge, Brave u Opera:</b> pulsa <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> (en Mac, <kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd>).</li>
           <li><b>Firefox:</b> clic derecho en la barra superior › Barra de marcadores › Mostrar siempre.</li>
@@ -600,7 +682,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
   <textarea class="saes-paste" id="saes-paste" placeholder="Pega aquí tus datos del SAES (Ctrl+V)" aria-label="Pegar datos del SAES"></textarea>
   <div class="actions" style="display:flex;gap:8px;align-items:center;margin-top:8px"><span id="saes-msg" aria-live="polite" style="font-size:.86rem"></span><button class="btn" id="saes-clear" type="button" style="margin-left:auto" hidden>Borrar mis datos</button></div>
   <p class="saes-note" style="margin:10px 0 0">El marcador solo consulta tu Kárdex, tu Estado general, tu horario actual y tu Cita de reinscripción; no inscribe, no modifica ni envía nada. Los datos se guardan únicamente en este navegador.</p>
-  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 02/10/2026 16:42</p>
+  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 02/10/2026 18:10</p>
 </dialog></div>
     <div class="notice" id="notice"></div>
   </div>
@@ -788,7 +870,373 @@ const norm=s=>s.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
 const hm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
 const toMin=t=>{const[h,m]=t.split(':').map(Number);return h*60+m};
 const fmtCr=n=>Number.isInteger(+n)?String(+n):(+n).toFixed(2).replace(/0$/,'');
-const store={get(k,d){try{const v=localStorage.getItem('hu.'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('hu.'+k,JSON.stringify(v))}catch(e){}}};
+
+/* ---------- perfil IPN-tools: respaldo y sincronización con la cuenta institucional (tools/cuenta.py) ---------- */
+var IPNT=window.IPNT=(()=>{
+  const CFG={"clientId": "7e8e5a95-4337-4652-8b07-3450306cda8f", "tenant": "common", "googleClientId": "959269733-d3h3qm0dtqpshebnabum1jr2g0l6geoa.apps.googleusercontent.com", "unidades": [{"id": "upiita", "siglas": "UPIITA", "nombre": "Unidad Profesional Interdisciplinaria en Ingenier\u00eda y Tecnolog\u00edas Avanzadas", "disponible": true}], "version": "1.1.0", "unidad": "upiita", "msal": "https://cdn.jsdelivr.net/npm/@azure/msal-browser@4.30.0/lib/msal-browser.min.js", "sri": "sha384-RGxxfG5yRS8DLU7ZJ8OoLhbV/BsJFHyPuMVHrTLbpj3t5Z15LnviJmaznKY/a7LZ"}, FILE='perfil.ipnt.json', MS_SCOPES=['Files.ReadWrite.AppFolder'],
+    GO_SCOPES='openid email profile https://www.googleapis.com/auth/drive.appdata';
+  // qué se guarda: todo lo de Horarios (hu.) y Electivas (ue.), menos el estado de pantalla de cada dispositivo
+  const SYNC=/^(hu\.|ue\.)|^saes\.alumno$|^perfil\.opciones$/, LOCAL=/^hu\.(tab|per|tur|niv|view|mview|cview|mobnote)$/;
+  const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}},
+    del(k){try{localStorage.removeItem(k)}catch(e){}},keys(){try{return Object.keys(localStorage)}catch(e){return[]}},
+    obj(k,d){try{return JSON.parse(localStorage.getItem(k)||'null')||d}catch(e){return d}},put(k,o){try{localStorage.setItem(k,JSON.stringify(o))}catch(e){}}};
+  const opt=()=>ls.obj('perfil.opciones',null)||ls.obj('ipnt.opt',{saes:false});   // ipnt.opt: versión anterior (solo local)
+  if(!ls.get('perfil.opciones')&&ls.get('ipnt.opt')) ls.set('perfil.opciones',ls.get('ipnt.opt'));   // migración de la casilla local
+  const sincroniza=k=>SYNC.test(k)&&!LOCAL.test(k)&&(k!=='saes.alumno'||opt().saes);
+  const parse=s=>{try{return JSON.parse(s)}catch(e){return s}};
+  let timer=null, busy=null, prov=null, cuenta=null, st={fase:'',ultimo:ls.get('ipnt.last'),error:''};
+
+  /* ---- documento ---- */
+  function documento(base){
+    const t=ls.obj('ipnt.t',{}), b=ls.obj('ipnt.b',{}), claves={}, borrados={};
+    // lo que este navegador no maneja (p. ej. datos del SAES sin autorización) se conserva tal como estaba
+    if(base) for(const [k,e] of Object.entries(base.claves||{})) if(SYNC.test(k)&&!LOCAL.test(k)&&!sincroniza(k)) claves[k]=e;
+    for(const k of ls.keys()) if(sincroniza(k)) claves[k]={t:t[k]||0,v:parse(ls.get(k))};
+    for(const [k,v] of Object.entries(b)) if(sincroniza(k)&&!(k in claves)) borrados[k]=v;
+    if(base) for(const [k,v] of Object.entries(base.borrados||{})) if(!(k in claves)&&!(k in borrados)) borrados[k]=v;
+    return {ipnt:1,tipo:'perfil',app:'IPN-tools',version:CFG.version||'',unidad:CFG.unidad||'',guardado:new Date().toISOString(),claves,borrados};
+  }
+  function validar(d){
+    if(!d||typeof d!=='object'||d.tipo!=='perfil'||typeof d.claves!=='object') throw new Error('El archivo no es un perfil de IPN-tools.');
+    if(!(d.ipnt>=1)) throw new Error('El archivo no es un perfil de IPN-tools.');
+    if(d.ipnt>1) throw new Error('El perfil se guardó con una versión más nueva de la herramienta. Actualiza la página.');
+    return d;
+  }
+  // fusión clave por clave: gana la marca de tiempo más reciente; devuelve cuántas claves cambiaron aquí.
+  // nubeGana (al iniciar sesión): lo guardado en la cuenta sustituye lo que había en el navegador; lo que solo
+  // existe en el navegador se conserva y se sube.
+  function fusionar(d,nubeGana){
+    const t=ls.obj('ipnt.t',{}), b=ls.obj('ipnt.b',{});let n=0;
+    // perfiles guardados antes de que la casilla se sincronizara: si la nube trae datos del SAES, el alumno ya lo autorizó
+    if(d.claves?.['saes.alumno']&&!d.claves['perfil.opciones']&&!ls.get('perfil.opciones')){ls.set('perfil.opciones',JSON.stringify({saes:true}));t['perfil.opciones']=0}
+    const es=Object.entries(d.claves||{}).sort(([a],[c])=>(c==='perfil.opciones')-(a==='perfil.opciones'));
+    for(const [k,e] of es){
+      if(!sincroniza(k)||!e) continue;
+      const mia=t[k]??b[k]??null, hay=ls.get(k)!=null;
+      if(nubeGana||(e.t||0)>(mia||0)||(!hay&&mia==null)){const v=JSON.stringify(e.v);if(ls.get(k)!==v){ls.set(k,v);n++}t[k]=e.t||0;delete b[k]}
+    }
+    for(const [k,bt] of Object.entries(d.borrados||{})){
+      if(!sincroniza(k)) continue;
+      if((nubeGana||bt>(t[k]||0))&&ls.get(k)!=null){ls.del(k);n++;b[k]=bt;delete t[k]}
+    }
+    ls.put('ipnt.t',t);ls.put('ipnt.b',b);return n;
+  }
+  const firma=d=>JSON.stringify([Object.entries(d.claves||{}).map(([k,e])=>[k,e.t]).sort(),Object.entries(d.borrados||{}).sort()]);
+
+  /* ---- registro de cambios (lo llaman las páginas al guardar) ---- */
+  function touch(k){if(!sincroniza(k))return;const t=ls.obj('ipnt.t',{}),b=ls.obj('ipnt.b',{});t[k]=Date.now();delete b[k];ls.put('ipnt.t',t);ls.put('ipnt.b',b);programar()}
+  // escritura de las páginas: solo cuenta como cambio si el valor es distinto (volver a guardar lo mismo no gana la fusión)
+  function set(k,v){const antes=ls.get(k);if(!ls.set(k,v))return;if(antes!==v)touch(k)}
+  function borrar(k){if(!sincroniza(k))return;const t=ls.obj('ipnt.t',{}),b=ls.obj('ipnt.b',{});delete t[k];b[k]=Date.now();ls.put('ipnt.t',t);ls.put('ipnt.b',b);programar()}
+  function programar(){if(!cuenta)return;clearTimeout(timer);timer=setTimeout(()=>{timer=null;sincronizar('auto')},3000)}
+
+  /* ---- proveedores: misma interfaz (disponible, listo, recuperar, entrar, bajar, subir, salir) ---- */
+  const cargar=(src,attrs={})=>new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;Object.assign(s,attrs);
+    s.onload=ok;s.onerror=()=>no(new Error('No se pudo cargar el inicio de sesión. Revisa tu conexión.'));document.head.appendChild(s)});
+  const expirada=()=>{const e=new Error('Tu sesión expiró. Vuelve a conectar tu cuenta.');e.expirada=true;return e};
+  async function con(tok,url,o={}){return fetch(url,{...o,headers:{...(o.headers||{}),Authorization:'Bearer '+await tok()}})}
+
+  // Microsoft Entra ID + OneDrive (carpeta de la aplicación: Aplicaciones › IPN-tools)
+  const MS={id:'ms',nube:'OneDrive',pca:null,acc:null,
+    disponible:()=>!!CFG.clientId,
+    async listo(){
+      if(this.pca) return;
+      if(!window.msal) await cargar(CFG.msal,{integrity:CFG.sri,crossOrigin:'anonymous'});
+      const pca=new msal.PublicClientApplication({auth:{clientId:CFG.clientId,authority:'https://login.microsoftonline.com/'+CFG.tenant,
+        redirectUri:location.origin+location.pathname,navigateToLoginRequestUrl:false},cache:{cacheLocation:'localStorage'}});
+      await pca.initialize();
+      const r=await pca.handleRedirectPromise().catch(e=>{st.error=texto(e);return null});
+      this.acc=r?.account||pca.getActiveAccount()||pca.getAllAccounts()[0]||null;
+      if(this.acc) pca.setActiveAccount(this.acc);
+      this.pca=pca;
+    },
+    async recuperar(){await this.listo();return this.acc?{name:this.acc.name||'',username:this.acc.username}:null},
+    async entrar(){
+      await this.listo();
+      let r;
+      try{r=await this.pca.loginPopup({scopes:MS_SCOPES,prompt:'select_account',redirectUri:new URL('auth.html',location.href).href})}
+      catch(e){ // ventanas emergentes bloqueadas (frecuente en teléfonos): inicio de sesión en la misma pestaña
+        if(/popup_window_error|empty_window_error|block/i.test(String(e?.errorCode||e?.message))){ls.set('ipnt.prov','ms');await this.pca.loginRedirect({scopes:MS_SCOPES,prompt:'select_account'});return null}
+        throw e}
+      this.acc=r.account;this.pca.setActiveAccount(this.acc);
+      return {name:this.acc.name||'',username:this.acc.username};
+    },
+    tok:async()=>{try{return (await MS.pca.acquireTokenSilent({scopes:MS_SCOPES,account:MS.acc})).accessToken}
+      catch(e){if(e instanceof msal.InteractionRequiredAuthError)throw expirada();throw e}},
+    G:'https://graph.microsoft.com/v1.0/me/drive/special/approot:/'+FILE,
+    async bajar(){
+      const r=await con(this.tok,this.G);
+      if(r.status===404) return {doc:null,ver:null};
+      if(!r.ok) throw new Error('OneDrive respondió '+r.status+' al leer tu perfil.');
+      const it=await r.json(), c=it['@microsoft.graph.downloadUrl']?await fetch(it['@microsoft.graph.downloadUrl']):await con(this.tok,this.G+':/content');
+      return {doc:validar(await c.json()),ver:it.eTag};
+    },
+    async subir(d,ver){
+      const r=await con(this.tok,this.G+':/content',{method:'PUT',headers:{'Content-Type':'application/json',...(ver?{'If-Match':ver}:{'If-None-Match':'*'})},body:JSON.stringify(d)});
+      if(r.status===412||r.status===409) return null;   // otro dispositivo escribió antes: se vuelve a fusionar
+      if(!r.ok) throw new Error('OneDrive respondió '+r.status+' al guardar tu perfil.');
+      return true;
+    },
+    async salir(){try{if(this.pca&&this.acc)await this.pca.clearCache({account:this.acc})}catch(e){}this.acc=null}
+  };
+
+  // Google + Google Drive (espacio privado de la aplicación, appDataFolder: no aparece entre los archivos del alumno).
+  // Sin servidor, Google entrega tokens de 1 hora sin renovación automática: al vencer se pide «Volver a conectar».
+  const GO={id:'google',nube:'Google Drive',tc:null,fid:null,
+    disponible:()=>!!CFG.googleClientId,
+    async listo(){
+      if(!window.google?.accounts?.oauth2) await cargar('https://accounts.google.com/gsi/client');
+      if(!this.tc) this.tc=google.accounts.oauth2.initTokenClient({client_id:CFG.googleClientId,scope:GO_SCOPES,callback:()=>{}});
+    },
+    pedir(prompt){return new Promise((ok,no)=>{
+      this.tc.callback=r=>r.error?no(new Error(r.error_description||r.error)):ok(r);
+      this.tc.error_callback=e=>no(new Error(e?.type==='popup_closed'?'user_cancelled':e?.type==='popup_failed_to_open'?'popup_window_error':(e?.message||e?.type||'error')));
+      const acc=ls.obj('ipnt.gacc',null);
+      this.tc.requestAccessToken({prompt,...(acc?.username?{login_hint:acc.username}:{})});
+    })},
+    async recuperar(){const a=ls.obj('ipnt.gacc',null);return a?{name:a.name,username:a.username}:null},
+    async entrar(){
+      await this.listo();
+      const r=await this.pedir(ls.obj('ipnt.gacc',null)?'':'select_account');
+      if(!google.accounts.oauth2.hasGrantedAllScopes(r,'https://www.googleapis.com/auth/drive.appdata'))
+        throw new Error('Para guardar tus datos, autoriza el acceso al espacio de la aplicación en Google Drive.');
+      ls.put('ipnt.gtok',{v:r.access_token,exp:Date.now()+(+r.expires_in||3600)*1000-60000});
+      const u=await (await fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+r.access_token}})).json();
+      const a={name:u.name||'',username:u.email||''};ls.put('ipnt.gacc',a);return a;
+    },
+    tok:async()=>{const t=ls.obj('ipnt.gtok',null);if(t&&t.exp>Date.now())return t.v;throw expirada()},
+    D:'https://www.googleapis.com/drive/v3/files', U:'https://www.googleapis.com/upload/drive/v3/files',
+    async buscar(){
+      const q=encodeURIComponent(`name='${FILE}' and trashed=false`);
+      const r=await con(this.tok,`${this.D}?spaces=appDataFolder&q=${q}&fields=files(id,version)&orderBy=modifiedTime%20desc&pageSize=1`);
+      if(r.status===401) throw expirada();
+      if(!r.ok) throw new Error('Google Drive respondió '+r.status+' al leer tu perfil.');
+      return (await r.json()).files?.[0]||null;
+    },
+    async bajar(){
+      const f=await this.buscar();if(!f){this.fid=null;return {doc:null,ver:null}}
+      this.fid=f.id;
+      const c=await con(this.tok,`${this.D}/${f.id}?alt=media`);
+      if(!c.ok) throw new Error('Google Drive respondió '+c.status+' al leer tu perfil.');
+      return {doc:validar(await c.json()),ver:f.version};
+    },
+    async subir(d,ver){
+      const body=JSON.stringify(d);
+      if(!this.fid){
+        if(await this.buscar()) return null;   // otro dispositivo lo creó mientras tanto: se vuelve a fusionar
+        const b='ipnt'+Math.random().toString(36).slice(2), meta={name:FILE,parents:['appDataFolder'],mimeType:'application/json'};
+        const r=await con(this.tok,`${this.U}?uploadType=multipart&fields=id`,{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+b},
+          body:`--${b}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(meta)}\r\n--${b}\r\nContent-Type: application/json\r\n\r\n${body}\r\n--${b}--`});
+        if(!r.ok) throw new Error('Google Drive respondió '+r.status+' al guardar tu perfil.');
+        this.fid=(await r.json()).id;return true;
+      }
+      // Drive no admite escritura condicional: se comprueba la versión justo antes de escribir
+      const m=await con(this.tok,`${this.D}/${this.fid}?fields=version`);
+      if(m.ok&&ver&&(await m.json()).version!==ver) return null;
+      const r=await con(this.tok,`${this.U}/${this.fid}?uploadType=media`,{method:'PATCH',headers:{'Content-Type':'application/json'},body});
+      if(!r.ok) throw new Error('Google Drive respondió '+r.status+' al guardar tu perfil.');
+      return true;
+    },
+    async salir(){const t=ls.obj('ipnt.gtok',null);try{if(t&&window.google?.accounts?.oauth2)google.accounts.oauth2.revoke(t.v,()=>{})}catch(e){}
+      ls.del('ipnt.gtok');ls.del('ipnt.gacc');this.fid=null}
+  };
+  const PROV={ms:MS,google:GO};
+
+  /* modo: 'login' (gana la nube y se recarga), 'abrir' y 'volver' (al abrir la página o regresar a la pestaña: se
+     recarga si llegaron cambios de otro dispositivo), 'auto' (tras un cambio propio: solo se avisa) */
+
+  /* ---- al iniciar sesión: si la cuenta y el navegador tienen datos distintos, el alumno elige ---- */
+  const ETQ=k=>/^hu\.w\./.test(k)?'planes de horario y marcas':/^hu\.t\./.test(k)?'materias elegidas en el mapa':/^ue\./.test(k)?'actividades de Electivas':
+    k==='saes.alumno'?'datos del SAES':'preferencias y filtros';
+  function diferencias(d){
+    const out=new Set();
+    for(const [k,e] of Object.entries(d.claves||{})){
+      if(!sincroniza(k)||!e||k==='perfil.opciones') continue;
+      const v=ls.get(k);if(v!=null&&v!==JSON.stringify(e.v)) out.add(ETQ(k));
+    }
+    return [...out];
+  }
+  function elegir(d,dif){return new Promise(ok=>{
+    const dl=$i('ipnt-conf');if(!dl){ok('nube');return}
+    const n=Object.keys(d.claves||{}).filter(k=>sincroniza(k)).length;
+    $i('ipnt-conf-txt').innerHTML=`Tu cuenta ya tiene datos guardados${d.guardado?' (última vez: <b>'+esc(hora(d.guardado))+'</b>)':''}, `+
+      `y este navegador tiene datos distintos en: <b>${dif.map(esc).join(', ')}</b>.`;
+    const fin=r=>{dl.onclick=null;if(dl.close)dl.close();else dl.removeAttribute('open');ok(r)};
+    dl.onclick=e=>{const b=e.target.closest('[data-conf]');if(b)fin(b.dataset.conf)};
+    dl.oncancel=e=>e.preventDefault();   // hay que elegir una opción
+    if(dl.showModal)dl.showModal();else dl.setAttribute('open','');
+  })}
+  // «conservar lo de este navegador»: sus valores se marcan como los más recientes y ganan la fusión
+  function ganaLocal(){const t=ls.obj('ipnt.t',{}),b=ls.obj('ipnt.b',{}),ahora=Date.now();
+    for(const k of ls.keys()) if(sincroniza(k)){t[k]=ahora;delete b[k]}
+    ls.put('ipnt.t',t);ls.put('ipnt.b',b)}
+
+  function sincronizar(modo){
+    if(!cuenta||!prov) return Promise.resolve(0);
+    if(busy){programar();return busy}
+    st.fase='sync';st.error='';pintar();
+    busy=(async()=>{
+      let cambios=0;
+      for(let i=0;i<3;i++){
+        const {doc,ver}=await prov.bajar();
+        let nube=modo==='login'&&i===0;
+        if(doc&&nube){const dif=diferencias(doc);if(dif.length&&(await elegir(doc,dif))==='local'){ganaLocal();nube=false}}
+        if(doc) cambios+=fusionar(doc,nube);
+        const mio=documento(doc);
+        if(doc&&firma(doc)===firma(mio)) return cambios;
+        if(await prov.subir(mio,ver)) return cambios;
+      }
+      throw new Error('No se pudo guardar: otro dispositivo está escribiendo al mismo tiempo. Intenta de nuevo.');
+    })().then(n=>{
+      st.fase='ok';st.ultimo=new Date().toISOString();ls.set('ipnt.last',st.ultimo);
+      if(n>0){
+        // la página lee sus datos al cargar: se recarga para mostrarlos (sin repetir en menos de 15 s, para no ciclar)
+        let ult=0;try{ult=+sessionStorage.getItem('ipnt.recarga')||0}catch(e){}
+        if(modo!=='auto'&&Date.now()-ult>15000){try{sessionStorage.setItem('ipnt.recarga',String(Date.now()))}catch(e){}location.reload();return n}
+        st.fase='cambios';
+      }
+      return n;
+    }).catch(e=>{st.fase=e?.expirada?'expirada':'error';st.error=texto(e);return 0}).finally(()=>{busy=null;pintar()});
+    return busy;
+  }
+  const texto=e=>{const m=String(e?.errorMessage||e?.message||e||'');
+    if(/AADSTS65001|AADSTS90094|consent/i.test(m)) return 'El IPN aún no autoriza esta aplicación para las cuentas institucionales (se requiere la aprobación del administrador).';
+    if(/user_cancelled|cancel|access_denied/i.test(m)) return 'Inicio de sesión cancelado.';
+    if(/popup_window_error/i.test(m)) return 'El navegador bloqueó la ventana de inicio de sesión. Permite las ventanas emergentes para este sitio.';
+    return m.split('\n')[0].slice(0,220)};
+  async function entrar(id){
+    const p=PROV[id];if(!p)return;
+    st.error='';st.fase='login';st.prov=id;pintar();
+    try{
+      const a=await p.entrar();if(!a)return;   // redirección en curso
+      if(prov&&prov!==p) await prov.salir();
+      prov=p;cuenta=a;ls.set('ipnt.prov',id);ls.set('ipnt.cuenta',a.username);
+      await sincronizar('login');
+    }catch(e){st.fase='error';st.error=texto(e);pintar()}
+  }
+  async function salir(borrarLocal){
+    if(prov) await prov.salir();
+    prov=null;cuenta=null;['ipnt.cuenta','ipnt.prov','ipnt.last'].forEach(k=>ls.del(k));st={fase:'',ultimo:null,error:''};
+    if(borrarLocal){for(const k of ls.keys())if(/^(hu\.|ue\.|saes\.|ipnt\.)/.test(k))ls.del(k);location.reload();return}
+    pintar();
+  }
+
+  /* ---- respaldo en archivo ---- */
+  function descargar(){
+    const d=documento(null), a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,1)],{type:'application/json'}));
+    a.download='ipn-tools-respaldo-'+new Date().toISOString().slice(0,10)+'.ipnt.json';
+    document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);
+  }
+  async function restaurar(file){
+    const d=validar(JSON.parse(await file.text())), ahora=Date.now(), t=ls.obj('ipnt.t',{});let n=0;
+    const b=ls.obj('ipnt.b',{});
+    for(const [k,e] of Object.entries(d.claves)) if(SYNC.test(k)&&!LOCAL.test(k)&&e){ls.set(k,JSON.stringify(e.v));t[k]=ahora;delete b[k];n++}
+    ls.put('ipnt.t',t);ls.put('ipnt.b',b);
+    if(cuenta) await sincronizar('auto');
+    return n;
+  }
+
+  /* ---- interfaz ---- */
+  const $i=id=>document.getElementById(id);
+  const hora=iso=>{if(!iso)return'';const d=new Date(iso);return d.toLocaleDateString('es-MX',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})};
+  function pintar(){
+    const btn=$i('ipnt-open'), dl=$i('ipnt-dlg');if(!btn||!dl)return;
+    const on=!!cuenta, nom=on?(cuenta.name||cuenta.username):'', nube=prov?.nube||'la nube';
+    btn.classList.toggle('on',on);btn.classList.toggle('warn',st.fase==='error'||st.fase==='expirada'||st.fase==='cambios');
+    btn.querySelector('span').textContent=on?(nom.split(/\s+/)[0]||'Mi cuenta'):'Iniciar sesión';
+    btn.title=on?`Sesión: ${cuenta.username}`:'Inicia sesión para guardar tus datos en tu nube';
+    $i('ipnt-out').hidden=on;$i('ipnt-in').hidden=!on;
+    $i('ipnt-login').disabled=!MS.disponible()||st.fase==='login';$i('ipnt-glogin').disabled=!GO.disponible()||st.fase==='login';
+    $i('ipnt-glogin').hidden=!GO.disponible();$i('ipnt-gnote').hidden=!GO.disponible();
+    $i('ipnt-soon').hidden=MS.disponible()||GO.disponible();
+    if(on){$i('ipnt-who').textContent=nom+(cuenta.name?` · ${cuenta.username}`:'');$i('ipnt-where').textContent=nube}
+    const s=$i('ipnt-state'), f=st.fase;
+    s.className='ipnt-state '+(f==='error'||f==='expirada'?'bad':f==='cambios'?'warn':f==='ok'?'ok':'');
+    s.innerHTML=f==='sync'?'Sincronizando…':f==='login'?`Abriendo el inicio de sesión de ${st.prov==='google'?'Google':'Microsoft'}…`:
+      f==='cambios'?'Se recibieron cambios de otro dispositivo. <button class="link" type="button" data-ipnt-reload>Recargar para verlos</button>':
+      f==='error'||f==='expirada'?esc(st.error):on&&st.ultimo?`Guardado en tu ${nube} · `+hora(st.ultimo):on?'Conectado.':'';
+    if(!on&&st.error&&f!=='sync'){s.className='ipnt-state bad';s.textContent=st.error}
+    $i('ipnt-saes').checked=!!opt().saes;
+    $i('ipnt-relogin').hidden=f!=='expirada';
+    $i('ipnt-relogin').textContent=prov?.id==='google'?'Volver a conectar con Google':'Volver a iniciar sesión';
+  }
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function wire(){
+    const dl=$i('ipnt-dlg'), btn=$i('ipnt-open');if(!dl||!btn)return;
+    // las bibliotecas se cargan al abrir el diálogo: así el clic en «Continuar con…» puede abrir la ventana emergente
+    const abrir=()=>{if(dl.showModal&&!dl.open)dl.showModal();else dl.setAttribute('open','');
+      if(MS.disponible())MS.listo().catch(()=>{});if(GO.disponible())GO.listo().catch(()=>{});pintar()};
+    const cerrar=()=>{if(dl.close)dl.close();else dl.removeAttribute('open')};
+    btn.addEventListener('click',abrir);$i('ipnt-x').addEventListener('click',cerrar);dl.addEventListener('click',e=>{if(e.target===dl)cerrar()});
+    $i('ipnt-login').addEventListener('click',()=>entrar('ms'));$i('ipnt-glogin').addEventListener('click',()=>entrar('google'));
+    $i('ipnt-relogin').addEventListener('click',()=>entrar(prov?.id||ls.get('ipnt.prov')||'ms'));
+    $i('ipnt-sync').addEventListener('click',()=>sincronizar('volver'));
+    $i('ipnt-logout').addEventListener('click',()=>salir(false));
+    $i('ipnt-wipe').addEventListener('click',()=>{const c=$i('ipnt-wipe-ok');c.hidden=!c.hidden});
+    $i('ipnt-wipe-yes').addEventListener('click',()=>salir(true));
+    $i('ipnt-saes').addEventListener('change',e=>{const o={...opt(),saes:e.target.checked};set('perfil.opciones',JSON.stringify(o));if(o.saes&&ls.get('saes.alumno'))touch('saes.alumno')});
+    $i('ipnt-down').addEventListener('click',descargar);
+    $i('ipnt-file').addEventListener('change',async e=>{const f=e.target.files[0],m=$i('ipnt-filemsg');if(!f)return;
+      try{const n=await restaurar(f);m.className='ipnt-state ok';m.textContent=`Respaldo restaurado (${n} elementos). Recargando…`;setTimeout(()=>location.reload(),900)}
+      catch(err){m.className='ipnt-state bad';m.textContent=texto(err)}e.target.value=''});
+    dl.addEventListener('click',e=>{if(e.target.closest('[data-ipnt-reload]'))location.reload()});
+    // al volver a la pestaña se traen los cambios de otros dispositivos; al salir se guarda lo pendiente
+    document.addEventListener('visibilitychange',()=>{if(!cuenta||st.fase==='expirada')return;
+      if(document.visibilityState==='hidden'){if(timer){clearTimeout(timer);timer=null;sincronizar('auto')}}
+      else if(!timer&&(!st.ultimo||Date.now()-new Date(st.ultimo)>20000))sincronizar('volver')});
+    pintar();
+    // sesión guardada (o regreso del inicio de sesión de Microsoft en la misma pestaña)
+    const id=ls.get('ipnt.prov')||(ls.get('ipnt.cuenta')||/[#&?](code|error)=/.test(location.hash+location.search)?'ms':null), p=PROV[id];
+    if(p&&p.disponible()) p.recuperar().then(a=>{
+      if(!a){if(st.error)st.fase='error';pintar();return}
+      const recien=!ls.get('ipnt.cuenta');   // regreso del inicio de sesión en la misma pestaña (Microsoft en teléfono)
+      prov=p;cuenta=a;ls.set('ipnt.prov',id);ls.set('ipnt.cuenta',a.username);pintar();sincronizar(recien?'login':'abrir');
+    }).catch(e=>{st.fase='error';st.error=texto(e);pintar()});
+  }
+  /* ---- bienvenida: primera visita (sin carrera, planes, marcas, actividades ni sesión en este navegador) ---- */
+  const NUEVO=!ls.get('ipnt.bienvenida')&&!ls.get('ipnt.cuenta')&&!ls.keys().some(k=>/^(hu\.|ue\.|saes\.alumno$)/.test(k)&&!LOCAL.test(k));
+  function bienvenida(o){
+    const dl=$i('ipnt-hola'), sel=document.querySelector(o.select);
+    if(!NUEVO||!dl||!sel) return;
+    const UN=CFG.unidades||[], cars=[...sel.options].map(op=>[op.value,op.textContent.trim()]).filter(c=>c[0]);
+    let uni=CFG.unidad;
+    const listo=()=>{ls.set('ipnt.bienvenida','1');if(dl.close)dl.close();else dl.removeAttribute('open')};
+    const pintarH=()=>{
+      $i('ipnt-h-uni').hidden=UN.length<2;
+      if(UN.length<2)$i('ipnt-h-lead').textContent='Para empezar, elige tu carrera. Puedes cambiarla después.';
+      $i('ipnt-h-unis').innerHTML=UN.map(u=>`<button type="button" class="ipnt-uni" data-uni="${esc(u.id)}" aria-pressed="${u.id===uni}"><b>${esc(u.siglas)}</b><small>${esc(u.nombre)}</small>${u.disponible?'':'<em>En preparación</em>'}</button>`).join('');
+      const u=UN.find(x=>x.id===uni)||{};
+      $i('ipnt-h-cars').innerHTML=u.id===CFG.unidad?
+        `<h3>${UN.length>1?'2. ':''}Elige tu carrera</h3><div class="ipnt-cars">${cars.map(([k,v])=>`<button type="button" class="btn" data-car="${esc(k)}">${esc(v)}</button>`).join('')}</div>`:
+        u.url?`<p>La herramienta de ${esc(u.siglas)} está en <a href="${esc(u.url)}">${esc(u.url)}</a>.</p>`:
+        `<p class="saes-note">La versión para ${esc(u.siglas||'tu unidad')} se está preparando con alumnos de la unidad. Mientras tanto puedes explorar la de la ${esc((UN.find(x=>x.id===CFG.unidad)||{}).siglas||'')}.</p>`;
+      $i('ipnt-h-yo').hidden=!cuenta;
+      if(cuenta)$i('ipnt-h-yo').textContent=`Sesión iniciada: ${cuenta.name||cuenta.username}. Si ya tenías datos guardados, la página se actualizará sola; si no, elige tu carrera.`;
+      $i('ipnt-h-ms').hidden=!MS.disponible();$i('ipnt-h-go').hidden=!GO.disponible();
+      $i('ipnt-h-login').hidden=!!cuenta||!(MS.disponible()||GO.disponible());
+    };
+    dl.addEventListener('click',async e=>{
+      const b=e.target.closest('button');if(!b)return;
+      if(b.dataset.uni){uni=b.dataset.uni;pintarH();return}
+      if(b.dataset.car){sel.value=b.dataset.car;sel.dispatchEvent(new Event('change',{bubbles:true}));listo();return}
+      if(b.dataset.prov){
+        const m=$i('ipnt-h-msg');m.className='ipnt-state';m.textContent='Abriendo el inicio de sesión…';
+        await entrar(b.dataset.prov);
+        if(cuenta){m.textContent='';ls.set('ipnt.bienvenida','1')}else{m.className='ipnt-state bad';m.textContent=st.error||''}
+        pintarH();return}
+      if(b.hasAttribute('data-hola-x'))listo();
+    });
+    dl.addEventListener('cancel',()=>ls.set('ipnt.bienvenida','1'));   // Esc: no se vuelve a mostrar
+    if(MS.disponible())MS.listo().catch(()=>{});if(GO.disponible())GO.listo().catch(()=>{});   // listas para el clic
+    pintarH();
+    if(dl.showModal)dl.showModal();else dl.setAttribute('open','');
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else setTimeout(wire,0);
+  return {bienvenida,diferencias,elegir,set,touch,borrar,documento,fusionar,validar,sincronizar,descargar,restaurar,get cuenta(){return cuenta},get proveedor(){return prov?.id||null}};
+})();
+
+const store={get(k,d){try{const v=localStorage.getItem('hu.'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){IPNT.set('hu.'+k,JSON.stringify(v))}};   // IPNT: perfil sincronizable (tools/cuenta.py)
 
 const S={tab:store.get('tab','tray'),per:store.get('per','proximo'),car:store.get('car','B'),tur:store.get('tur','*'),niv:store.get('niv','*'),q:'',view:store.get('view','materia'),
   hide:store.get('hide',false),fit:false,gap:null,onlyWant:store.get('onlyWant',true),weekend:store.get('weekend',false),chips:[],hover:null,acIdx:-1,acItems:[],ownDays:[],
@@ -817,8 +1265,8 @@ const save=()=>store.set('w.'+S.per,ws());
 const SAES={
   KEY:'saes.alumno',
   load(){try{const v=JSON.parse(localStorage.getItem(this.KEY)||'null');return v&&v.upiita_saes===1?v:null}catch(e){return null}},
-  save(d){try{localStorage.setItem(this.KEY,JSON.stringify(d))}catch(e){}},
-  clear(){try{localStorage.removeItem(this.KEY)}catch(e){}},
+  save(d){if(window.IPNT)IPNT.set(this.KEY,JSON.stringify(d));else try{localStorage.setItem(this.KEY,JSON.stringify(d))}catch(e){}},
+  clear(){try{localStorage.removeItem(this.KEY)}catch(e){}if(window.IPNT)IPNT.borrar(this.KEY)},
   parse(t){try{const d=JSON.parse(String(t||'').trim());if(d&&d.upiita_saes===1&&Array.isArray(d.acreditadas))return d}catch(e){}return null},
   autorizada(d){const m=String(d?.avance?.autorizada||'').match(/(\d+(?:\.\d+)?)\s*CR/i)||String(d?.avance?.autorizada||'').match(/(\d+(?:\.\d+)?)/);return m?+m[1]:null},
   open(){const dl=document.getElementById('saes-dlg');if(!dl)return;if(dl.showModal&&!dl.open)dl.showModal();else dl.setAttribute('open','')},
@@ -831,6 +1279,7 @@ const SAES={
     dl.querySelector('#saes-x').addEventListener('click',()=>SAES.close());
     dl.addEventListener('click',e=>{if(e.target===dl)SAES.close()});   // clic fuera de la ventana
     const take=t=>{const d=SAES.parse(t);if(!d){msg.innerHTML='<span class="bad">El contenido no corresponde al Lector UPIITA. Ejecuta el marcador en el SAES y selecciona «Copiar mis datos».</span>';return}
+      if(d.unidad&&d.unidad!=='upiita'){msg.innerHTML='<span class="bad">Estos datos son del SAES de '+String(d.unidad).toUpperCase()+'. Esta versión de la herramienta es de la UPIITA.</span>';return}
       SAES.save(d);paste.value='';msg.innerHTML='<span class="ok">Datos del SAES cargados.</span>';onLoad(d);setTimeout(()=>SAES.close(),900)};
     paste.addEventListener('paste',e=>{e.preventDefault();take(e.clipboardData.getData('text'))});
     paste.addEventListener('input',()=>{if(paste.value.trim().startsWith('{'))take(paste.value)});
@@ -861,7 +1310,7 @@ const SAES={
   },
   status(d){
     const st=document.getElementById('saes-status'), btn=document.getElementById('saes-open');
-    if(btn){btn.classList.toggle('on',!!d);btn.querySelector('span').textContent=d?'Mis datos del SAES':'Usar mis datos del SAES';
+    if(btn){btn.classList.toggle('on',!!d);btn.querySelector('span').textContent=d?'Actualizar mis datos del SAES':'Usar mis datos del SAES';
       btn.title=d?'Datos del SAES cargados. Selecciona para actualizarlos o eliminarlos.':'Incorpora tu avance desde el SAES (opcional)'}
     if(!st)return;
     st.hidden=!d;document.getElementById('saes-steps').hidden=!!d;document.getElementById('saes-clear').hidden=!d;
@@ -2117,6 +2566,7 @@ if(ALUMNO&&DATA.mapas[ALUMNO.carrera])S.car=ALUMNO.carrera;
 const mobNote=()=>{$('#mobnote').hidden=!(MQ_PHONE.matches&&!store.get('mobnote',0))};
 mobNote();MQ_PHONE.addEventListener('change',()=>{mobNote();render()});
 render();
+IPNT.bienvenida({select:'#f-carrera'});   // primera visita: unidad, carrera o inicio de sesión
 SAES.status(ALUMNO);
 SAES.wire(d=>{ALUMNO=d;for(const k in T)delete T[k];if(d&&DATA.mapas[d.carrera]){S.car=d.carrera;store.set('car',S.car)}S.tab='tray';render();SAES.status(d)});
 </script>
