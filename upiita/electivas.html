@@ -315,7 +315,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
 </dialog>
 <dialog class="saes-dlg ipnt-dlg ipnt-hola" id="ipnt-hola" aria-labelledby="ipnt-hola-h">
   <div class="dl-head"><h2 id="ipnt-hola-h">Bienvenida</h2><button class="x" type="button" data-hola-x aria-label="Cerrar">×</button></div>
-  <p class="lead" id="ipnt-h-lead">Para empezar, dinos de qué unidad y carrera eres. Puedes cambiarlo después.</p>
+  <p class="lead" id="ipnt-h-lead">Para empezar, dinos de qué unidad y carrera eres.</p>
   <div id="ipnt-h-uni"><h3>1. Elige tu unidad académica</h3>
   <div class="ipnt-unis" id="ipnt-h-unis"></div></div>
   <div id="ipnt-h-cars"></div>
@@ -373,7 +373,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
   <textarea class="saes-paste" id="saes-paste" placeholder="Pega aquí tus datos del SAES (Ctrl+V)" aria-label="Pegar datos del SAES"></textarea>
   <div class="actions" style="display:flex;gap:8px;align-items:center;margin-top:8px"><span id="saes-msg" aria-live="polite" style="font-size:.86rem"></span><button class="btn" id="saes-clear" type="button" style="margin-left:auto" hidden>Borrar mis datos</button></div>
   <p class="saes-note" style="margin:10px 0 0">El marcador solo consulta tu Kárdex, tu Estado general, tu horario actual y tu Cita de reinscripción; no inscribe, no modifica ni envía nada. Los datos se guardan únicamente en este navegador.</p>
-  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 02/10/2026 18:10</p>
+  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 02/10/2026 18:11</p>
 </dialog></div>
   </header>
   <div class="saes-mm" id="saes-mismatch" role="status" hidden></div>
@@ -932,7 +932,7 @@ var IPNT=window.IPNT=(()=>{
     const listo=()=>{ls.set('ipnt.bienvenida','1');if(dl.close)dl.close();else dl.removeAttribute('open')};
     const pintarH=()=>{
       $i('ipnt-h-uni').hidden=UN.length<2;
-      if(UN.length<2)$i('ipnt-h-lead').textContent='Para empezar, elige tu carrera. Puedes cambiarla después.';
+      if(UN.length<2)$i('ipnt-h-lead').textContent='Para empezar, elige tu carrera.';
       $i('ipnt-h-unis').innerHTML=UN.map(u=>`<button type="button" class="ipnt-uni" data-uni="${esc(u.id)}" aria-pressed="${u.id===uni}"><b>${esc(u.siglas)}</b><small>${esc(u.nombre)}</small>${u.disponible?'':'<em>En preparación</em>'}</button>`).join('');
       const u=UN.find(x=>x.id===uni)||{};
       $i('ipnt-h-cars').innerHTML=u.id===CFG.unidad?
