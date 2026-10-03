@@ -292,6 +292,7 @@ input[type=number]{width:5rem}
 .mapcut-info .mapvista{align-self:flex-start;flex-wrap:wrap;margin-top:4px}
 .box.compact{line-height:1.05;overflow:hidden}
 .box.optfill{outline:1.5px dashed var(--muted);outline-offset:2px}
+.box.slot:has(.slot-sig){flex-direction:column;gap:1px;overflow:hidden}
 .box.slot .slot-sig{display:block;font-size:.85em;opacity:.85;margin-top:2px;line-height:1.15}
 .box.want{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
 .box.want::after{content:"✓";position:absolute;top:1px;right:4px;font-size:.95em;color:inherit}
@@ -810,7 +811,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
   <textarea class="saes-paste" id="saes-paste" placeholder="Pega aquí tus datos del SAES (Ctrl+V)" aria-label="Pegar datos del SAES"></textarea>
   <div class="actions" style="display:flex;gap:8px;align-items:center;margin-top:8px"><span id="saes-msg" aria-live="polite" style="font-size:.86rem"></span><button class="btn" id="saes-clear" type="button" style="margin-left:auto" hidden>Borrar mis datos</button></div>
   <p class="saes-note" style="margin:10px 0 0">El marcador solo consulta tu Kárdex, tu Estado general, tu horario actual y tu Cita de reinscripción; no inscribe, no modifica ni envía nada. Los datos se guardan únicamente en este navegador.</p>
-  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 03/10/2026 04:49</p>
+  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 03/10/2026 04:54</p>
 </dialog></div>
     <div class="notice" id="notice"></div>
   </div>
