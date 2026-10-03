@@ -1,0 +1,4 @@
+# Archivos protegidos (ver AGENTS.md): se guardan y se sacan byte por byte, sin convertir fines de línea,
+# para que su huella SHA-256 (src/build/protected.json) sea la misma en Windows, Linux y GitHub Pages.
+upiita/** -text
+googlebd435cdd0b631f3c.html -text

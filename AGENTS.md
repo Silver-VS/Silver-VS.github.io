@@ -46,6 +46,17 @@ de marca) y en marcadores que los alumnos ya guardaron en sus navegadores:
 - No agregues configuración de Jekyll (`_config.yml` con `exclude`, `include` o plugins) que afecte a
   `/upiita/`.
 
+## Huellas de los archivos protegidos
+
+- `src/build/protected.json` (del portafolio) guarda la huella SHA-256 de cada archivo de `/upiita/**` y de
+  `/googlebd435cdd0b631f3c.html`. **Cada publicación de IPN-tools lo regenera en el mismo commit** con
+  `tools/huellas_sitio.py` del repositorio IPN-tools. Ese cambio es legítimo, no una alteración.
+- `.gitattributes` marca esos archivos como `-text`, así que Git no convierte sus fines de línea y la huella es la
+  misma en Windows, Linux y GitHub Pages. No quites esas reglas.
+- Si después de actualizar la copia local las pruebas reportan «Protected file changed» en Windows, vuelve a sacar
+  los archivos sin conversión: borra `upiita/` y `googlebd435cdd0b631f3c.html` y ejecuta
+  `git checkout -- upiita googlebd435cdd0b631f3c.html`.
+
 ## Antes de terminar
 
 1. El bloque protegido sigue en el `<head>` de `/index.html`: `grep -n google-site-verification index.html`.
