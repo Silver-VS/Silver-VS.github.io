@@ -20,10 +20,11 @@
   "upiita/auth.html": "f546f81c4b537eecfd167c6d5770aac6fcfe4a76e04b8cb75c5a7b09a51b9702",
   "upiita/captura.js": "1bc263ed98d232a353df9f578584067fc4f9c5e862b68e18cab1945dd858294b",
   "upiita/condiciones.html": "864b6f2d41a7f36d72d5afb199403ff310065e782063f925802d18dabae2eaca",
-  "upiita/electivas.html": "5420947fe4a9799f9d12b99f39c6e84846ea0a1b40eb198b6c683df99c8e81b2",
-  "upiita/horarios.html": "f7a4ead262375ecb0edfbe5db4bae07570cc0b68a941732cc312697552b190ff",
-  "upiita/index.html": "9c05f454f7b4a5dcc2301a8563d011db7572327755adb51def749ad748e89906",
-  "upiita/lector.js": "3c39a64d25aacf15b2f469845b1b67a7bea2182cc7ef299863f140d58d9dd640",
+  "upiita/electivas.html": "b5625ce2c661ea36b08948f851706045934fe9f861fed8e81a00b31ca9699336",
+  "upiita/horarios-escom.html": "b6f46bc58ae8b03fe448d428d9187e196b966101559b99082f06634db3790f51",
+  "upiita/horarios.html": "e680e40003fae1a68eb1d4aa32085894d7d61674b56e7d72c6441f8c8333522f",
+  "upiita/index.html": "4a1a269e5098ab50d925194af31e379d38b18febdb5682839c3726c6ca7ec706",
+  "upiita/lector.js": "94fc8334fb75d45c9f5f0a5c9d55175f2658ed7508b200a8f0e1ce5f2ecceceb",
   "upiita/privacidad.html": "7de3328e88b0c7d99b4f8ca4964d1010db9ab2e79002aea11a2b810860effa16",
   "upiita/revision.html": "f4c4ad1a2de176963964d501834498f00a05ce835c1143f2bcc15e0d518077a6"
 }

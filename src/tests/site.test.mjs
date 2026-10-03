@@ -56,7 +56,7 @@ test('all generated local links and fragments resolve',()=>{
   }
 });
 test('Google verification block and all independent application bytes are preserved',()=>{
-  assert.equal(checkProtected(),27);
+  assert.equal(checkProtected(),28);
   const block=fs.readFileSync(path.join(root,'src/build/verification.html'),'utf8');
   assert.ok(fs.readFileSync(path.join(root,'index.html'),'utf8').includes(block));
 });
