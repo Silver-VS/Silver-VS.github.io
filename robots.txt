@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://silver-vs.github.io/sitemap.xml

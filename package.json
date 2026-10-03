@@ -1,0 +1,16 @@
+{
+  "name": "silvers-workbench",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node src/build/build.mjs",
+    "test": "node --test src/tests/*.test.mjs",
+    "preview": "node src/build/serve.mjs"
+  },
+  "devDependencies": {
+    "marked": "^16.4.0"
+  }
+}

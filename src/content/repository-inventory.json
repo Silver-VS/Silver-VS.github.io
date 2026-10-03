@@ -1,0 +1,212 @@
+[
+  {
+    "name": "Silver-VS.github.io",
+    "url": "https://github.com/Silver-VS/Silver-VS.github.io",
+    "public": true,
+    "description": "",
+    "updated": "2026-10-02",
+    "node": "P-001",
+    "reason": "Source-backed catalog entry.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "IPN-tools",
+    "url": "https://github.com/Silver-VS/IPN-tools",
+    "public": true,
+    "description": "Herramientas web para alumnos del IPN: trayectoria, armado de horarios con datos del SAES y liberación de electivas (UPIITA)",
+    "updated": "2026-10-02",
+    "node": "P-002",
+    "reason": "Source-backed catalog entry.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "folio.latex.io",
+    "url": "https://github.com/Silver-VS/folio.latex.io",
+    "public": true,
+    "description": "A fast, native LaTeX IDE built on the IntelliJ Platform. Live preview, project templates, and toolchain-agnostic compilation.",
+    "updated": "2026-04-30",
+    "node": "X-002",
+    "reason": "Source-backed catalog entry.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "Kerberos-Echo",
+    "url": "https://github.com/Silver-VS/Kerberos-Echo",
+    "public": true,
+    "description": "In Greek myth, Echo is the nymph who can only repeat others’ words. This is an echo of the real Kerberos: it imitates behavior, but it has no power of its own.",
+    "updated": "2025-11-24",
+    "node": "P-003",
+    "reason": "Source-backed catalog entry.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "ProyectoGenetics",
+    "url": "https://github.com/Silver-VS/ProyectoGenetics",
+    "public": true,
+    "description": "",
+    "updated": "2024-06-06",
+    "node": "P-004",
+    "reason": "Source-backed catalog entry.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "Practica2",
+    "url": "https://github.com/Silver-VS/Practica2",
+    "public": true,
+    "description": "",
+    "updated": "2024-05-20",
+    "node": "P-005",
+    "reason": "Source-backed catalog entry.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "Practica1",
+    "url": "https://github.com/Silver-VS/Practica1",
+    "public": true,
+    "description": "",
+    "updated": "2024-05-20",
+    "node": "P-010",
+    "reason": "Source-backed catalog entry.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "Laboratorio-SO",
+    "url": "https://github.com/Silver-VS/Laboratorio-SO",
+    "public": true,
+    "description": "",
+    "updated": "2024-03-21",
+    "node": "P-009",
+    "reason": "Source-backed catalog entry.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "4S",
+    "url": "https://github.com/Silver-VS/4S",
+    "public": true,
+    "description": "",
+    "updated": "2023-09-17",
+    "node": null,
+    "reason": "Only an empty C source file is present; no implementation claim is supported.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "Learning",
+    "url": "https://github.com/Silver-VS/Learning",
+    "public": true,
+    "description": "To start my C++ journey",
+    "updated": "2022-08-03",
+    "node": "N-005",
+    "reason": "Source-backed catalog entry.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "ToShare",
+    "url": "https://github.com/Silver-VS/ToShare",
+    "public": true,
+    "description": "",
+    "updated": "2022-03-07",
+    "node": null,
+    "reason": "Image-sharing material without a documented project purpose.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "Apuntes_6IM7_CECyT9_2022-2",
+    "url": "https://github.com/Silver-VS/Apuntes_6IM7_CECyT9_2022-2",
+    "public": true,
+    "description": "",
+    "updated": "2022-04-08",
+    "node": null,
+    "reason": "Shared class notes; README credits Irmin. Not republished or presented as sole-authored work.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "FirmaDigitalWeb",
+    "url": "https://github.com/Silver-VS/FirmaDigitalWeb",
+    "public": true,
+    "description": "",
+    "updated": "2022-01-03",
+    "node": "P-006",
+    "reason": "Source-backed catalog entry.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "HangedMan",
+    "url": "https://github.com/Silver-VS/HangedMan",
+    "public": true,
+    "description": "Ahorcado.",
+    "updated": "2022-01-03",
+    "node": "P-008",
+    "reason": "Source-backed catalog entry.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "KerberosAndDistribution",
+    "url": "https://github.com/Silver-VS/KerberosAndDistribution",
+    "public": true,
+    "description": "Kerberos 4 with secure distribution of keys (previous to Kerberos auth).",
+    "updated": "2021-12-02",
+    "node": "P-011",
+    "reason": "Source-backed catalog entry.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "Kerberos",
+    "url": "https://github.com/Silver-VS/Kerberos",
+    "public": true,
+    "description": "",
+    "updated": "2021-11-26",
+    "node": "P-012",
+    "reason": "Source-backed catalog entry.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "CoralCorp",
+    "url": "https://github.com/Silver-VS/CoralCorp",
+    "public": true,
+    "description": "",
+    "updated": "2021-11-22",
+    "node": null,
+    "reason": "Placeholder repository: README title and a project directory marker, without a current implementation.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "NumbersToLetters",
+    "url": "https://github.com/Silver-VS/NumbersToLetters",
+    "public": true,
+    "description": "Convert numbers to letters (in Spanish), up to 9 digits.",
+    "updated": "2021-09-28",
+    "node": "P-007",
+    "reason": "Source-backed catalog entry.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "Proyecto-Aula",
+    "url": "https://github.com/Silver-VS/Proyecto-Aula",
+    "public": true,
+    "description": "",
+    "updated": "2020-11-14",
+    "node": null,
+    "reason": "Initial Java console exercise with two greeting messages; retained as early history.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "hola-git",
+    "url": "https://github.com/Silver-VS/hola-git",
+    "public": true,
+    "description": "Tutorial básico de git.",
+    "updated": "2020-11-14",
+    "node": null,
+    "reason": "Introductory README rather than a substantive tutorial body or implementation.",
+    "reviewed": "2026-10-02"
+  },
+  {
+    "name": "hello-worls",
+    "url": "https://github.com/Silver-VS/hello-worls",
+    "public": true,
+    "description": "First repository with hello world code.",
+    "updated": "2020-07-26",
+    "node": null,
+    "reason": "Initial repository README; not presented as a finished project.",
+    "reviewed": "2026-10-02"
+  }
+]

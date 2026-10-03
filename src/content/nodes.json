@@ -1,0 +1,695 @@
+[
+  {
+    "id": "P-001",
+    "kind": "work",
+    "slug": "silvers-workbench",
+    "title": "Silver's Workbench",
+    "summary": "A public engineering workspace for projects, technical writing, and unfinished investigations.",
+    "type": "website",
+    "status": "prototype",
+    "fields": [
+      "software",
+      "systems"
+    ],
+    "technologies": [
+      "JavaScript",
+      "HTML",
+      "CSS",
+      "Markdown"
+    ],
+    "created": "2026-10-02",
+    "updated": "2026-10-02",
+    "featured": false,
+    "source": "https://github.com/Silver-VS/Silver-VS.github.io",
+    "body": "work/silvers-workbench.md",
+    "relations": [
+      {
+        "target": "N-001",
+        "type": "documentation"
+      },
+      {
+        "target": "G-001",
+        "type": "guide"
+      },
+      {
+        "target": "X-001",
+        "type": "related"
+      }
+    ]
+  },
+  {
+    "id": "N-001",
+    "kind": "notebook",
+    "slug": "workbench-content-model",
+    "title": "A content model for the Workbench",
+    "summary": "Why artifacts, documentation, and investigations belong in separate collections, with explicit links between them.",
+    "entryType": "note",
+    "fields": [
+      "software",
+      "systems"
+    ],
+    "technologies": [
+      "Markdown",
+      "JSON"
+    ],
+    "created": "2026-10-02",
+    "updated": "2026-10-02",
+    "body": "notebook/workbench-content-model.md",
+    "relations": [
+      {
+        "target": "P-001",
+        "type": "implementation"
+      },
+      {
+        "target": "G-001",
+        "type": "related"
+      }
+    ],
+    "featured": false
+  },
+  {
+    "id": "G-001",
+    "kind": "notebook",
+    "slug": "publishing-a-node",
+    "title": "Publishing a Workbench node",
+    "summary": "Add a Markdown entry, describe its metadata and relationships, then build and validate the static site.",
+    "entryType": "guide",
+    "fields": [
+      "software"
+    ],
+    "technologies": [
+      "Markdown",
+      "JavaScript",
+      "Git"
+    ],
+    "created": "2026-10-02",
+    "updated": "2026-10-02",
+    "body": "notebook/publishing-a-node.md",
+    "relations": [
+      {
+        "target": "P-001",
+        "type": "related"
+      },
+      {
+        "target": "N-001",
+        "type": "documentation"
+      }
+    ],
+    "featured": false
+  },
+  {
+    "id": "X-001",
+    "kind": "lab",
+    "slug": "relationships-on-small-screens",
+    "title": "Relationships on small screens",
+    "summary": "Finding a useful mobile presentation for links between projects, notes, and investigations.",
+    "status": "researching",
+    "fields": [
+      "software"
+    ],
+    "technologies": [
+      "CSS",
+      "SVG"
+    ],
+    "created": "2026-10-02",
+    "updated": "2026-10-02",
+    "body": "lab/relationships-on-small-screens.md",
+    "hypothesis": "A linked list can preserve relationship meaning when a schematic no longer fits the screen.",
+    "observation": "The supplied desktop design uses a node map; its mobile design prioritizes content and navigation.",
+    "result": "Open question. The initial implementation uses a compact list on mobile; user evaluation is still pending.",
+    "relations": [
+      {
+        "target": "P-001",
+        "type": "related"
+      },
+      {
+        "target": "N-001",
+        "type": "documentation"
+      }
+    ],
+    "featured": false
+  },
+  {
+    "id": "P-002",
+    "kind": "work",
+    "slug": "ipn-tools",
+    "title": "IPN-tools",
+    "summary": "Browser-based academic planning: curriculum maps, SAES schedule generation, and UPIITA elective paperwork.",
+    "fields": [
+      "software",
+      "systems"
+    ],
+    "technologies": [
+      "JavaScript",
+      "Python",
+      "HTML",
+      "CSS"
+    ],
+    "created": "2026-10-02",
+    "updated": "2026-10-02",
+    "source": "https://github.com/Silver-VS/IPN-tools",
+    "body": "work/ipn-tools.md",
+    "relations": [
+      {
+        "target": "G-002",
+        "type": "guide"
+      }
+    ],
+    "type": "web tools",
+    "status": "prototype",
+    "featured": true
+  },
+  {
+    "id": "P-003",
+    "kind": "work",
+    "slug": "kerberos-echo",
+    "title": "Kerberos Echo",
+    "summary": "An educational Kerberos-style authentication system with independent Java processes and TCP ticket exchanges.",
+    "fields": [
+      "security",
+      "networking",
+      "cryptography"
+    ],
+    "technologies": [
+      "Java",
+      "TCP",
+      "Maven"
+    ],
+    "created": "2025-11-22",
+    "updated": "2025-11-24",
+    "source": "https://github.com/Silver-VS/Kerberos-Echo",
+    "body": "work/kerberos-echo.md",
+    "relations": [
+      {
+        "target": "N-002",
+        "type": "documentation"
+      },
+      {
+        "target": "P-011",
+        "type": "related"
+      },
+      {
+        "target": "P-012",
+        "type": "related"
+      }
+    ],
+    "type": "protocol demo",
+    "status": "prototype",
+    "featured": true
+  },
+  {
+    "id": "P-004",
+    "kind": "work",
+    "slug": "genetic-function-explorer",
+    "title": "Genetic Function Explorer",
+    "summary": "A JavaFX prototype for evaluating candidate solutions and plotting fitness history; evolutionary stages remain incomplete.",
+    "fields": [
+      "software"
+    ],
+    "technologies": [
+      "Java",
+      "JavaFX",
+      "JFreeChart",
+      "Maven",
+      "JUnit"
+    ],
+    "created": "2024-06-06",
+    "updated": "2024-06-06",
+    "source": "https://github.com/Silver-VS/ProyectoGenetics",
+    "body": "work/genetic-function-explorer.md",
+    "relations": [
+      {
+        "target": "W-001",
+        "type": "documentation"
+      },
+      {
+        "target": "X-003",
+        "type": "related"
+      },
+      {
+        "target": "P-005",
+        "type": "related"
+      }
+    ],
+    "type": "desktop prototype",
+    "status": "prototype",
+    "featured": false
+  },
+  {
+    "id": "P-005",
+    "kind": "work",
+    "slug": "binary-genetic-algorithm",
+    "title": "Binary Genetic Algorithm",
+    "summary": "A Java learning implementation of binary chromosomes, roulette selection, one-point crossover, mutation, and plotting.",
+    "fields": [
+      "software"
+    ],
+    "technologies": [
+      "Java",
+      "Swing",
+      "Maven",
+      "JUnit"
+    ],
+    "created": "2024-05-20",
+    "updated": "2024-05-20",
+    "source": "https://github.com/Silver-VS/Practica2",
+    "body": "work/binary-genetic-algorithm.md",
+    "relations": [
+      {
+        "target": "P-004",
+        "type": "related"
+      },
+      {
+        "target": "P-010",
+        "type": "related"
+      },
+      {
+        "target": "W-001",
+        "type": "documentation"
+      }
+    ],
+    "type": "learning project",
+    "status": "prototype",
+    "featured": false
+  },
+  {
+    "id": "P-006",
+    "kind": "work",
+    "slug": "digital-signature-web",
+    "title": "Digital Signature Web",
+    "summary": "A historical Java Servlet/JSP demonstration for signing document content and submitting verification requests.",
+    "fields": [
+      "software",
+      "cryptography"
+    ],
+    "technologies": [
+      "Java",
+      "Servlets",
+      "JSP",
+      "Maven"
+    ],
+    "created": "2021-11-15",
+    "updated": "2022-01-03",
+    "source": "https://github.com/Silver-VS/FirmaDigitalWeb",
+    "body": "work/digital-signature-web.md",
+    "relations": [],
+    "type": "web demo",
+    "status": "prototype",
+    "featured": false
+  },
+  {
+    "id": "P-007",
+    "kind": "work",
+    "slug": "numbers-to-letters",
+    "title": "Numbers to Letters",
+    "summary": "An Android application and Java conversion engine for expressing numbers in Spanish words.",
+    "fields": [
+      "software"
+    ],
+    "technologies": [
+      "Java",
+      "Android",
+      "Gradle"
+    ],
+    "created": "2021-09-26",
+    "updated": "2021-09-28",
+    "source": "https://github.com/Silver-VS/NumbersToLetters",
+    "body": "work/numbers-to-letters.md",
+    "relations": [
+      {
+        "target": "N-004",
+        "type": "documentation"
+      },
+      {
+        "target": "P-008",
+        "type": "related"
+      }
+    ],
+    "type": "Android app",
+    "status": "prototype",
+    "featured": false
+  },
+  {
+    "id": "P-008",
+    "kind": "work",
+    "slug": "hanged-man",
+    "title": "Hanged Man",
+    "summary": "An Android hangman game in Java with category-based word selection and illustrated attempt states.",
+    "fields": [
+      "software"
+    ],
+    "technologies": [
+      "Java",
+      "Android",
+      "Gradle"
+    ],
+    "created": "2021-09-28",
+    "updated": "2022-01-03",
+    "source": "https://github.com/Silver-VS/HangedMan",
+    "body": "work/hanged-man.md",
+    "relations": [
+      {
+        "target": "P-007",
+        "type": "related"
+      }
+    ],
+    "type": "Android game",
+    "status": "prototype",
+    "featured": false
+  },
+  {
+    "id": "P-009",
+    "kind": "work",
+    "slug": "operating-systems-lab",
+    "title": "Operating Systems Lab",
+    "summary": "C exercises exploring operating-system behavior, including concurrent character output with the Windows thread API.",
+    "fields": [
+      "systems",
+      "software"
+    ],
+    "technologies": [
+      "C",
+      "Windows API",
+      "CMake"
+    ],
+    "created": "2024-03-19",
+    "updated": "2024-03-21",
+    "source": "https://github.com/Silver-VS/Laboratorio-SO",
+    "body": "work/operating-systems-lab.md",
+    "relations": [],
+    "type": "course exercises",
+    "status": "prototype",
+    "featured": false
+  },
+  {
+    "id": "P-010",
+    "kind": "work",
+    "slug": "function-plotting-swing",
+    "title": "Function Plotting in Swing",
+    "summary": "A Java/Swing exercise that maps sampled function values to a custom Java2D plotting panel.",
+    "fields": [
+      "software"
+    ],
+    "technologies": [
+      "Java",
+      "Swing",
+      "Java2D",
+      "Maven"
+    ],
+    "created": "2024-05-20",
+    "updated": "2024-05-20",
+    "source": "https://github.com/Silver-VS/Practica1",
+    "body": "work/function-plotting-swing.md",
+    "relations": [
+      {
+        "target": "N-003",
+        "type": "documentation"
+      },
+      {
+        "target": "P-005",
+        "type": "related"
+      }
+    ],
+    "type": "learning project",
+    "status": "prototype",
+    "featured": false
+  },
+  {
+    "id": "P-011",
+    "kind": "work",
+    "slug": "kerberos-key-distribution",
+    "title": "Kerberos and Key Distribution",
+    "summary": "An earlier Java authentication study separating key distribution from ticket-based access.",
+    "fields": [
+      "security",
+      "networking",
+      "cryptography"
+    ],
+    "technologies": [
+      "Java",
+      "TCP"
+    ],
+    "created": "2021-11-30",
+    "updated": "2021-12-02",
+    "source": "https://github.com/Silver-VS/KerberosAndDistribution",
+    "body": "work/kerberos-key-distribution.md",
+    "relations": [
+      {
+        "target": "P-003",
+        "type": "related"
+      }
+    ],
+    "type": "protocol study",
+    "status": "prototype",
+    "featured": false
+  },
+  {
+    "id": "P-012",
+    "kind": "work",
+    "slug": "kerberos-original",
+    "title": "Kerberos: Original Study",
+    "summary": "The earlier Java study of client, authentication-server, ticket-server, and service roles.",
+    "fields": [
+      "security",
+      "networking",
+      "cryptography"
+    ],
+    "technologies": [
+      "Java",
+      "TCP"
+    ],
+    "created": "2021-11-09",
+    "updated": "2021-11-26",
+    "source": "https://github.com/Silver-VS/Kerberos",
+    "body": "work/kerberos-original.md",
+    "relations": [
+      {
+        "target": "P-003",
+        "type": "related"
+      }
+    ],
+    "type": "protocol study",
+    "status": "prototype",
+    "featured": false
+  },
+  {
+    "id": "N-002",
+    "kind": "notebook",
+    "slug": "kerberos-echo-ticket-sequence",
+    "title": "Reading the Kerberos Echo ticket sequence",
+    "summary": "A source-backed map of the client, AS, TGS, and service exchanges in the educational Java demo.",
+    "fields": [
+      "security",
+      "networking"
+    ],
+    "technologies": [
+      "Java",
+      "TCP"
+    ],
+    "created": "2026-10-02",
+    "updated": "2026-10-02",
+    "source": "https://github.com/Silver-VS/Kerberos-Echo",
+    "body": "notebook/kerberos-echo-ticket-sequence.md",
+    "relations": [
+      {
+        "target": "P-003",
+        "type": "implementation"
+      }
+    ],
+    "entryType": "note",
+    "featured": true
+  },
+  {
+    "id": "N-003",
+    "kind": "notebook",
+    "slug": "mapping-functions-to-screen",
+    "title": "Mapping function samples to screen coordinates",
+    "summary": "How the Swing exercise transforms a mathematical interval into Java2D positions, and where degenerate ranges matter.",
+    "fields": [
+      "software"
+    ],
+    "technologies": [
+      "Java",
+      "Swing",
+      "Java2D"
+    ],
+    "created": "2026-10-02",
+    "updated": "2026-10-02",
+    "source": "https://github.com/Silver-VS/Practica1",
+    "body": "notebook/mapping-functions-to-screen.md",
+    "relations": [
+      {
+        "target": "P-010",
+        "type": "implementation"
+      }
+    ],
+    "entryType": "note",
+    "featured": false
+  },
+  {
+    "id": "N-004",
+    "kind": "notebook",
+    "slug": "spanish-number-composition",
+    "title": "Composing Spanish number names",
+    "summary": "A reading of the units, tens, and higher-order conversion structure in the Android application.",
+    "fields": [
+      "software"
+    ],
+    "technologies": [
+      "Java",
+      "Android"
+    ],
+    "created": "2026-10-02",
+    "updated": "2026-10-02",
+    "source": "https://github.com/Silver-VS/NumbersToLetters",
+    "body": "notebook/spanish-number-composition.md",
+    "relations": [
+      {
+        "target": "P-007",
+        "type": "implementation"
+      }
+    ],
+    "entryType": "note",
+    "featured": false
+  },
+  {
+    "id": "N-005",
+    "kind": "notebook",
+    "slug": "early-cpp-exercises",
+    "title": "Early C++ exercises",
+    "summary": "A small archive entry for the first C++ study: functions, signed integers, and standard output.",
+    "fields": [
+      "software"
+    ],
+    "technologies": [
+      "C++"
+    ],
+    "created": "2026-10-02",
+    "updated": "2026-10-02",
+    "source": "https://github.com/Silver-VS/Learning",
+    "body": "notebook/early-cpp-exercises.md",
+    "relations": [],
+    "entryType": "note",
+    "featured": false
+  },
+  {
+    "id": "G-002",
+    "kind": "notebook",
+    "slug": "self-hosting-ipn-tools",
+    "title": "Self-hosting the IPN schedule planner",
+    "summary": "A reproducible outline of the public Python build and static distribution workflow, with the unit-specific limits kept explicit.",
+    "fields": [
+      "software",
+      "systems"
+    ],
+    "technologies": [
+      "Python",
+      "JavaScript",
+      "HTML"
+    ],
+    "created": "2026-10-02",
+    "updated": "2026-10-02",
+    "source": "https://github.com/Silver-VS/IPN-tools",
+    "body": "notebook/self-hosting-ipn-tools.md",
+    "relations": [
+      {
+        "target": "P-002",
+        "type": "implementation"
+      }
+    ],
+    "entryType": "guide",
+    "featured": true
+  },
+  {
+    "id": "W-001",
+    "kind": "notebook",
+    "slug": "genetic-prototypes-source-review",
+    "title": "Reading two genetic-algorithm prototypes",
+    "summary": "What the Java implementations actually contain: operators, missing stages, objective direction, and evidence limits.",
+    "fields": [
+      "software"
+    ],
+    "technologies": [
+      "Java",
+      "JavaFX",
+      "Swing"
+    ],
+    "created": "2026-10-02",
+    "updated": "2026-10-02",
+    "source": "https://github.com/Silver-VS/ProyectoGenetics",
+    "body": "notebook/genetic-prototypes-source-review.md",
+    "relations": [
+      {
+        "target": "P-004",
+        "type": "implementation"
+      },
+      {
+        "target": "P-005",
+        "type": "related"
+      },
+      {
+        "target": "X-003",
+        "type": "related"
+      }
+    ],
+    "entryType": "writeup",
+    "featured": true
+  },
+  {
+    "id": "X-002",
+    "kind": "lab",
+    "slug": "folio-latex-concept",
+    "title": "Folio: LaTeX IDE concept",
+    "summary": "A published concept for an IntelliJ-platform LaTeX IDE; the public repository has no source tree yet.",
+    "fields": [
+      "software"
+    ],
+    "technologies": [
+      "IntelliJ Platform",
+      "LaTeX"
+    ],
+    "created": "2026-10-02",
+    "updated": "2026-10-02",
+    "source": "https://github.com/Silver-VS/folio.latex.io",
+    "body": "lab/folio-latex-concept.md",
+    "relations": [],
+    "status": "researching",
+    "hypothesis": "An IDE can separate project editing and preview from the choice of LaTeX compilation toolchain.",
+    "observation": "The public repository describes the concept but contains no public source tree.",
+    "result": "No implementation result is claimed. A public source tree and build procedure are needed.",
+    "featured": true
+  },
+  {
+    "id": "X-003",
+    "kind": "lab",
+    "slug": "genetic-selection-and-replacement",
+    "title": "Selection and population replacement",
+    "summary": "An open implementation question exposed by the unfinished evolutionary stages in ProyectoGenetics.",
+    "fields": [
+      "software"
+    ],
+    "technologies": [
+      "Java",
+      "JavaFX"
+    ],
+    "created": "2026-10-02",
+    "updated": "2026-10-02",
+    "source": "https://github.com/Silver-VS/ProyectoGenetics",
+    "body": "lab/genetic-selection-and-replacement.md",
+    "relations": [
+      {
+        "target": "P-004",
+        "type": "related"
+      },
+      {
+        "target": "W-001",
+        "type": "documentation"
+      }
+    ],
+    "status": "prototyping",
+    "hypothesis": "Explicit selection and replacement contracts can make the prototype a testable evolutionary implementation.",
+    "observation": "The model currently calls empty parent-selection and new-population methods.",
+    "result": "Open. The site documents the gap; it does not claim completed operators or measured convergence.",
+    "featured": true
+  }
+]
