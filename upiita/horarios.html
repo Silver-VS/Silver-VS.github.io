@@ -90,7 +90,8 @@ input[type=number]{width:5rem}
 .wchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 4px 3px 8px;font-size:.84rem;background:var(--bg)}
 .wchip .grp{font-size:.76rem}
 .wchip .x{padding:0 6px}
-.below{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:14px}
+.below{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:14px;align-items:start}
+@media (min-width:900px){.below{grid-template-columns:repeat(2,minmax(0,1fr))}}   /* sugeridas | seriación por nivel; optativas a todo el ancho */
 .below .wide{grid-column:1/-1}
 /* Altura fija de dos renglones: al pasar el cursor cambia el contenido, nunca el tamaño (sin saltos de la página) */
 .insp{height:calc(2 * 1.5em + 12px);font-size:.88rem;line-height:1.5;padding:6px 10px;border-left:3px solid var(--accent);background:var(--surface);border-radius:0 var(--r) var(--r) 0;margin-block:8px 10px;overflow:hidden;contain:layout}
@@ -682,7 +683,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
   <textarea class="saes-paste" id="saes-paste" placeholder="Pega aquí tus datos del SAES (Ctrl+V)" aria-label="Pegar datos del SAES"></textarea>
   <div class="actions" style="display:flex;gap:8px;align-items:center;margin-top:8px"><span id="saes-msg" aria-live="polite" style="font-size:.86rem"></span><button class="btn" id="saes-clear" type="button" style="margin-left:auto" hidden>Borrar mis datos</button></div>
   <p class="saes-note" style="margin:10px 0 0">El marcador solo consulta tu Kárdex, tu Estado general, tu horario actual y tu Cita de reinscripción; no inscribe, no modifica ni envía nada. Los datos se guardan únicamente en este navegador.</p>
-  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 02/10/2026 18:11</p>
+  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 02/10/2026 18:17</p>
 </dialog></div>
     <div class="notice" id="notice"></div>
   </div>
