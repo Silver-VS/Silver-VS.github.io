@@ -805,7 +805,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
   <div id="saes-status" hidden><p style="margin:10px 0 0;font-size:.92rem"><b>Datos del SAES cargados.</b> <span class="muted" id="saes-who"></span></p>
     <p class="saes-note" style="margin:4px 0 0">Para actualizarlos usa el <b>mismo marcador Lector IPN-tools</b> que ya guardaste: entra al SAES, púlsalo, elige «Copiar mis datos» y pega el resultado abajo. No necesitas volver a instalarlo.</p>
     <p class="saes-note" style="margin:4px 0 0">¿Perdiste el marcador o cambiaste de navegador? <button class="link" id="saes-again" type="button">Ver cómo instalarlo de nuevo</button></p></div>
-  <div class="saes-aviso"><b>Tus datos no se actualizan solos.</b> Cada vez que usas el Lector se guarda una copia de tu SAES en ese momento. Vuelve a usarlo:<ul><li><b>Después de inscribirte</b>, para traer tu nuevo horario inscrito.</li><li><b>Cuando cierre el semestre</b> y se publiquen tus calificaciones: tus materias dejan de aparecer en tu horario del SAES y pasan a tu kárdex.</li></ul></div>
+  <div class="saes-aviso"><b>Tus datos no se actualizan solos.</b> Cada vez que usas el Lector se guarda una copia de tu SAES en ese momento. Vuelve a usarlo:<ul><li><b>Después de inscribirte</b>, para traer tu horario definitivo.</li><li><b>Cuando cierre el semestre</b> y se publiquen tus calificaciones: tus materias dejan de aparecer en tu horario del SAES y pasan a tu kárdex.</li></ul></div>
   <div id="saes-steps">
   <div class="saes-videos" id="saes-videos"><span>¿Prefieres verlo? Video paso a paso:</span><a class="saes-vid" data-dev="pc" href="https://youtu.be/YQPi4SeE-qc" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>Computadora</a><a class="saes-vid" data-dev="ios" href="https://youtube.com/shorts/gLHEFATT9tA" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>iPhone o iPad</a><a class="saes-vid" data-dev="android" href="https://youtu.be/eoJX2uPvyqU" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>Android</a><a class="saes-vlist" href="https://www.youtube.com/playlist?list=PLPZJV048DlEY" target="_blank" rel="noopener">Ver todos</a></div>
     <ol>
@@ -840,7 +840,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
   <textarea class="saes-paste" id="saes-paste" placeholder="Pega aquí tus datos del SAES (Ctrl+V)" aria-label="Pegar datos del SAES"></textarea>
   <div class="actions" style="display:flex;gap:8px;align-items:center;margin-top:8px"><span id="saes-msg" aria-live="polite" style="font-size:.86rem"></span><button class="btn" id="saes-clear" type="button" style="margin-left:auto" hidden>Borrar mis datos</button></div>
   <p class="saes-note" style="margin:10px 0 0">El marcador solo consulta tu Kárdex, tu Estado general, tu horario inscrito y tu Cita de reinscripción; no inscribe, no modifica ni envía nada. Los datos se guardan únicamente en este navegador.</p>
-  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 04/10/2026 00:37</p>
+  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 04/10/2026 00:41</p>
 </dialog>
 <script>(()=>{const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||/Macintosh/.test(ua)&&navigator.maxTouchPoints>1,d=ios?'ios':/Android/.test(ua)?'android':'pc';
 document.querySelector('#saes-videos [data-dev="'+d+'"]')?.classList.add('rec')})()</script></div>
@@ -1558,7 +1558,7 @@ const tr=()=>{
 function avisoActualizar(A){
   const leido=new Date(A?.leido);if(isNaN(leido))return '';
   const m=String(A?.cita?.inicio||'').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/), cita=m?new Date(+m[3],+m[2]-1,+m[1]):null;
-  if(cita&&citaPasada(A)&&leido<cita)return 'Ya pasó tu cita de reinscripción y estos datos son de antes. Si ya te inscribiste, vuelve a usar el Lector para traer tu nuevo horario inscrito.';
+  if(cita&&citaPasada(A)&&leido<cita)return 'Ya pasó tu cita de reinscripción y estos datos son de antes. Si ya te inscribiste, vuelve a usar el Lector para traer tu horario definitivo.';
   const dias=Math.floor((Date.now()-leido)/864e5);
   if(dias>=21)return `Estos datos tienen ${dias} días y no se actualizan solos. Vuelve a usar el Lector después de inscribirte o cuando cierre el semestre y se publiquen tus calificaciones (tus materias pasan del horario a tu kárdex).`;
   return '';
