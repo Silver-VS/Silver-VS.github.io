@@ -854,7 +854,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
   <textarea class="saes-paste" id="saes-paste" placeholder="Pega aquí tus datos del SAES (Ctrl+V)" aria-label="Pegar datos del SAES"></textarea>
   <div class="actions" style="display:flex;gap:8px;align-items:center;margin-top:8px"><span id="saes-msg" aria-live="polite" style="font-size:.86rem"></span><button class="btn" id="saes-clear" type="button" style="margin-left:auto" hidden>Borrar mis datos</button></div>
   <p class="saes-note" style="margin:10px 0 0">El marcador solo consulta tu Kárdex, tu Estado general, tu horario inscrito y tu Cita de reinscripción; no inscribe, no modifica ni envía nada. Los datos se guardan únicamente en este navegador.</p>
-  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 04/10/2026 19:19</p>
+  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 04/10/2026 19:25</p>
 </dialog>
 <script>(()=>{const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||/Macintosh/.test(ua)&&navigator.maxTouchPoints>1,d=ios?'ios':/Android/.test(ua)?'android':'pc';
 document.querySelector('#saes-videos [data-dev="'+d+'"]')?.classList.add('rec')})()</script></div>
@@ -2028,7 +2028,7 @@ function renderSide(){
       (DESFASE_SEM.has(S.car)?tile('Atrasadas',atraso,'según el semestre propuesto',atraso?'warn':''):'')+
       tile('Cita de reinscripción',cm?cm[1]:esc(A.cita?.inicio||'—'),citaPasada(A)?'vencida; aún no se publica la siguiente':cm?`${+cm[2]}:${cm[3]} ${cm[4]}`:'');
     $('#status').style.setProperty('--tiles',$('#status').children.length);
-    const msg=f=>f.estado==='desfasada'?(f.curso?`<span class="bad">desfasada en ${perName(meta)}</span>; la estás recursando: acreditarla este semestre evita que el SAES te impida reinscribirte`:`<span class="bad">desfasada en ${perName(meta)}</span>; debes inscribirla: el SAES no permite reinscribirse sin ella`):
+    const msg=f=>f.estado==='desfasada'?(f.curso?`<span class="bad">desfasada en ${perName(meta)}</span>; la estás recursando. ¡Ánimo! Acreditarla este semestre regulariza tu situación; si no la acreditas, necesitarás solicitar un dictamen a la Comisión de Situación Escolar para continuar`:`<span class="bad">desfasada en ${perName(meta)}</span>; debes inscribirla: el SAES no permite reinscribirse sin ella`):
       f.estado==='riesgo'?`<span class="warn">debe acreditarse en ${perName(meta)}</span> para evitar el desfase en ${perName(meta+1)}`:
       f.estado==='reciente'?`acreditar a más tardar en ${perName(f.limite)}`:'actualiza tus datos del SAES para conocer el periodo de adeudo';
     $('#desf').innerHTML=fis.length||dS.length?`<ul class="desf">${dS.map(k=>`<li class="desfasada" title="${esc(k)}"><b>${esc(pretty(c[k][0]))}</b> · <span class="bad">desfasada según el SAES</span>; debes inscribirla para reinscribirte</li>`).join('')}${fis.map(f=>`<li class="${f.estado}" title="${esc(`${f.k}${f.idx!=null?' · reprobada en '+perName(f.idx):''}${f.veces?` · cursada ${f.veces} ${f.veces==1?'vez':'veces'}`:''}`)}"><b>${esc(pretty(c[f.k][0]))}</b> · ${msg(f)}${f.curso&&!(f.estado==='desfasada')?' · en recursamiento':''}</li>`).join('')}</ul>`:'';
