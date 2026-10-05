@@ -147,7 +147,8 @@ desfasadas_saes: secc ? secc.desfasadas : null,
 en_curso: curso,
 horario_inscrito: horario,
 acreditadas: acred,
-kardex_reprobadas: kxRep
+kardex_reprobadas: kxRep,
+lector: '7b97b08'
 };
 var json = JSON.stringify(data);
 var row = function (k, v) { return '<tr><td style="color:#52525b;padding:2px 12px 2px 0">' + k + '</td><td style="font-weight:600">' + (v == null || v === '' ? '—' : v) + '</td></tr>'; };
