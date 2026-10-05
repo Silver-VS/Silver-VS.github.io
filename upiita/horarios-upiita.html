@@ -110,10 +110,11 @@ input[type=number]{width:5rem}
 .stats-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .stats-btn[aria-expanded="true"]{background:transparent;color:var(--accent);box-shadow:none}
 .stats-btn .chev{transition:transform .15s}
-.stats-bar{display:flex;width:100%;margin:14px 0 4px;padding:12px 18px;border-radius:14px;text-align:left;font-size:.95rem}
+.stats-bar{display:inline-flex;width:fit-content;align-self:flex-start;max-width:100%;margin:12px 0 2px;padding:8px 14px;border-radius:12px;text-align:left;font-size:.88rem;background:var(--accent-soft);color:var(--accent);border:1px solid var(--line);box-shadow:none}
+.stats-bar:hover{border-color:var(--accent);box-shadow:none}
 .stats-bar .sb-txt{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
-.stats-bar .sb-txt small{font-weight:500;font-size:.8rem;opacity:.85;color:inherit}
-.stats-bar[aria-expanded="true"]{border-style:dashed}.stats-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.stats-bar .sb-txt small{font-weight:400;font-size:.76rem;color:var(--muted)}
+.stats-bar[aria-expanded="true"]{background:transparent}.stats-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
 .btn:disabled{opacity:.5;cursor:default}
 .link{border:0;background:none;color:var(--accent);cursor:pointer;font-weight:600;font-size:.84rem;padding:0;white-space:nowrap}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
@@ -859,7 +860,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
   <textarea class="saes-paste" id="saes-paste" placeholder="Pega aquí tus datos del SAES (Ctrl+V)" aria-label="Pegar datos del SAES"></textarea>
   <div class="actions" style="display:flex;gap:8px;align-items:center;margin-top:8px"><span id="saes-msg" aria-live="polite" style="font-size:.86rem"></span><button class="btn" id="saes-clear" type="button" style="margin-left:auto" hidden>Borrar mis datos</button></div>
   <p class="saes-note" style="margin:10px 0 0">El marcador solo consulta tu Kárdex, tu Estado general, tu horario inscrito y tu Cita de reinscripción; no inscribe, no modifica ni envía nada. Los datos se guardan únicamente en este navegador.</p>
-  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 04/10/2026 19:28</p>
+  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 04/10/2026 19:29</p>
 </dialog>
 <script>(()=>{const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||/Macintosh/.test(ua)&&navigator.maxTouchPoints>1,d=ios?'ios':/Android/.test(ua)?'android':'pc';
 document.querySelector('#saes-videos [data-dev="'+d+'"]')?.classList.add('rec')})()</script></div>
