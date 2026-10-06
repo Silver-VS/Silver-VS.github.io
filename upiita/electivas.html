@@ -25,6 +25,129 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wdth,wght@0,62.5..100,300..800;1,100,400&family=Noto+Sans+Mono:wght@400;500&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <style>
+/* GENERADO desde tokens/*.tokens.json; no editar */
+
+/* SPDX-License-Identifier: CC0-1.0 */
+
+:root {
+  --ipn-fondo: #fafafa;
+  --ipn-superficie: #ffffff;
+  --ipn-hundido: #f4f4f5;
+  --ipn-linea: #d9d9de;
+  --ipn-borde-control: #71717a;
+  --ipn-texto: #18181b;
+  --ipn-tenue: #52525b;
+  --ipn-acento: #7A1F45;
+  --ipn-acento-fuerte: #5b1237;
+  --ipn-acento-suave: #f7eef2;
+  --ipn-sobre-acento: #ffffff;
+  --ipn-ok: #15803d;
+  --ipn-ok-suave: #ecfdf3;
+  --ipn-aviso: #8a5a00;
+  --ipn-aviso-suave: #fdf6e3;
+  --ipn-error: #b42346;
+  --ipn-error-suave: #fdecf0;
+  --ipn-info: #1f5fad;
+  --ipn-info-suave: #e8f0fb;
+  --ipn-fuente-texto: "Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ipn-fuente-mono: "Noto Sans Mono", ui-monospace, Consolas, monospace;
+  --ipn-tamano-xs: 0.75rem;
+  --ipn-tamano-s: 0.875rem;
+  --ipn-tamano-m: 1rem;
+  --ipn-tamano-l: 1.25rem;
+  --ipn-tamano-xl: 1.5rem;
+  --ipn-tamano-xxl: 2rem;
+  --ipn-esp-1: 0.25rem;
+  --ipn-esp-2: 0.5rem;
+  --ipn-esp-3: 0.75rem;
+  --ipn-esp-4: 1rem;
+  --ipn-esp-5: 1.5rem;
+  --ipn-esp-6: 2rem;
+  --ipn-esp-7: 3rem;
+  --ipn-esp-8: 4rem;
+  --ipn-radio: 0.75rem;
+  --ipn-duracion-rapida: 120ms;
+  --ipn-duracion-media: 200ms;
+  --ipn-quiebre-s: 30rem;
+  --ipn-quiebre-m: 48rem;
+  --ipn-quiebre-l: 80rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="claro"]) {
+    --ipn-fondo: #09090b;
+    --ipn-superficie: #18181b;
+    --ipn-hundido: #111113;
+    --ipn-linea: #323237;
+    --ipn-borde-control: #71717a;
+    --ipn-texto: #e4e4e7;
+    --ipn-tenue: #a1a1aa;
+    --ipn-acento: #ec9cbf;
+    --ipn-acento-fuerte: #f7c6db;
+    --ipn-acento-suave: #2e1a24;
+    --ipn-sobre-acento: #1d0a13;
+    --ipn-ok: #6ee7a0;
+    --ipn-ok-suave: #0f2a1c;
+    --ipn-aviso: #f5c56b;
+    --ipn-aviso-suave: #2f230b;
+    --ipn-error: #fda4b8;
+    --ipn-error-suave: #3a1520;
+    --ipn-info: #8db6f5;
+    --ipn-info-suave: #172638;
+  }
+}
+
+:root[data-tema="oscuro"] {
+  --ipn-fondo: #09090b;
+  --ipn-superficie: #18181b;
+  --ipn-hundido: #111113;
+  --ipn-linea: #323237;
+  --ipn-borde-control: #71717a;
+  --ipn-texto: #e4e4e7;
+  --ipn-tenue: #a1a1aa;
+  --ipn-acento: #ec9cbf;
+  --ipn-acento-fuerte: #f7c6db;
+  --ipn-acento-suave: #2e1a24;
+  --ipn-sobre-acento: #1d0a13;
+  --ipn-ok: #6ee7a0;
+  --ipn-ok-suave: #0f2a1c;
+  --ipn-aviso: #f5c56b;
+  --ipn-aviso-suave: #2f230b;
+  --ipn-error: #fda4b8;
+  --ipn-error-suave: #3a1520;
+  --ipn-info: #8db6f5;
+  --ipn-info-suave: #172638;
+}
+
+:root[data-tema="claro"] {
+}
+
+/* GENERADO desde tokens/alias.json; no editar */
+/* SPDX-License-Identifier: CC0-1.0 */
+/* Alias temporal de IPN-tools: migrar el código a --ipn-* y borrar este archivo. */
+:root {
+  --bg: var(--ipn-fondo);
+  --surface: var(--ipn-superficie);
+  --sunken: var(--ipn-hundido);
+  --line: var(--ipn-linea);
+  --fg: var(--ipn-texto);
+  --muted: var(--ipn-tenue);
+  --accent: var(--ipn-acento);
+  --accent-strong: var(--ipn-acento-fuerte);
+  --accent-fg: var(--ipn-sobre-acento);
+  --accent-soft: var(--ipn-acento-suave);
+  --ok: var(--ipn-ok);
+  --ok-soft: var(--ipn-ok-suave);
+  --warn: var(--ipn-aviso);
+  --warn-soft: var(--ipn-aviso-suave);
+  --bad: var(--ipn-error);
+  --bad-soft: var(--ipn-error-suave);
+  --r: var(--ipn-radio);
+  --f-display: var(--ipn-fuente-texto);
+  --f-body: var(--ipn-fuente-texto);
+  --f-mono: var(--ipn-fuente-mono);
+}
+
 /* Layout: encabezado con el avance de créditos; pasos numerados en una columna; resumen fijo a la derecha en escritorio */
 :root{
   /* Paleta web IPN (Manual de Diseño Web 2025): principal #750946 · #636569 · #000 · #fff; secundaria #5b1237 #721e45 #aa325a #f5f5f5 #f7f0f3 #ebe5d5 #577d63 #4d6f8d */
@@ -406,7 +529,7 @@ input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::pla
   <textarea class="saes-paste" id="saes-paste" placeholder="Pega aquí tus datos del SAES (Ctrl+V)" aria-label="Pegar datos del SAES"></textarea>
   <div class="actions" style="display:flex;gap:8px;align-items:center;margin-top:8px"><span id="saes-msg" aria-live="polite" style="font-size:.86rem"></span><button class="btn" id="saes-clear" type="button" style="margin-left:auto" hidden>Borrar mis datos</button></div>
   <p class="saes-note" style="margin:10px 0 0">El marcador solo consulta tu Kárdex, tu Estado general, tu horario inscrito y tu Cita de reinscripción; no inscribe, no modifica ni envía nada. Los datos se guardan únicamente en este navegador.</p>
-  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 06/10/2026 12:27</p>
+  <p class="saes-note" style="margin:6px 0 0">Versión de la página: 06/10/2026 14:15</p>
 </dialog>
 <script>(()=>{const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||/Macintosh/.test(ua)&&navigator.maxTouchPoints>1,d=ios?'ios':/Android/.test(ua)?'android':'pc';
 document.querySelector('#saes-videos [data-dev="'+d+'"]')?.classList.add('rec')})()</script></div>
