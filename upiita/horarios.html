@@ -1,48 +1,35 @@
-<!doctype html>
-<html lang="es">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Horarios | IPN-tools</title>
-<meta name="description" content="Elige tu unidad académica para armar tu horario y planear tu trayectoria con IPN-tools.">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="IPN-tools">
-<meta property="og:locale" content="es_MX">
-<meta property="og:url" content="https://silver-vs.github.io/upiita/horarios.html">
-<meta property="og:title" content="Horarios · IPN-tools">
-<meta property="og:description" content="Elige tu unidad académica para armar tu horario y planear tu trayectoria con IPN-tools.">
-<meta property="og:image" content="https://silver-vs.github.io/upiita/assets/icono/ipn-tools-og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="IPN-tools: arma tu horario y planea tu trayectoria">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Horarios · IPN-tools">
-<meta name="twitter:description" content="Elige tu unidad académica para armar tu horario y planear tu trayectoria con IPN-tools.">
-<meta name="twitter:image" content="https://silver-vs.github.io/upiita/assets/icono/ipn-tools-og.png">
-<link rel="icon" href="assets/icono/favicon.ico">
-<script>
-// Unidad recordada: la última página de Horarios abierta, la unidad del Lector o datos guardados de la UPIITA (claves hu.*)
-(function(){var D={"upiita": "horarios-upiita.html", "escom": "horarios-escom.html", "upibi": "horarios-upibi.html"},u=null;
-  try{u=localStorage.getItem('ipnt.unidad');
-    if(!D[u]){var a=JSON.parse(localStorage.getItem('saes.alumno')||'null');u=a&&(a.unidad||'upiita')}
-    if(!D[u]){for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(/^hu[.]/.test(k)&&!/^hu[.](escom|upibi)[.]/.test(k)){u='upiita';break}}}
-  }catch(e){}
-  if(D[u])location.replace(D[u]+location.search+location.hash);})();
-</script>
-<style>
-:root{--bg:#faf8f9;--fg:#231f20;--muted:#6b6266;--line:#e4dde0;--surface:#fff;--accent:#8a1849}
-@media (prefers-color-scheme:dark){:root{--bg:#171416;--fg:#ece6e9;--muted:#a99ea3;--line:#332c30;--surface:#211d20;--accent:#e889b2}}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif}
-main{max-width:720px;margin:0 auto;padding:40px 16px}
-h1{font-size:1.5rem;margin:0 0 6px} p{color:var(--muted);margin:0 0 20px}
-.g{display:grid;gap:12px}
-a.u{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:inherit;text-decoration:none}
-a.u:hover{border-color:var(--accent)} a.u b{display:block;font-size:1.05rem} a.u span{color:var(--muted);font-size:.9rem}
-a{color:var(--accent)}
-</style>
-<main>
-  <h1>Horarios</h1>
-  <p>Selecciona tu unidad académica.</p>
-  <div class="g"><a class="u" href="horarios-upiita.html"><b>Horarios UPIITA</b><span>Unidad Profesional Interdisciplinaria en Ingeniería y Tecnologías Avanzadas</span></a><a class="u" href="horarios-escom.html"><b>Horarios ESCOM</b><span>Escuela Superior de Cómputo</span></a><a class="u" href="horarios-upibi.html"><b>Horarios UPIBI</b><span>Unidad Profesional Interdisciplinaria de Biotecnología</span></a></div>
-  <p style="margin-top:24px"><a href="index.html">Volver a IPN-tools</a></p>
-</main>
-</html>
+<!doctype html><html lang="es"><meta charset="utf-8"><title>SATE</title><script>/* Funciones puras: también se prueban en Node sin DOM ni navegador. */
+(function (raiz) {
+  function ruta(hash, unidad, config) {
+    if (!hash.startsWith('#/')) return null;
+    const partes = hash.slice(2).split('?')[0].split('/');
+    if (config[partes[0]]) unidad = partes.shift();
+    let pestaña = partes.shift() || 'mapa';
+    // Los enlaces de Ventanilla previos a esta publicación siguen siendo navegables.
+    if (pestaña === 'tramites' && config[unidad]?.pestanas.includes('trayectoria') && !config[unidad].pestanas.includes('tramites')) {
+      pestaña = 'trayectoria';
+      partes.length = 0;
+    }
+    if (['situacion','desempeno'].includes(pestaña)) pestaña = 'trayectoria';
+    if (!config[unidad] || !config[unidad].pestanas.includes(pestaña)) return null;
+    if (partes.length && (pestaña !== 'tramites' || partes.length !== 1 || !config[unidad].tramites.includes(partes[0]))) return null;
+    return { unidad, pestana: pestaña, tramite: partes[0] || null,
+      hash: '#/' + unidad + '/' + pestaña + (partes.length ? '/' + partes[0] : '') + (hash.includes('?') ? '?' + hash.split('?').slice(1).join('?') : '') };
+  }
+  function redireccion(unidad, search, hash) {
+    let query = search;
+    if (unidad && hash && !hash.startsWith('#/')) {
+      query += (query ? '&' : '?') + 'sateUnidad=' + unidad;
+    }
+    // OAuth, demo y tema conservan su hash íntegro; la unidad viaja en search.
+    if (!hash) hash = unidad ? '#/' + unidad + '/mapa' : '';
+    else if (hash.startsWith('#/')) {
+      const p = hash.slice(2).split('/');
+      if (!['upiita', 'escom', 'upibi'].includes(p[0]) && unidad) hash = '#/' + unidad + '/' + p.join('/');
+    }
+    return 'sate/index.html' + query + hash;
+  }
+  raiz.SateRutas = { ruta, redireccion };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+location.replace(SateRutas.redireccion(null,location.search,location.hash));</script><a href="sate/index.html">Abrir SATE</a></html>

@@ -118,6 +118,13 @@ a{color:var(--accent)}
 .uni>button[aria-expanded="true"]{border-bottom:1px solid var(--line)}.uni:has(>button[aria-expanded="true"]){border-color:var(--accent)}
 .uni .grid{padding:14px}.uni .grid[hidden]{display:none}.uni a.card{background:var(--bg)}
 footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;display:flex;flex-wrap:wrap;gap:8px 18px}
+
+.ipnt-apoyo{display:block;width:100%;box-sizing:border-box;color:var(--muted);overflow-wrap:anywhere}
+.ipnt-apoyo a{display:inline-flex;align-items:center;gap:.4em;min-height:44px;max-width:100%;color:var(--accent);text-decoration:underline}
+.ipnt-apoyo a:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+.ipnt-apoyo svg{flex:none}
+.ipnt-apoyo small{display:block;font-size:inherit}
+
 </style>
 <main>
   <div class="brand"><img src="assets/icono/ipn-tools-icono-192.png" alt="Ícono de IPN-tools"><h1>IPN-tools</h1><button class="ipnt-btn" id="ipnt-open" type="button" aria-haspopup="dialog" title="Inicia sesión para guardar tus datos en tu nube">
@@ -188,7 +195,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:v
   </ul>
   <p>Consulta el <a href="privacidad.html">aviso de privacidad</a> y las <a href="condiciones.html">condiciones de uso</a>.</p>
 
-  <footer><span>Herramienta independiente; la inscripción oficial se hace en el SAES.</span><a href="privacidad.html">Aviso de privacidad</a><a href="condiciones.html">Condiciones de uso</a><a href="https://github.com/Silver-VS/IPN-tools">Código fuente</a></footer>
+  <footer><span>Herramienta independiente; la inscripción oficial se hace en el SAES.</span><a href="privacidad.html">Aviso de privacidad</a><a href="condiciones.html">Condiciones de uso</a><a href="https://github.com/Silver-VS/IPN-tools">Código fuente</a><div class="ipnt-apoyo"><a href="https://github.com/sponsors/Silver-VS" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Apoya el proyecto</span></a><small>Donar es voluntario; el proyecto es gratuito y lo mantiene un alumno del IPN.</small></div></footer>
 </main>
 <script>
 

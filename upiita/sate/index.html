@@ -1,0 +1,1543 @@
+<!doctype html>
+<html lang="es" data-pestanas="v1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<title>Sistema de Apoyo a la Trayectoria Escolar | IPN</title>
+<link rel="icon" href="../assets/icono/favicon.ico">
+<script>(function(){var r=document.documentElement;try{localStorage.removeItem('theme');localStorage.removeItem('skin');var t=sessionStorage.getItem('theme');if(t==='light'||t==='dark')r.setAttribute('data-theme',t)}catch(e){}var z=function(){var v=Math.min(1.35,Math.max(1,innerWidth/1550));r.style.setProperty('--ui-zoom',v.toFixed(3))};z();addEventListener('resize',z)})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wdth,wght@0,62.5..100,300..800;1,100,400&family=Noto+Sans+Mono:wght@400;500&display=swap">
+<style>
+/* GENERADO desde tokens/*.tokens.json; no editar */
+
+/* SPDX-License-Identifier: CC0-1.0 */
+
+:root {
+  --ipn-fondo: #fafafa;
+  --ipn-superficie: #ffffff;
+  --ipn-hundido: #f4f4f5;
+  --ipn-linea: #d9d9de;
+  --ipn-borde-control: #71717a;
+  --ipn-texto: #18181b;
+  --ipn-tenue: #52525b;
+  --ipn-acento: #7A1F45;
+  --ipn-acento-fuerte: #5b1237;
+  --ipn-acento-suave: #f7eef2;
+  --ipn-sobre-acento: #ffffff;
+  --ipn-ok: #15803d;
+  --ipn-ok-suave: #ecfdf3;
+  --ipn-aviso: #8a5a00;
+  --ipn-aviso-suave: #fdf6e3;
+  --ipn-error: #b42346;
+  --ipn-error-suave: #fdecf0;
+  --ipn-info: #1f5fad;
+  --ipn-info-suave: #e8f0fb;
+  --ipn-fuente-texto: "Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ipn-fuente-mono: "Noto Sans Mono", ui-monospace, Consolas, monospace;
+  --ipn-tamano-xs: 0.75rem;
+  --ipn-tamano-s: 0.875rem;
+  --ipn-tamano-m: 1rem;
+  --ipn-tamano-l: 1.25rem;
+  --ipn-tamano-xl: 1.5rem;
+  --ipn-tamano-xxl: 2rem;
+  --ipn-esp-1: 0.25rem;
+  --ipn-esp-2: 0.5rem;
+  --ipn-esp-3: 0.75rem;
+  --ipn-esp-4: 1rem;
+  --ipn-esp-5: 1.5rem;
+  --ipn-esp-6: 2rem;
+  --ipn-esp-7: 3rem;
+  --ipn-esp-8: 4rem;
+  --ipn-radio: 0.75rem;
+  --ipn-duracion-rapida: 120ms;
+  --ipn-duracion-media: 200ms;
+  --ipn-quiebre-s: 30rem;
+  --ipn-quiebre-m: 48rem;
+  --ipn-quiebre-l: 80rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="claro"]) {
+    --ipn-fondo: #09090b;
+    --ipn-superficie: #18181b;
+    --ipn-hundido: #111113;
+    --ipn-linea: #323237;
+    --ipn-borde-control: #71717a;
+    --ipn-texto: #e4e4e7;
+    --ipn-tenue: #a1a1aa;
+    --ipn-acento: #ec9cbf;
+    --ipn-acento-fuerte: #f7c6db;
+    --ipn-acento-suave: #2e1a24;
+    --ipn-sobre-acento: #1d0a13;
+    --ipn-ok: #6ee7a0;
+    --ipn-ok-suave: #0f2a1c;
+    --ipn-aviso: #f5c56b;
+    --ipn-aviso-suave: #2f230b;
+    --ipn-error: #fda4b8;
+    --ipn-error-suave: #3a1520;
+    --ipn-info: #8db6f5;
+    --ipn-info-suave: #172638;
+  }
+}
+
+:root[data-tema="oscuro"] {
+  --ipn-fondo: #09090b;
+  --ipn-superficie: #18181b;
+  --ipn-hundido: #111113;
+  --ipn-linea: #323237;
+  --ipn-borde-control: #71717a;
+  --ipn-texto: #e4e4e7;
+  --ipn-tenue: #a1a1aa;
+  --ipn-acento: #ec9cbf;
+  --ipn-acento-fuerte: #f7c6db;
+  --ipn-acento-suave: #2e1a24;
+  --ipn-sobre-acento: #1d0a13;
+  --ipn-ok: #6ee7a0;
+  --ipn-ok-suave: #0f2a1c;
+  --ipn-aviso: #f5c56b;
+  --ipn-aviso-suave: #2f230b;
+  --ipn-error: #fda4b8;
+  --ipn-error-suave: #3a1520;
+  --ipn-info: #8db6f5;
+  --ipn-info-suave: #172638;
+}
+
+:root[data-tema="claro"] {
+}
+
+/* GENERADO desde tokens/alias.json; no editar */
+/* SPDX-License-Identifier: CC0-1.0 */
+/* Alias temporal de IPN-tools: migrar el código a --ipn-* y borrar este archivo. */
+:root {
+  --bg: var(--ipn-fondo);
+  --surface: var(--ipn-superficie);
+  --sunken: var(--ipn-hundido);
+  --line: var(--ipn-linea);
+  --fg: var(--ipn-texto);
+  --muted: var(--ipn-tenue);
+  --accent: var(--ipn-acento);
+  --accent-strong: var(--ipn-acento-fuerte);
+  --accent-fg: var(--ipn-sobre-acento);
+  --accent-soft: var(--ipn-acento-suave);
+  --ok: var(--ipn-ok);
+  --ok-soft: var(--ipn-ok-suave);
+  --warn: var(--ipn-aviso);
+  --warn-soft: var(--ipn-aviso-suave);
+  --bad: var(--ipn-error);
+  --bad-soft: var(--ipn-error-suave);
+  --r: var(--ipn-radio);
+  --f-display: var(--ipn-fuente-texto);
+  --f-body: var(--ipn-fuente-texto);
+  --f-mono: var(--ipn-fuente-mono);
+}
+
+/* Layout: dos pantallas (trayectoria / horario). Trayectoria: mapa a la izquierda, panel de estado a la derecha.
+   Horario: barra de filtros, oferta (izq) y semana (der). Todo se apila en móvil. */
+:root{
+  /* Tema institucional: neutros zinc y acento guinda; conserva la paleta elegida antes de retirar las variantes. */
+  --bg:#fafafa; --surface:#ffffff; --sunken:#f4f4f5; --line:#d9d9de;
+  --fg:#18181b; --muted:#52525b; --accent:#750946; --accent-strong:#5b1237; --accent-fg:#ffffff; --accent-soft:#f7eef2;
+  --ok:#15803d; --ok-soft:#ecfdf3; --warn:#8a5a00; --warn-soft:#fdf6e3; --bad:#b42346; --bad-soft:#fdecf0;
+  --ipn-reprobada:#c2410c; --ipn-desfasada:#b91c1c;
+  --f-display:"Noto Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Noto Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"Noto Sans Mono",ui-monospace,Consolas,monospace;
+  --blk-s:42%; --blk-l:90%; --blk-fg:#2b2427; --blk-edge:40%; --own:#e6e1e3;
+  --st-done:#c9c3c5; --st-done-fg:#4d4447; --st-late:#b8473f; --st-late-fg:#ffffff; --st-now:#3f7d5a; --st-now-fg:#ffffff; --st-rest:#ffffff;
+  --band:#f7f7f8; --edge:#a1a1aa; --plan-segundo:#245b78; --plan-segundo-fg:#ffffff; --rel-pre:#2f7fc1; --rel-post:#c7741a; --ch-alert:#d9480f; --g10:#1f7a47; --g9:#3d8b4f; --g8:#5f8a2c; --g7:#a8761a; --g6:#bf4b2c;
+  --n1:#8a98c7; --n2:#c48aa6; --n3:#73a183; --n4:#5b7f9e; --n5:#c9b07a; --n6:#9b86c4; --n7:#c99a7a; --n8:#6fa3a8;
+  --r:12px;
+  --glow1:rgba(117,9,70,.10); --glow2:rgba(179,142,93,.12); --shadow:0 1px 2px rgba(24,24,27,.05),0 8px 24px -14px rgba(24,24,27,.18);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --ipn-reprobada:#fb923c; --ipn-desfasada:#f87171;
+  --bg:#09090b; --surface:#18181b; --sunken:#111113; --line:#323237;
+  --fg:#e4e4e7; --muted:#a1a1aa; --accent:#ec9cbf; --accent-strong:#f7c6db; --accent-fg:#1d0a13; --accent-soft:#2e1a24;
+  --ok:#6ee7a0; --ok-soft:#0f2a1c; --warn:#f5c56b; --warn-soft:#2f230b; --bad:#fda4b8; --bad-soft:#3a1520;
+  --blk-s:30%; --blk-l:24%; --blk-fg:#ece6e9; --blk-edge:65%; --own:#26262a;
+  --st-done:#4a4144; --st-done-fg:#cfc5c8; --st-late:#c96a62; --st-late-fg:#ffffff; --st-now:#5f9d78; --st-now-fg:#ffffff; --st-rest:#1c1c1f;
+  --band:#0f0f11; --edge:#52525b; --plan-segundo:#91c5df; --plan-segundo-fg:#10212b; --rel-pre:#64aee8; --rel-post:#e8a050; --ch-alert:#ff8a50; color-scheme:dark;
+  --glow1:rgba(236,156,191,.16); --glow2:rgba(212,176,106,.10); --shadow:0 1px 0 rgba(255,255,255,.04) inset,0 10px 30px -16px rgba(0,0,0,.6);
+}}
+:root[data-theme="dark"]{
+  --ipn-reprobada:#fb923c; --ipn-desfasada:#f87171;
+  --bg:#09090b; --surface:#18181b; --sunken:#111113; --line:#323237;
+  --fg:#e4e4e7; --muted:#a1a1aa; --accent:#ec9cbf; --accent-strong:#f7c6db; --accent-fg:#1d0a13; --accent-soft:#2e1a24;
+  --ok:#6ee7a0; --ok-soft:#0f2a1c; --warn:#f5c56b; --warn-soft:#2f230b; --bad:#fda4b8; --bad-soft:#3a1520;
+  --blk-s:30%; --blk-l:24%; --blk-fg:#ece6e9; --blk-edge:65%; --own:#26262a;
+  --st-done:#4a4144; --st-done-fg:#cfc5c8; --st-late:#c96a62; --st-late-fg:#ffffff; --st-now:#5f9d78; --st-now-fg:#ffffff; --st-rest:#1c1c1f;
+  --band:#0f0f11; --edge:#52525b; --plan-segundo:#91c5df; --plan-segundo-fg:#10212b; --rel-pre:#64aee8; --rel-post:#e8a050; --ch-alert:#ff8a50; color-scheme:dark;
+  --glow1:rgba(236,156,191,.16); --glow2:rgba(212,176,106,.10); --shadow:0 1px 0 rgba(255,255,255,.04) inset,0 10px 30px -16px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+html{scrollbar-gutter:stable}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.5;padding-inline:16px;padding-block:0 40px}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1480px;margin:0 auto}
+small,.muted{color:var(--muted)}
+h2{font-family:var(--f-display);font-stretch:87.5%;font-weight:600;font-size:1.35rem;margin:0;letter-spacing:.01em}
+h3.sub{font-family:var(--f-display);font-weight:600;font-size:1.1rem;margin:0 0 6px}
+
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;padding-block:20px 0;border-bottom:2px solid var(--accent)}
+.top>.brand{flex:1 1 100%;min-width:0}
+.brand .title-row{display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;gap:12px}
+.header-actions{grid-column:4;display:flex;align-items:center;gap:12px}
+.top>.tabs{margin-left:auto}
+@media(max-width:640px){.brand .title-row{grid-template-columns:1fr auto;gap:10px}.header-actions{grid-column:2;grid-row:1;gap:8px}.unit-switch{grid-column:1 / -1;grid-row:2;justify-self:start}}
+.brand h1{font-family:var(--f-display);font-stretch:87.5%;font-weight:700;font-size:2.1rem;line-height:1;margin:0;letter-spacing:.01em;text-wrap:balance}
+.brand p{margin:4px 0 12px;color:var(--muted);font-size:.9rem}
+.tabs{display:flex;gap:2px;align-self:flex-end}
+.tabs button{border:1px solid var(--line);border-bottom:0;background:var(--sunken);padding:9px 16px;border-radius:var(--r) var(--r) 0 0;cursor:pointer;font-family:var(--f-display);font-weight:600;font-size:1.05rem;letter-spacing:.02em;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.tabs b{font-family:var(--f-mono);font-weight:500;font-size:.8rem;opacity:.8;margin-right:6px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;padding:7px 14px;cursor:pointer;font-weight:500;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+
+.notice{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.85rem;color:var(--muted);padding-block:10px;align-items:center}
+.notice b{color:var(--fg);font-weight:600}
+.saes-slot{margin-left:auto}
+@media (max-width:640px){.saes-slot{margin-left:0}}
+.bar-top{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:flex-end;padding-block:12px;border-bottom:1px solid var(--line)}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field>span,.lbl{font-size:.72rem;letter-spacing:.01em;color:var(--muted);font-weight:600}
+select,input[type=search],input[type=text],input[type=time],input[type=number],textarea{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:7px 10px;max-width:100%}
+input[type=number]{width:5rem}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 11px;cursor:pointer;font-size:.88rem;font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.check{display:flex;gap:6px;align-items:center;font-size:.88rem;cursor:pointer;padding-block:6px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:6px 12px;cursor:pointer;font-weight:500;font-size:.88rem}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.est-eqv{margin-top:12px;padding:10px 12px;border:1px dashed var(--line);border-radius:var(--r)}
+.est-eqv h3{margin:0 0 4px;font-size:.95rem}.est-eqv p{margin:0 0 6px;font-size:.82rem}.est-eqv ul{margin:0;padding-left:1.1em;display:grid;gap:4px;font-size:.88rem}
+.est-eqv small{display:block;color:var(--muted);font-size:.8rem}
+.demo-bar{position:sticky;top:0;z-index:40;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:8px 16px;background:var(--warn);color:#fff;font-size:.88rem}
+.demo-bar .btn{margin-left:auto;background:#fff;color:#222;border-color:#fff}
+@media (max-width:640px){.demo-bar{padding:6px 12px;font-size:.78rem;gap:4px 10px}.demo-bar>span{display:none}.demo-bar .btn{padding:3px 10px;font-size:.78rem}}
+/* botón de estadísticas: relleno mientras están ocultas (invita a abrirlas), contorno cuando se muestran */
+.stats-btn{display:inline-flex;align-items:center;gap:8px;margin-left:auto;padding:8px 16px;border-radius:999px;border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-fg);font:inherit;font-weight:600;font-size:.9rem;cursor:pointer;box-shadow:0 1px 3px rgb(0 0 0 / .18);transition:transform .12s,box-shadow .12s}
+.stats-btn:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgb(0 0 0 / .22)}
+.stats-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.stats-btn[aria-expanded="true"]{background:transparent;color:var(--accent);box-shadow:none}
+.stats-btn .chev{transition:transform .15s}
+.stats-bar{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;width:fit-content;align-self:flex-start;max-width:100%;margin:10px 0 0;padding:4px 2px;border:0;border-radius:6px;background:none;color:var(--fg);box-shadow:none;font-size:.86rem;font-weight:400;text-align:left}
+.stats-bar:hover{transform:none;box-shadow:none}
+.stats-bar svg{color:var(--accent);flex:none}
+.stats-bar .sb-sep{color:var(--muted)}
+.stats-bar .sb-link{color:var(--accent);font-weight:600}
+.stats-bar:hover .sb-link{text-decoration:underline}
+.stats-bar[aria-expanded="true"]{background:none;color:var(--accent)}
+.stats-bar[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.stats-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.btn:disabled{opacity:.5;cursor:default}
+.link{border:0;background:none;color:var(--accent);cursor:pointer;font-weight:600;font-size:.84rem;padding:0;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+[data-view-panel]{padding-top:16px}
+
+/* ---------- mapa ---------- */
+.chosenbar{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}
+.cb-head{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.cb-head .actions{margin-left:auto}
+.wchips{display:flex;flex-wrap:wrap;gap:6px}
+.wchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 4px 3px 8px;font-size:.84rem;background:var(--bg)}
+.wchip .grp{font-size:.76rem}
+.wchip .x{padding:0 6px}
+.below{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:14px;align-items:start}
+@media (min-width:900px){.below{grid-template-columns:repeat(2,minmax(0,1fr))}}   /* sugeridas | seriación por nivel; optativas a todo el ancho */
+.below .wide{grid-column:1/-1}
+/* Altura fija de dos renglones: al pasar el cursor cambia el contenido, nunca el tamaño (sin saltos de la página) */
+.insp{min-height:calc(3 * 1.5em + 12px);font-size:.88rem;line-height:1.5;padding:8px 12px;border-left:3px solid var(--accent);background:var(--surface);border-radius:0 var(--r) var(--r) 0;margin-block:8px 10px}
+.insp p{margin:4px 0}.insp-t{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}.insp-meta{color:var(--muted);font-size:.82rem}
+.insp-b{display:grid;gap:2px;margin-top:4px}.insp-st{color:var(--fg)}
+.tag-rel{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:0 6px;border-radius:999px;margin-right:6px;color:var(--bg);vertical-align:1px}
+.tag-rel.pre{background:var(--rel-pre)}.tag-rel.post{background:var(--rel-post)}
+.box.hpre{box-shadow:0 0 0 2.5px var(--rel-pre);opacity:1}.box.hpost{box-shadow:0 0 0 2.5px var(--rel-post);opacity:1}
+.edge.hot.pre{stroke:var(--rel-pre)}.edge.hot.post{stroke:var(--rel-post)}
+.areas{position:sticky;top:0;z-index:3;height:34px;background:var(--surface);border-bottom:1px solid var(--line)}
+.areas div{position:absolute;font-stretch:75%;top:0;bottom:0;display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--f-display);font-weight:600;letter-spacing:.02em;color:var(--muted);border-left:1px solid var(--line);line-height:1;padding:0 2px;overflow:hidden}
+.edge.prop{stroke-dasharray:5 4}
+.maptools{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:10px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.82rem}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.legend i{width:14px;height:14px;border-radius:3px;border:1px solid var(--line);display:inline-block}
+.mapwrap{touch-action:pan-x pan-y;overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);max-height:calc(88vh / var(--ui-zoom,1))}
+.map{position:relative;will-change:transform}
+.areas{will-change:transform}
+.map svg{position:absolute;inset:0;overflow:visible}
+.band{fill:var(--band)}
+.rowlbl{font-family:var(--f-display);font-weight:600;fill:var(--muted)}
+.edge{fill:none;stroke:var(--edge);stroke-width:1.4}
+.edge.hot{stroke:var(--accent);stroke-width:2.6}
+.edge.dim{opacity:.15}
+
+.edge.past{opacity:.3}   /* con datos del SAES: llega a una materia ya acreditada */
+.box{position:absolute;font-stretch:75%;display:flex;align-items:center;justify-content:center;text-align:center;border-radius:7px;border:1.5px solid var(--line);background:var(--st-rest);color:var(--fg);font-weight:600;line-height:1.08;padding:2px 4px 2px 8px;cursor:pointer;overflow:hidden;letter-spacing:.01em;transition:opacity .12s, box-shadow .12s}
+.box::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--nv,transparent)}
+.box.done{opacity:.28;text-decoration:line-through;font-weight:500;border-style:dotted}
+.box.done.want,.box.done.hot{opacity:.6}
+.box.late{border:2px solid var(--st-late)}
+.box.fail{background:var(--bad-soft)}
+.box.fail:not(.late){border:2px dashed var(--st-late)}
+/* en curso: relleno verde y punto en la esquina (no se confunde con los bordes de "propuesta" ni con los guiones de "faltan requisitos") */
+/* modo personal: verde = la puedes cursar el siguiente periodo; contorno = sugerida; gris con punto = en curso */
+.box.avail:not(.want){background:var(--ok-soft);background:color-mix(in srgb,var(--st-now) 26%,var(--st-rest));border-color:var(--st-now)}
+/* sugerida: anillo interior del color del texto (contrasta con el verde y no invade la fila vecina) */
+.box.sug{box-shadow:inset 0 0 0 2px var(--fg)}
+.box.sug.hot{box-shadow:inset 0 0 0 2px var(--fg),0 0 0 3px var(--accent)}
+.box.curso{background:var(--sunken);border:1.5px solid var(--edge);color:var(--muted)}
+.box.curso::after{content:"";position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--muted)}
+.legend i.l-fail{background:var(--bad-soft);border:2px dashed var(--st-late)}
+.legend i.l-curso{background:var(--sunken);border:1.5px solid var(--edge);position:relative}
+.legend i.l-curso::after{content:"";position:absolute;top:2px;right:2px;width:4px;height:4px;border-radius:50%;background:var(--muted)}
+.legend i.l-avail{background:var(--ok-soft);background:color-mix(in srgb,var(--st-now) 26%,var(--st-rest));border-color:var(--st-now)}
+.tgl i.l-sug{width:14px;height:14px;border-radius:3px;border:1px solid var(--line);display:inline-block}
+.legend i.l-sug,.tgl i.l-sug{background:var(--ok-soft);background:color-mix(in srgb,var(--st-now) 26%,var(--st-rest));border-color:var(--st-now);box-shadow:inset 0 0 0 2px var(--fg)}
+.estado{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;padding:14px 16px}
+.est-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+.est-head h2{margin:0;font-family:var(--f-display);font-size:1.2rem;font-weight:700}
+.est-head .link{margin-left:auto}.est-head .stats-btn{align-self:center}.est-head .stats-btn:not([hidden])~.link{margin-left:0}
+.est-tiles{display:grid;grid-template-columns:repeat(var(--tiles,6),minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.tile{background:var(--surface);padding:9px 14px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.tile>span{font-size:.72rem;letter-spacing:.01em;color:var(--muted);font-weight:600}
+.tile>b{font-size:1.25rem;line-height:1.15;font-variant-numeric:tabular-nums;font-weight:650}
+.tile>b small{font-size:.7em;color:var(--muted);font-weight:500}
+.tile>small{font-size:.76rem;color:var(--muted)}
+.tile .minibar{display:block;margin-top:4px;height:6px}
+.tile .minibar i{background:var(--accent)}
+@media (max-width:900px){.est-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:480px){.est-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.est-note{margin:0;font-size:.78rem;color:var(--muted)}
+.est-act{margin:8px 0 0;padding:8px 12px;border-radius:8px;background:var(--warn-soft);font-size:.86rem}
+.est-act .link{font-weight:600}
+/* simulación de fin de semestre: interruptor + una pastilla por materia en curso (Aprobada / Reprobada) */
+.est-sim{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:.88rem}
+.tgl{display:inline-flex;align-items:center;gap:8px;cursor:pointer;position:relative}
+.tgl input{position:absolute;opacity:0;width:1px;height:1px}
+.tgl-ui{width:34px;height:20px;border-radius:999px;background:var(--line);position:relative;flex:none;transition:background .15s}
+.tgl-ui::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .15s}
+.tgl input:checked+.tgl-ui{background:var(--st-now)}
+.tgl input:checked+.tgl-ui::after{transform:translateX(14px)}
+.tgl input:focus-visible+.tgl-ui{outline:2px solid var(--accent);outline-offset:2px}
+.simchips{display:flex;flex-wrap:wrap;gap:6px}
+.simrows{flex-basis:100%;display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:6px 14px}
+.simrows.off{opacity:.55}
+.simrow{display:flex;align-items:center;gap:8px;padding:5px 8px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);min-width:0}
+.simrow .sim-n{flex:1;min-width:0;font-size:.84rem;line-height:1.2}.simrow .sim-n small{display:block;font-size:.72rem;color:var(--muted)}.simrow .sim-n small.bad{color:var(--bad)}
+.simrow select{font-size:.8rem;padding:2px 4px}.simrow .sim-x{font-size:.78rem;color:var(--bad)}
+.simrow{flex-wrap:wrap}.simrow .sim-n{flex:1 1 150px}
+@media (max-width:480px){.simrows{grid-template-columns:1fr}.simrow .sim-n{flex-basis:100%}}
+.seg.sm button{padding:2px 8px;font-size:.78rem}
+.simchip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 11px;font-size:.84rem;cursor:pointer;color:var(--fg)}
+.simchip b{font-weight:600;color:var(--ok);margin-left:6px}
+.simchip .swap{margin-left:6px;color:var(--muted)}
+.simchip:not(:disabled):hover{border-color:var(--edge)}
+.sim-hint{font-size:.8rem;color:var(--muted)}
+.sim-reset{font-size:.82rem}
+.simchip.bad b{color:var(--bad)}
+.simchip:disabled{opacity:.45;cursor:default}
+.tag.sim{background:var(--warn-soft);color:var(--warn)}
+.sim-tgl{border:0;cursor:pointer;font:inherit;font-size:.72rem;font-weight:600;padding:1px 8px;border-radius:999px;vertical-align:middle;margin-left:4px}
+.sim-tgl:hover{filter:brightness(.95);text-decoration:underline}
+.tag.sim-off{background:var(--sunken,var(--surface));color:var(--muted);border:1px solid var(--line)}
+.desf{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.desf li{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0;padding:10px 12px;border-radius:10px;background:var(--sunken);border:1px solid var(--line);font-size:.86rem;line-height:1.35}
+.desf li b{font-size:.9rem}
+.desf li small{color:var(--muted);font-size:.78rem}
+.dpill{font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--surface);color:var(--muted);border:1px solid var(--line)}
+.dpill.bad{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.dpill.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.avisos{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;margin:0 0 8px}
+.aviso{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:10px;background:var(--sunken);font-size:.86rem;line-height:1.4;min-width:0}
+.aviso b{font-size:.92rem;line-height:1.3}
+.aviso small{margin-top:auto;padding-top:4px;font-size:.8rem;font-weight:600}
+.aviso.bad{background:var(--bad-soft)} .aviso.bad b{color:var(--bad)}
+.aviso.ok{background:var(--ok-soft)} .aviso.ok b{color:var(--ok)}
+.aviso .link{font-weight:600}
+.cal{display:grid;gap:10px;min-width:0}
+.cal-alerta{margin:0 0 12px;padding:10px 14px;border-radius:10px;background:var(--warn-soft);font-size:.9rem;line-height:1.45}
+.cal-alerta .link{font-weight:600;white-space:nowrap}
+.opt-aviso{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:60;max-width:min(92vw,520px);margin:0;padding:10px 14px;border-radius:10px;background:var(--warn-soft);color:var(--fg);box-shadow:0 4px 18px rgba(0,0,0,.25);font-size:.88rem;line-height:1.45}
+.opt-aviso[hidden]{display:none}
+#est-cal{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+#hor-cal{margin-bottom:12px}
+.cal-head{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
+.cal-head h3{margin:0;font-size:1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+.cal-head h3 small{font-weight:400;font-size:.78rem;color:var(--muted)}
+.cal-strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(164px,1fr);gap:8px;overflow-x:auto;scroll-snap-type:x proximity;padding:2px 2px 8px;position:relative;scrollbar-width:thin}
+.cal-c{scroll-snap-align:start;position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:124px;text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:11px 12px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.cal-c:hover{border-color:var(--edge)}
+.cal-c[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.cal-c.aplica{background:var(--accent-soft)}
+.cal-c.pasada{opacity:.55}
+.cal-d{display:flex;align-items:baseline;gap:6px}
+.cal-d b{font-family:var(--f-display);font-size:1.75rem;line-height:1;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)}
+.cal-c.pasada .cal-d b{color:var(--muted)}
+.cal-d span{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.cal-w{font-size:.74rem;color:var(--muted)}
+.cal-w::first-letter{text-transform:uppercase}
+.cal-t{margin-top:6px;font-weight:600;font-size:.86rem;line-height:1.25;text-wrap:balance}
+.cal-l{margin-top:auto;padding-top:8px;font-size:.7rem;color:var(--muted);display:inline-flex;align-items:center;gap:5px}
+.cal-l::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--edge)}
+.cal-l.saes::before{background:var(--accent)}
+.cal-b{position:absolute;top:10px;right:10px;font-style:normal;font-size:.62rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:999px;padding:2px 8px;background:var(--accent);color:var(--accent-fg)}
+.cal-b.si{background:var(--surface);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.cal-det{margin:0;padding:10px 14px;border-radius:10px;background:var(--sunken);font-size:.86rem;line-height:1.5;max-width:100ch}
+.cal .est-note{max-width:100ch}
+.box.late::after{content:"!";position:absolute;top:0;right:4px;color:var(--st-late);font-weight:700}
+.box.elec{border-style:dashed;cursor:help}
+.box.slot{border-style:dashed;background:var(--sunken);color:var(--muted);font-weight:500}
+.box.req{background:var(--accent-soft)}
+.box.far{opacity:.5;filter:saturate(.35)}
+.kstats{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.kpis>*{min-width:0}
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}   /* 4 → 2 → 1: sin huecos */
+@media (max-width:520px){.kpis{grid-template-columns:minmax(0,1fr)}}
+.kpi{background:var(--surface);padding:10px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi span{font-size:.75rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.kpi b{font-size:1.65rem;font-weight:650;font-variant-numeric:tabular-nums;line-height:1.15}
+.kpi small{font-size:.78rem;color:var(--muted)}
+.kpi-v{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px}
+.tip-flot{position:fixed;z-index:60;font-family:system-ui,sans-serif;max-width:min(320px,calc(100vw - 16px));padding:8px 10px;border-radius:8px;background:var(--fg);color:var(--bg);font-size:.8rem;line-height:1.4;box-shadow:0 6px 20px rgb(0 0 0 / .25);pointer-events:none}
+.info{display:inline-grid;place-items:center;width:1.15em;height:1.15em;border-radius:50%;font-size:.8em;color:var(--muted);cursor:help;text-transform:none;letter-spacing:0;vertical-align:1px}
+.info:hover,.info:focus{color:var(--accent);outline:none}
+.k-regla{position:relative;flex:1;max-width:120px;height:6px;border-radius:999px;background:linear-gradient(90deg,var(--g6),var(--g7),var(--g8),var(--g9),var(--g10));margin-bottom:10px}
+.k-regla i{position:absolute;top:-4px;width:3px;height:14px;border-radius:2px;background:var(--fg);transform:translateX(-50%)}
+.k-regla em{position:absolute;top:8px;font-style:normal;font-size:.62rem;color:var(--muted)}.k-regla em:first-of-type{left:0}.k-regla em:last-of-type{right:0}
+.k-hist{display:flex;align-items:flex-end;gap:3px;height:38px;width:80px}.k-hist i{flex:1;border-radius:2px 2px 0 0}
+.k-hist .g6{background:var(--g6)}.k-hist .g7{background:var(--g7)}.k-hist .g8{background:var(--g8)}.k-hist .g9{background:var(--g9)}.k-hist .g10{background:var(--g10)}
+.k-bars{display:flex;align-items:flex-end;gap:3px;height:38px;width:80px}.k-bars i{flex:1;border-radius:2px 2px 0 0;background:var(--accent);opacity:.75}
+.k-chip{display:inline-block;padding:0 6px;border-radius:999px;border:1px solid var(--line);font-size:.72rem;font-weight:600;color:var(--fg)}
+.kpi em.up{font-style:normal;color:var(--ok);font-weight:600}.kpi em.down{font-style:normal;color:var(--ch-alert);font-weight:600}
+.cm-ref{margin:4px 0 0;font-size:.78rem;color:var(--muted)}
+.mt-h{margin:6px 0 2px;font-size:1rem}
+.pm .meta-controls input[type=number]{width:5rem}
+.pm-fila{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 0;border-top:1px solid var(--line)}
+.pm-fila>div{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:.88rem}.pm-t{font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.pm-regla{flex:0 0 140px;max-width:140px}
+.pm-sub{margin:2px 0 8px;font-size:.82rem;color:var(--muted)}
+.pm-mats{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:6px 12px}
+.pm-mat{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 8px;border:1px solid var(--line);border-radius:var(--r);background:var(--bg);font-size:.84rem;min-width:0}
+.pm-mat span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pm-mat select{font:inherit;padding:2px 4px}
+.pm-res{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:baseline;margin:10px 0 6px;font-size:.88rem}
+.pm-estado.ok{color:var(--ok)}.pm-estado.no{color:var(--ch-alert)}
+.pm-acc{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding-bottom:6px}.mt-mat{display:inline-block;margin-left:6px;padding:1px 10px;border-radius:999px;background:var(--accent);color:var(--accent-fg);font-size:.82rem;font-weight:600}.mt-mat .info{color:inherit}
+.mt-regla{position:relative;height:10px;margin:30px 0 48px;border-radius:999px;background:var(--line)}
+.mt-zona{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--ok);opacity:.35}
+.mt-regla.supera .mt-zona{background:var(--line)}
+.mt-m{position:absolute;top:-4px;height:18px;border-left:3px solid var(--muted);transform:translateX(-1.5px)}
+.mt-m>span{position:absolute;left:4px;white-space:nowrap;font-size:.74rem;color:var(--muted)}.mt-m>span b{color:var(--fg)}
+.mt-m.arriba>span{bottom:20px}.mt-m.abajo>span{top:20px}.mt-m.fila2>span{top:36px}.mt-m.fila2{height:36px}.mt-m.izq>span{left:auto;right:4px}
+.mt-m.nec{border-color:var(--accent)}.mt-m.nec>span,.mt-m.nec>span b{color:var(--accent)}
+.mt-m.max{border-color:var(--ok)}.mt-regla.supera .mt-m.nec{border-color:var(--ch-alert)}.mt-regla.supera .mt-m.nec>span,.mt-regla.supera .mt-m.nec>span b{color:var(--ch-alert)}
+.mt-e{margin:0;font-size:.84rem}
+.eqv-fichas{display:flex;flex-wrap:wrap;gap:6px}
+.eqv-f{display:inline-flex;flex-wrap:wrap;align-items:baseline;gap:4px;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:.84rem}
+.eqv-f i{font-style:normal;color:var(--accent);margin:0 2px}.eqv-f.sin{border-style:dashed}.eqv-f em{font-style:normal;color:var(--muted)}
+.kpi .up{color:var(--ok);font-weight:600}.kpi .down,.kpi b.down{color:var(--bad)}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:12px;margin-top:12px}
+.charts figure{margin:0;padding:12px 14px 8px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);min-width:0}
+.charts .ch-wide{grid-column:1/-1}
+.charts figure figure{border:0;padding:0;background:none;margin:0}   /* Plot envuelve en <figure> las gráficas con leyenda */
+.charts figcaption{display:flex;flex-direction:column;gap:1px;margin-bottom:6px;min-height:3.4em}
+.charts figcaption b{font-size:.92rem}
+.cm-h{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;margin:4px 0 10px;font-size:.9rem}.cm-h span{color:var(--muted)}.cm-h span b{color:var(--fg)}.cm-h .cm-n{color:var(--fg)}.cm-h .cm-n b{font-size:1.15rem}
+.cm-track{position:relative;height:18px;border-radius:999px;background:var(--line);overflow:hidden;display:flex}
+.cm-track i{display:block;height:100%}.cm-track .hecho{background:var(--accent)}
+.cm-track .rayado{background:repeating-linear-gradient(135deg,var(--accent) 0 4px,transparent 4px 9px);opacity:.75}
+.cm-past,.cm-fut{position:relative;height:22px;font-size:.72rem;color:var(--muted)}
+.cm-m{position:absolute;transform:translateX(-50%);white-space:nowrap}.cm-m.der{transform:translateX(-100%)}.cm-m.izq{transform:none}
+.cm-m.der::before,.cm-m.der::after{left:100%!important}.cm-m.izq::before,.cm-m.izq::after{left:0!important}
+.cm-past .cm-m{bottom:2px}.cm-past .cm-m::after{content:'';position:absolute;left:50%;bottom:-6px;height:6px;border-left:1px solid var(--muted)}
+.cm-fut .cm-m{top:4px;color:var(--accent)}.cm-fut .cm-m::before{content:'';position:absolute;left:50%;top:-8px;height:7px;border-left:2px solid var(--accent)}
+.cm-fut .cm-m.fuera{color:var(--ch-alert)}.cm-fut .cm-m.fuera::before{border-color:var(--ch-alert)}
+.cm-alerta{margin:6px 0 0;font-size:.82rem;color:var(--ch-alert)}
+.kx{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.kx-col{flex:1 0 74px;max-width:170px;display:flex;flex-direction:column;gap:6px}
+.kx-h{display:flex;flex-direction:column;align-items:center;font-size:.82rem;line-height:1.25}.kx-h small{color:var(--muted);font-size:.72rem;text-align:center}
+.kx-h em{font-style:normal;font-size:.7rem}.kx-h em.up{color:var(--ok)}.kx-h em.down{color:var(--ch-alert)}
+.kx-cs{display:flex;flex-wrap:wrap;gap:3px;justify-content:center}
+.kx-c{position:relative;width:30px;height:26px;border-radius:5px;display:inline-grid;place-items:center;font-size:.78rem;font-weight:700;color:#fff;cursor:default}
+.kx-c i{position:absolute;top:-5px;right:-5px;font-style:normal;font-size:.6rem;line-height:1;padding:2px 3px;border-radius:999px;background:var(--surface);color:var(--fg);border:1px solid var(--line)}
+.kx-c.sim{outline:1.5px dashed var(--fg);outline-offset:1px}
+.kx-c.g10{background:var(--g10)}.kx-c.g9{background:var(--g9)}.kx-c.g8{background:var(--g8)}.kx-c.g7{background:var(--g7)}.kx-c.g6{background:var(--g6)}
+.ley{display:flex;flex-wrap:wrap;gap:2px 14px;font-size:.78rem;color:var(--muted)}.ley>span{display:inline-flex;align-items:center;gap:6px}.ley svg{flex:none}
+.charts svg{max-width:100%;height:auto}
+.charts [aria-label="tip"] path{fill:var(--surface);stroke:var(--line)}
+.st-note{margin:8px 0 0;font-size:.8rem;color:var(--muted)}
+.meta-panel{margin:14px 0;padding:14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.meta-panel h3{margin:0 0 8px;font-size:1rem}.meta-controls{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center}.meta-controls label{display:flex;gap:8px;align-items:center}.meta-controls input[type=number]{width:6rem;max-width:100%;font:inherit}.meta-panel p{margin:8px 0;font-size:.84rem}
+.kanal{margin-top:16px}.an-h{margin:0 0 8px;font-size:1.05rem}
+.an-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:12px}
+.an-grid section{padding:12px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);min-width:0}
+.an-grid h4{margin:0;font-size:.92rem}.an-sub{margin:2px 0 8px;font-size:.78rem;color:var(--muted)}
+.an-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.an-list li{display:grid;grid-template-columns:auto 1fr auto;gap:2px 8px;align-items:baseline;font-size:.86rem}
+.an-list small{grid-column:1/-1;color:var(--muted);font-size:.78rem}
+.an-tag{font-size:.68rem;font-weight:600;padding:1px 6px;border-radius:999px;border:1px solid}.an-tag.alto{color:var(--bad)}.an-tag.medio{color:var(--warn)}
+.an-pred{font-variant-numeric:tabular-nums;color:var(--muted)}
+.an-bars{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.an-bars li{display:grid;grid-template-columns:minmax(0,1.3fr) 1fr auto;gap:2px 8px;align-items:center;font-size:.84rem}
+.an-bars li>small{grid-column:1/-1;color:var(--muted);font-size:.74rem;margin-top:-2px}.an-ln small{display:block;color:var(--muted);font-size:.72rem}
+.an-bar{height:8px;background:var(--sunken);border-radius:999px;overflow:hidden}.an-bar i{display:block;height:100%;background:var(--accent)}
+.an-chain{list-style:none;margin:8px 0 0;padding:0;font-size:.82rem;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.an-chain li{padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:var(--bg)}
+.an-chain li+li::before{content:'→';margin:0 8px 0 -2px;color:var(--muted)}
+.mapcut{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin:0 0 10px;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);font-size:.88rem;color:var(--muted)}
+.minimap{border:1px solid var(--line);border-radius:6px;background:var(--bg);padding:4px;cursor:pointer;line-height:0;flex:none}
+.minimap:hover{border-color:var(--accent)}
+.minimap svg{display:block;width:min(300px,70vw);height:auto}
+.mapcut-info{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1 1 220px}
+.mapcut-info b{color:var(--fg);font-size:.95rem}
+.mm-leg{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.8rem}.mm-leg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle}
+.mapcut-info .mapvista{align-self:flex-start;flex-wrap:wrap;margin-top:4px}
+.box.compact{line-height:1.05;overflow:hidden}
+.box.optfill{outline:1.5px dashed var(--muted);outline-offset:2px}
+.box.slot:has(.slot-sig){flex-direction:column;gap:1px;overflow:hidden}
+.box.slot .slot-sig{display:block;font-size:.85em;opacity:.85;margin-top:2px;line-height:1.15}
+.box.want{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.box.want::after{content:"✓";position:absolute;top:1px;right:4px;font-size:.95em;color:inherit}
+.box.dim{opacity:.22}
+.box.hot{box-shadow:0 0 0 3px var(--accent);opacity:1}
+.box.offered-no{font-style:italic;color:var(--muted);font-weight:500}
+.box.want.offered-no{color:var(--accent-fg)}
+#load .fill.ret,.sw-ret{background:repeating-linear-gradient(135deg,var(--bad) 0 4px,color-mix(in srgb,var(--bad) 45%,transparent) 4px 8px)}
+#load .tick.tope{background:var(--bad)}#load .lbl.bad{color:var(--bad)}
+.load-note{margin:6px 0 0;font-size:.8rem;color:var(--muted);line-height:1.45}.sw-ret{display:inline-block;width:12px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.when .room{display:block;color:var(--muted);font-family:var(--f-ui,inherit);font-size:.8rem}
+.subj .lineas{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;width:100%}
+.plan-tab{display:inline-flex;align-items:center}
+.plan-tab .x.warn{color:var(--bad);font-size:.78rem;font-weight:600}
+.plan-new{border-style:dashed}
+.subj>.more{display:block;margin:6px 12px 10px}
+.tag.lin{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.legend i.l-niv{width:5px;height:15px;border:0;border-radius:2px;margin-left:4px}
+.legend .lg-niv{gap:3px;padding-right:6px;border-right:1px solid var(--line)}
+.legend i.l-want{background:var(--accent);border-color:var(--accent)}
+.legend i.l-req{background:var(--accent-soft)}
+.legend i.l-slot{background:var(--sunken);border-style:dashed}
+.legend i.l-done{background:var(--st-rest);opacity:.35;border-style:dotted}
+.legend i.l-late{border:2px solid var(--st-late)}
+.mapnote{font-size:.82rem;color:var(--muted);margin:8px 0 0;padding-left:1.1em;display:grid;gap:2px}
+.side{display:flex;flex-direction:column;gap:12px}
+.kv{display:grid;grid-template-columns:1fr auto;gap:2px 12px;font-size:.88rem;font-variant-numeric:tabular-nums}
+.kv b{font-weight:600}
+.lvls{display:flex;flex-direction:column;gap:6px;font-size:.84rem}
+.lvl{display:flex;flex-direction:column;gap:3px;padding-block:4px;border-top:1px solid var(--line)}
+.lvl:first-of-type{border-top:0}
+.lvl-top{display:grid;grid-template-columns:4.2rem minmax(0,1fr) 4.6rem;gap:10px;align-items:center}
+.lvl-num{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.lvl-req{font-size:.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:2px 10px;padding-left:4.2rem}
+.lvl-req span.ok{color:var(--ok)} .lvl-req span.warn{color:var(--warn)}
+.lvl-intro{margin:0 0 4px;font-size:.8rem;color:var(--muted)}
+.minibar{height:8px;background:var(--sunken);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.minibar i{display:block;height:100%;background:var(--accent)}
+.ok{color:var(--ok)} .bad{color:var(--bad)} .warn{color:var(--warn)}
+.sugg{display:flex;flex-direction:column;gap:4px;font-size:.86rem}
+.sugg label{display:grid;grid-template-columns:3.4rem minmax(0,1fr) auto;gap:8px;align-items:center;cursor:pointer}
+.sugg label:has(.dot){grid-template-columns:auto 3.4rem minmax(0,1fr) auto}
+.sugg label.ya{color:var(--muted)}.sugg .ya-marca{color:var(--ok);font-weight:700}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+textarea.paste{width:100%;min-height:5rem;font-family:var(--f-mono);font-size:.76rem}
+#lineas{display:flex;flex-direction:column;gap:12px}
+.ol-head{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;justify-content:space-between}
+.ol-head p{margin:0;max-width:70ch;font-size:.9rem}
+.ol-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.ol-card{border:1px solid var(--line);border-top:4px solid var(--area);border-radius:var(--r);background:var(--bg);padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.ol-card header{display:flex;flex-direction:column;gap:2px}
+.ol-area{font-size:.74rem;font-weight:600;color:var(--muted)}
+.ol-card h4{margin:0;font-size:1rem;font-weight:600;line-height:1.25}
+.ol-stat{font-size:.8rem;color:var(--muted)}
+.ol-row{display:grid;grid-template-columns:4.2rem minmax(0,1fr);gap:8px;align-items:start}
+.ol-niv{font-size:.74rem;font-weight:600;color:var(--muted);padding-top:6px;font-variant-numeric:tabular-nums}
+.ol-boxes{display:flex;flex-wrap:wrap;gap:6px}
+.obox{border:1.5px solid var(--line);border-left:4px solid var(--area);background:var(--surface);color:var(--fg);border-radius:calc(var(--r) * .6);padding:5px 9px;font-size:.8rem;font-weight:600;line-height:1.2;text-align:left;cursor:pointer;text-transform:none}
+.obox::first-letter{text-transform:uppercase}
+.obox:hover{border-color:var(--accent);border-left-color:var(--area)}
+.obox.offno{border-style:dashed;border-left-style:solid;font-weight:500;font-style:italic;color:var(--muted);background:transparent}
+.obox.want{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.obox.done{opacity:.4;text-decoration:line-through}
+.legend i.ol-l-on{background:var(--surface);border:1.5px solid var(--edge)}
+.legend i.ol-l-off{border:1.5px dashed var(--edge)}
+
+/* ---------- horario ---------- */
+.filters{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:flex-end;padding-block:12px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;border-bottom:1px solid var(--line)}
+.filters #f-more{flex-basis:100%;min-width:0}
+.filters #f-more summary{cursor:pointer;color:var(--accent);font-weight:600}
+.filters .more-filters{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:flex-end;padding-top:10px}
+.filters .more-filters input[type=text]{max-width:100%}
+.load-note{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.search{position:relative;width:min(360px,100%)}
+.search input{width:100%}
+.ac{position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 8px 24px rgb(0 0 0 / .14);list-style:none;margin:0;padding:4px;max-height:320px;overflow:auto;z-index:20}
+.ac li{display:grid;grid-template-columns:4.2rem minmax(0,1fr) auto;gap:8px;align-items:baseline;padding:6px 8px;border-radius:4px;cursor:pointer;font-size:.88rem}
+.ac li[aria-selected="true"]{background:var(--accent-soft)}
+.ac .k{font-size:.66rem;letter-spacing:.01em;color:var(--muted);font-weight:600}
+.ac mark{background:none;color:var(--accent);font-weight:600}
+.ac .r{font-family:var(--f-mono);font-size:.74rem;color:var(--muted)}
+.active{display:flex;flex-wrap:wrap;gap:6px;padding-top:2px;width:100%}
+.active:empty{display:none}
+.pill{display:inline-flex;gap:6px;align-items:center;background:var(--accent-soft);border:1px solid var(--line);border-radius:999px;padding:3px 4px 3px 10px;font-size:.84rem}
+.pill i{font-style:normal;font-size:.74rem;color:var(--muted)}
+.pill button{border:0;background:none;cursor:pointer;color:var(--muted);padding:0 6px;font-size:1rem;line-height:1}
+
+.hlayout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:24px;padding-top:16px;align-items:start}
+@media (max-width:980px){.hlayout{grid-template-columns:minmax(0,1fr)}}
+.colhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.count{color:var(--muted);font-size:.85rem;font-variant-numeric:tabular-nums}
+.offer{display:flex;flex-direction:column;gap:10px}
+.subj{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.subj>header{display:flex;gap:10px;align-items:baseline;justify-content:space-between;padding:9px 12px;background:var(--sunken);border-bottom:1px solid var(--line)}
+.subj h3{margin:0;font-size:.95rem;font-weight:600;letter-spacing:.01em;min-width:0}
+.meta{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);white-space:nowrap}
+.opt{display:grid;grid-template-columns:4.6rem minmax(0,1fr) auto;gap:4px 12px;align-items:start;padding:8px 12px;border-top:1px solid var(--line)}
+.opt:first-of-type{border-top:0}
+.opt:hover{background:var(--accent-soft)}
+.opt.no{opacity:.55}
+.grp{font-family:var(--f-mono);font-weight:500;font-size:.85rem;padding-top:1px}
+.who{font-size:.86rem;min-width:0}
+.when{font-family:var(--f-mono);font-size:.76rem;color:var(--muted);grid-column:2;display:flex;flex-direction:column}
+.tags{grid-column:2;display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-size:.72rem;font-weight:600;padding:1px 7px;border-radius:999px}
+.tag.bad{background:var(--bad-soft);color:var(--bad)}
+.tag.soft{background:var(--sunken);color:var(--muted)}
+.tag.good{background:var(--ok-soft);color:var(--ok)}
+.right{grid-row:1/span 4;grid-column:3;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.add{border:1px solid var(--accent);color:var(--accent);background:none;border-radius:var(--r);padding:6px 10px;cursor:pointer;font-weight:600;font-size:.85rem;white-space:nowrap}
+.add[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+.marks{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.marks button{border:0;background:var(--surface);padding:2px 8px;font-size:.72rem;cursor:pointer;color:var(--muted)}
+.marks button+button{border-left:1px solid var(--line)}
+.marks button:disabled{cursor:not-allowed;opacity:.6}
+.marks button[data-m="si"][aria-pressed="true"]{background:var(--ok-soft);color:var(--ok);font-weight:600}
+.marks button[data-m="quiza"][aria-pressed="true"]{background:var(--warn-soft);color:var(--warn);font-weight:600}
+.marks button[data-m="no"][aria-pressed="true"]{background:var(--bad-soft);color:var(--bad);font-weight:600}
+.note{grid-column:2;width:100%;font-size:.82rem;padding:4px 8px!important}
+.empty{padding:28px 16px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r)}
+
+.eq-intro{font-size:.84rem;margin:8px 0}.eq-m h4{margin:12px 0 4px;font-size:.92rem}.eq-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.eq-list li{display:flex;gap:10px;align-items:flex-start;padding:6px 8px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);min-width:0}
+.eq-list li>div{min-width:0}.eq-list small{display:block;font-size:.78rem;color:var(--muted)}.eq-list small.warn{color:var(--warn)}
+.eq-dir{font-size:1.1rem;line-height:1.2;color:var(--accent);flex:none}.eq-g{display:inline-block;margin-right:12px}.eq-leyenda{font-size:.78rem;margin-top:10px}
+details.box2{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:8px 12px}
+details.box2>summary{cursor:pointer;font-weight:600;font-size:.92rem}
+.genrow{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:flex-end;padding-top:10px}
+.gtime{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:flex-start;padding-top:12px}
+.trange,.gbrk{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.88rem}
+.trange input,.gbrk input[type=time]{width:7.2rem}
+.gbrk select{width:auto}
+.gdays-msg{margin:10px 0 6px;font-size:.9rem}
+.gdays-msg.warn{color:var(--warn)}
+.gbreaks{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.brkdays{display:inline-flex;flex-wrap:wrap;gap:4px}
+.brkdays .chip{padding:2px 9px;font-size:.8rem}
+.gbrk .x{border:0;background:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:0 4px}
+.genres{display:flex;flex-direction:column;gap:8px;padding-top:10px}
+.gen{display:grid;grid-template-columns:minmax(0,1fr);gap:6px 12px;align-items:center;border:1px solid var(--line);border-radius:var(--r);padding:8px 10px;font-size:.84rem}
+.gen .ls{font-size:.8rem;color:var(--muted);line-height:1.5}.gen .ls .grp{font-family:var(--f-mono);font-size:.74rem;color:var(--fg)}
+.gen .acts{display:flex;gap:4px;flex-wrap:wrap}
+
+/* fijo al desplazar, con su propio scroll: nunca más alto que la ventana (aunque la columna de la oferta sea larga) */
+.planner{position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);max-height:calc(100vh / var(--ui-zoom,1) - 96px - 12px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-right:4px}
+@media (max-width:980px){.planner{position:static;max-height:none;overflow:visible;padding-right:0;order:-1}}   /* teléfono: el horario arriba de la oferta */
+.plans{display:flex;gap:4px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.plans .chip{font-family:var(--f-display);font-weight:600;letter-spacing:.02em}
+.plans .chip small{font-family:var(--f-mono);font-weight:400;color:inherit;opacity:.75;margin-left:4px}
+.calwrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.cal{display:grid;grid-template-columns:3.2rem repeat(var(--days),minmax(84px,1fr));min-width:calc(3.2rem + var(--days)*84px)}
+.cal .dh{font-family:var(--f-display);font-weight:600;font-size:.95rem;text-align:center;padding:6px 0;border-bottom:1px solid var(--line);background:var(--sunken)}
+.hours{position:relative}
+/* escala en bloques de 1:30 (duración de una clase), alineados a las 7:00: franjas alternadas + línea en cada inicio */
+.hours div{position:absolute;right:6px;font-family:var(--f-mono);font-size:.68rem;color:var(--muted);padding-top:3px;line-height:1}
+.hours,.day{background-image:repeating-linear-gradient(to bottom,transparent 0 calc(var(--slot) * 3),var(--band) calc(var(--slot) * 3) calc(var(--slot) * 6))}
+.day{position:relative;border-left:1px solid var(--line);background-image:repeating-linear-gradient(to bottom,transparent 0 calc(var(--slot) * 3 - 1px),var(--line) calc(var(--slot) * 3 - 1px) calc(var(--slot) * 3)),repeating-linear-gradient(to bottom,transparent 0 calc(var(--slot) * 3),var(--band) calc(var(--slot) * 3) calc(var(--slot) * 6))}
+.exp-grid{display:grid;gap:16px;margin-top:8px}
+.exp-actions{display:flex;flex-wrap:wrap;gap:8px}
+.expshow{display:inline-flex;align-items:center;gap:8px;font-size:.84rem;color:var(--muted)}
+.expshow label{display:inline-flex;align-items:center;gap:4px;cursor:pointer;color:var(--fg)}
+.expcolor{display:inline-flex;align-items:center;gap:6px;font-size:.84rem;color:var(--muted);cursor:pointer}
+.expcolor input{width:28px;height:28px;padding:0;border:1px solid var(--line);border-radius:6px;background:none;cursor:pointer}
+.gapcell{position:absolute;left:0;right:0;border:0;background:transparent;cursor:pointer;padding:0}
+.gapcell:hover{background:var(--accent-soft)}
+.gapcell:hover::after{content:"+ buscar";position:absolute;inset:0;display:grid;place-items:center;font-size:.7rem;color:var(--accent);font-weight:600}
+.gapcell.on{background:var(--accent-soft);box-shadow:inset 0 0 0 2px var(--accent)}
+.pill.gap{border-color:var(--accent)}
+.blk{position:absolute;border-radius:4px;padding:3px 5px;font-size:.7rem;line-height:1.2;overflow:hidden;background:hsl(var(--h) var(--blk-s) var(--blk-l));color:var(--blk-fg);border-left:3px solid hsl(var(--h) 55% var(--blk-edge));cursor:pointer}
+.blk b{display:block;font-weight:600;font-size:.72rem}
+.blk .t{font-family:var(--f-mono);font-size:.64rem;opacity:.85}
+.blk.own{background:repeating-linear-gradient(135deg,var(--own) 0 6px,var(--surface) 6px 12px);color:var(--fg);border-left-color:var(--muted)}
+.blk.clash{outline:2px solid var(--bad);outline-offset:-2px}
+.blk.ghost{background:transparent;border:2px dashed var(--accent);color:var(--fg);cursor:default;pointer-events:none}
+.summary{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.stats{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.88rem;font-variant-numeric:tabular-nums}
+.stats .bad{color:var(--bad);font-weight:600}
+.load{display:flex;flex-direction:column;gap:4px}
+.bar{position:relative;height:10px;background:var(--sunken);border-radius:999px;border:1px solid var(--line)}
+.bar .fill{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:999px}
+.bar .tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--fg);opacity:.5}
+.ticks{position:relative;height:1rem;font-family:var(--f-mono);font-size:.66rem;color:var(--muted)}
+.ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}.ticks.dos{height:2rem}.ticks span.f2{top:1rem}
+.sel{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.sel>div{display:grid;grid-template-columns:.7rem 4.6rem minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:6px 10px;border-top:1px solid var(--line);font-size:.86rem}
+.sel>div:first-child{border-top:0}
+.cr{font-family:var(--f-mono);font-size:.78rem;font-variant-numeric:tabular-nums}
+.sw{width:.7rem;height:.7rem;border-radius:2px;background:hsl(var(--h) 55% var(--blk-edge))}
+.sw.own{background:var(--muted)}
+.x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:1.05rem;padding:0 4px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.ownrow{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:flex-end;padding-top:10px}
+.ownrow input[type=text]{width:12rem}
+.daypick{display:flex;gap:3px;flex-wrap:wrap}
+.daypick .chip{padding:4px 8px}
+textarea.copy{width:100%;min-height:8rem;font-family:var(--f-mono);font-size:.78rem;background:var(--sunken);border:1px solid var(--line);border-radius:var(--r);padding:8px;color:var(--fg)}
+/* pie a todo lo ancho, separado por una línea */
+footer{margin-top:32px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem}
+
+.ipnt-apoyo{display:block;width:100%;box-sizing:border-box;color:var(--muted);overflow-wrap:anywhere}
+.ipnt-apoyo a{display:inline-flex;align-items:center;gap:.4em;min-height:44px;max-width:100%;color:var(--accent);text-decoration:underline}
+.ipnt-apoyo a:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+.ipnt-apoyo svg{flex:none}
+.ipnt-apoyo small{display:block;font-size:inherit}
+
+@media (prefers-reduced-motion:no-preference){.blk,.opt{transition:background-color .12s}}
+@media (prefers-reduced-motion:reduce){.box{transition:none}}
+
+/* Selección con fondo suave y borde guinda: menos superficie saturada (confort visual) */
+.seg button[aria-pressed="true"],.chip[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent);border-color:var(--accent);font-weight:600}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--accent);border-color:var(--line);box-shadow:inset 0 3px 0 var(--accent)}
+@media (prefers-contrast: more){
+  :root{--line:#8e8589;--muted:#3f3a3d}
+  .box,.card,.subj,.act,section.step{border-width:2px}
+}
+@media (forced-colors: active){
+  .box.want,.add[aria-pressed="true"],.btn.primary{forced-color-adjust:none;background:Highlight;color:HighlightText}
+  .slot.full,.box.hot{outline:2px solid Highlight}
+}
+/* Ajustes comunes del tema institucional (tools/skins.py) */
+body{background:radial-gradient(1100px 380px at 12% -120px,var(--glow1),transparent 70%),radial-gradient(900px 340px at 92% -140px,var(--glow2),transparent 70%),var(--bg) no-repeat}
+.card,.subj,section.step,.mapwrap,.calwrap,.insp{box-shadow:var(--shadow)}
+h1{letter-spacing:-.025em;font-weight:700}
+h2{letter-spacing:-.015em}
+.btn,.chip,.seg,input,select{border-radius:999px}
+.seg button{border-radius:999px}
+header.top{border-bottom:1px solid var(--line)}
+body{zoom:var(--ui-zoom,1)}
+/* algunos navegadores (Firefox con zoom) no repintan el texto de ejemplo al escribir: se oculta explícitamente */
+input:not(:placeholder-shown)::placeholder,textarea:not(:placeholder-shown)::placeholder{color:transparent;opacity:0}
+.title-row{display:flex;align-items:center;gap:12px}
+.theme-btn{display:inline-grid;place-items:center;flex:none;width:36px;height:36px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;padding:0}
+.theme-btn:hover{color:var(--fg);border-color:var(--edge)}
+.theme-btn .i-sun{display:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .theme-btn .i-sun{display:block}:root:not([data-theme="light"]) .theme-btn .i-moon{display:none}}
+:root[data-theme="dark"] .theme-btn .i-sun{display:block}:root[data-theme="dark"] .theme-btn .i-moon{display:none}
+
+/* ---------- dispositivos: táctil, teléfono vertical y horizontal ---------- */
+.mobnote{display:none}
+.ftoggle,.calview{display:none}
+.insp-act{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.tlist{display:grid;gap:14px;margin-block:8px 12px}
+.tl-sem h4{margin:0 0 6px;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tl-rows{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.tl-row{display:grid;grid-template-columns:5px minmax(0,1fr) auto;align-items:stretch;border-top:1px solid var(--line)}
+.tl-row:first-child{border-top:0}
+.tl-bar{background:var(--nv)}
+.tl-name{border:0;background:none;text-align:left;padding:10px 12px;color:var(--fg);cursor:pointer;min-width:0;font:inherit}
+.tl-name b{display:block;font-size:.92rem;font-weight:600;line-height:1.3}
+.tl-name small{display:block;color:var(--muted);font-size:.78rem;margin-top:2px}
+.tl-row.done .tl-name b{color:var(--muted);font-weight:500}
+.tl-row.want{background:var(--accent-soft)}
+.tl-tag{display:inline-block;border-radius:999px;padding:0 7px;font-size:.72rem;font-weight:600;margin-left:4px;background:var(--sunken);color:var(--muted)}
+.tl-tag.ok{background:var(--ok-soft);color:var(--ok)}.tl-tag.bad{background:var(--bad-soft);color:var(--bad)}.tl-tag.warn{background:var(--warn-soft);color:var(--warn)}
+.tl-want{border:0;border-left:1px solid var(--line);background:none;padding:0 14px;min-width:56px;font-size:1.25rem;color:var(--accent);cursor:pointer}
+.tl-want[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+.tl-want:disabled{color:var(--muted);opacity:.5;cursor:default}
+.tl-more{grid-column:2/4;padding:0 12px 10px;font-size:.82rem;color:var(--muted);line-height:1.45}
+.agenda{display:grid;gap:12px;margin-top:4px}
+.ag-day h4{margin:0 0 6px;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ag-it{display:grid;grid-template-columns:6.6rem minmax(0,1fr);gap:10px;align-items:start;padding:8px 10px;border-radius:var(--r);background:hsl(var(--h) var(--blk-s) var(--blk-l));color:var(--blk-fg);border-left:4px solid hsl(var(--h) 45% 40%);margin-bottom:6px;font-size:.85rem}
+.ag-it.own{--h:220;background:var(--sunken);color:var(--fg);border-left-color:var(--muted)}
+.ag-it.ghost{background:transparent;border:2px dashed var(--accent);color:var(--fg)}
+.ag-it.clash{outline:2px solid var(--bad);outline-offset:-2px}
+.ag-it .t{font-family:var(--f-mono);font-size:.76rem;line-height:1.5;white-space:nowrap}
+.ag-it small{display:block;opacity:.85}
+.ag-empty{color:var(--muted);font-size:.86rem}
+@media (hover:none){
+  .gapcell::after{content:"+";position:absolute;inset:0;display:grid;place-items:center;font-size:.8rem;color:var(--accent);opacity:.35}
+  .opt:hover{background:none}
+}
+@media (max-width:720px){
+  .mobnote:not([hidden]){display:flex;gap:10px;align-items:flex-start;justify-content:space-between;background:var(--accent-soft);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;margin:10px 0 0;font-size:.86rem;line-height:1.45}
+  .brand p{font-size:.88rem}
+  .tabs button{padding:8px 10px;font-size:.92rem}
+  .ftoggle{display:inline-flex}
+  .calview{display:inline-flex}
+  .colhead .actions{flex-wrap:wrap}
+  /* tarjetas de la oferta: acciones en una fila propia para no comprimir profesor y horario */
+  .opt{grid-template-columns:3.8rem minmax(0,1fr)}
+  .opt>.right{grid-column:1/-1;grid-row:auto;flex-direction:row;display:flex;flex-wrap:wrap;align-items:center;gap:8px;justify-content:flex-start}
+}
+@media (max-height:520px) and (orientation:landscape){
+  .brand p{display:none}
+  .mapwrap{max-height:calc(100vh - 24px)}
+  .ftoggle{display:inline-flex}
+}
+/* Los bloques fijos (filtros y panel del horario) solo se fijan si hay pantalla suficiente; en pantallas bajas o
+   angostas ocupaban casi toda la altura y dejaban un espacio mínimo para desplazarse */
+@media (max-width:980px),(max-height:760px){
+  .filters{position:static}
+  .planner{position:static;max-height:none;overflow:visible;padding-right:0}
+}
+
+.saes-aviso{margin:12px 0 0;padding:10px 14px;border-radius:10px;background:var(--warn-soft,var(--surface));border:1px solid var(--line);font-size:.86rem}
+.saes-aviso ul{margin:6px 0 0;padding-left:1.1rem;display:flex;flex-direction:column;gap:3px}
+.saes-videos{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:12px 0 2px;font-size:.88rem}
+.saes-videos>span{width:100%;font-weight:600}
+.saes-vid{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;text-decoration:none;color:var(--fg);font-weight:600;background:var(--surface)}
+.saes-vid:hover{border-color:var(--accent)}
+.saes-vlist{color:var(--accent);font-weight:600;margin-left:4px}
+.saes-vid svg{color:var(--accent)}
+.saes-vid.rec{border-color:var(--accent);background:var(--accent-soft,var(--surface));color:var(--accent)}
+.saes-open{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.saes-open::before{content:"";width:9px;height:9px;border-radius:50%;border:2px solid currentColor;flex:none}
+.saes-open.on::before{background:var(--ok);border-color:var(--ok)}
+.saes-dlg{width:min(600px,calc(100vw / var(--ui-zoom,1) - 32px));max-height:calc(100vh / var(--ui-zoom,1) - 48px);overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);padding:20px 22px;box-shadow:0 24px 60px -16px rgba(0,0,0,.45)}
+.saes-dlg::backdrop{background:rgba(20,12,16,.45)}
+.saes-dlg h2{margin:0;font-size:1.25rem}
+.saes-dlg .dl-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px}
+.saes-dlg .x{border:0;background:none;font-size:1.5rem;line-height:1;cursor:pointer;color:var(--muted);padding:2px 6px}
+.saes-dlg ol{margin:10px 0;padding-left:1.3rem;display:flex;flex-direction:column;gap:12px;font-size:.92rem}
+.saes-dlg li>p{margin:4px 0}
+.saes-dlg details{margin-top:6px;font-size:.86rem;border-left:3px solid var(--line);padding:2px 0 2px 10px}
+.saes-dlg summary{cursor:pointer;color:var(--accent);font-weight:600}
+.saes-dlg details ul{margin:6px 0;padding-left:1.1rem;display:flex;flex-direction:column;gap:4px}
+.saes-dlg kbd{font-family:var(--f-mono,ui-monospace,monospace);font-size:.8em;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:var(--bg)}
+.saes-bm{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:var(--accent-fg);border-radius:999px;padding:5px 14px;font-weight:600;text-decoration:none;cursor:grab}
+.saes-paste{width:100%;min-height:2.8rem;resize:none;font-size:.9rem}
+.saes-note{font-size:.8rem;color:var(--muted)}
+.saes-code{display:flex;gap:8px;align-items:stretch;margin:6px 0 4px}
+.saes-code textarea{flex:1;min-width:0;font:12px/1.4 ui-monospace,Consolas,monospace;resize:vertical;word-break:break-all}
+.saes-mm[hidden]{display:none}
+.saes-mm{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-top:12px;padding:10px 12px 10px 14px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--r);background:var(--surface);font-size:.88rem}
+.saes-mm p{margin:0;flex:1 1 360px;min-width:0}
+.saes-mm .mm-act{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.saes-mm .x{border:0;background:none;font-size:1.3rem;line-height:1;cursor:pointer;color:var(--muted);padding:2px 6px}
+#saes-msg .ok{color:var(--ok);font-weight:600} #saes-msg .bad{color:var(--bad);font-weight:600}
+
+/* Componentes de SATE: solo variables --ipn-* (vendor/ipn-comun/dist/tokens.css). */
+/* Dos filas, sin separadores heredados. min-width:0 permite carreras largas. */
+header.top{border-bottom:0;gap:var(--ipn-esp-2);padding-block:var(--ipn-esp-4) 0}
+.brand .title-row{display:flex;justify-content:space-between;gap:var(--ipn-esp-2)}
+.sate-identidad{display:flex;align-items:center;gap:var(--ipn-esp-2);min-width:0}
+.sate-identidad h1{font-size:1.7rem;white-space:nowrap}
+.sate-identidad .unit-switch{padding:0;min-width:2rem;min-height:2rem;flex:none}
+.title-row .header-actions{gap:var(--ipn-esp-2);flex:none}
+.brand #sate-nombre{font-size:var(--ipn-tamano-xs);margin:var(--ipn-esp-1) 0 0}
+#sate-leyenda .sate-ayuda__btn{width:auto;height:auto;min-height:2rem;border:1px solid var(--ipn-borde-control);border-radius:999px;padding:0 var(--ipn-esp-2);font-size:var(--ipn-tamano-xs);color:var(--ipn-texto);background:var(--ipn-superficie);white-space:nowrap}
+.sate-navegacion{display:flex;align-items:center;flex-wrap:wrap;gap:var(--ipn-esp-3);width:100%;min-width:0;margin-bottom:var(--ipn-esp-3)}
+#sate-tabs{flex:1;min-width:0}
+:is(#sate-tabs,.sate-medicion) .sate-pestanas{width:100%;overflow:visible;border-radius:var(--ipn-radio);padding:var(--ipn-esp-1);gap:var(--ipn-esp-1)}
+:is(#sate-tabs,.sate-medicion) .sate-pestana{flex:1;min-width:max-content;min-height:2.5rem;padding-inline:var(--ipn-esp-2);font-size:var(--ipn-tamano-xs);white-space:nowrap}
+:is(#sate-tabs,.sate-medicion) .sate-pestana__texto{white-space:nowrap;overflow-wrap:normal}
+:is(#sate-tabs,.sate-medicion) .sate-pestana__texto--corto{display:none}
+:is(#sate-tabs,.sate-medicion) [data-escalon=corto] .sate-pestana__texto:not(.sate-pestana__texto--corto){display:none}
+:is(#sate-tabs,.sate-medicion) [data-escalon=corto] .sate-pestana__texto--corto{display:inline}
+:is(#sate-tabs,.sate-medicion) .sate-grupo-inicio{margin-left:var(--ipn-esp-2)}
+.sate-controles{display:flex;align-items:center;gap:var(--ipn-esp-2);min-width:0;flex:0 1 15rem}
+.sate-controles .field{flex:1;min-width:0}
+.sate-controles select{width:100%;min-width:0;font-size:var(--ipn-tamano-xs);min-height:2.5rem}
+.sate-fila-avisos{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ipn-esp-2);margin-block:var(--ipn-esp-2)}
+#sate-avisos-globales{min-width:0;flex:1 1 auto}
+.sate-datos{display:flex;align-items:center;flex:none;gap:var(--ipn-esp-2);margin-left:auto}
+.sate-datos .saes-open{font-size:var(--ipn-tamano-xs);min-height:2.5rem;padding-inline:var(--ipn-esp-2)}
+.sate-datos .saes-open::before{content:none}
+#sate-saes-indicador{display:inline-flex;align-items:center;gap:var(--ipn-esp-1);font-size:var(--ipn-tamano-xs);white-space:nowrap}
+#sate-saes-indicador::before{content:"";width:9px;height:9px;border:2px solid var(--ipn-tenue);border-radius:50%;flex:none}
+#sate-saes-indicador.on::before{background:var(--ipn-ok);border-color:var(--ipn-ok)}
+.bar-top{border-bottom:0;padding-block:0;align-items:center}
+.bar-top:has(>#sate-oferta-periodo[hidden]):has(>#notice[hidden]){display:none}
+:is(.unit-switch,.sate-controles select,.sate-datos .btn,.header-actions button):focus-visible{outline:2px solid var(--ipn-acento);outline-offset:2px}
+/* El ancho natural decide cuándo separar controles, abreviar y usar la barra inferior. */
+.sate-navegacion[data-controles-separados=true]>#sate-tabs{flex-basis:100%}
+.sate-navegacion[data-controles-separados=true]>.sate-controles{flex-basis:100%}
+.sate-navegacion[data-controles-separados=true]>.sate-controles .field{max-width:24rem}
+body.sate-flotante #sate-tabs{display:none}
+.sate-medicion{position:absolute;width:0;height:0;overflow:hidden;visibility:hidden;pointer-events:none}
+:is(#sate-tabs,.sate-medicion).sate-medicion .sate-pestanas{width:max-content;max-width:none}
+:is(#sate-tabs,.sate-medicion).sate-medicion .sate-pestana{flex:none;font-weight:600}
+.sate-medicion .sate-controles{width:15rem;max-width:none;flex:none}
+.sate-medicion .field{max-width:none}
+@media(max-width:720px){
+  .sate-navegacion{margin-top:var(--ipn-esp-1)}
+  .sate-controles{flex:1;width:100%}
+  .sate-identidad{gap:var(--ipn-esp-1);flex-wrap:wrap}
+  .sate-identidad h1{font-size:1.2rem}
+  .sate-identidad .unit-switch{min-width:1.5rem;grid-column:auto;grid-row:auto}
+  #sate-leyenda .sate-ayuda__btn{font-size:.65rem;padding-inline:var(--ipn-esp-1)}
+  .title-row .header-actions{gap:var(--ipn-esp-1)}
+  .title-row .header-actions button{width:2rem;height:2rem;padding:0;justify-content:center}
+  .header-actions .enc-btn span,.header-actions .ipnt-btn span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+}
+/* Paleta local: los tokens comunes aún no ofrecen seis categorías ni data-theme. */
+#sate-calendario{--ipn-cal-academico:var(--ipn-acento);--ipn-cal-gestion:var(--ipn-info);--ipn-cal-becas:var(--ipn-ok);--ipn-cal-servicios:#086e79;--ipn-cal-tt:#7544a5;--ipn-cal-feriado:var(--ipn-aviso);color:var(--ipn-texto);min-width:0}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme=light]) #sate-calendario{--ipn-cal-gestion:#8db6f5;--ipn-cal-servicios:#5dd8df;--ipn-cal-tt:#c6a0ee;--ipn-cal-feriado:#f5c56b}
+}
+[data-theme=dark] #sate-calendario{--ipn-cal-gestion:#8db6f5;--ipn-cal-servicios:#5dd8df;--ipn-cal-tt:#c6a0ee;--ipn-cal-feriado:#f5c56b}
+[data-theme=light] #sate-calendario{--ipn-cal-gestion:#1f5fad;--ipn-cal-feriado:#8a5a00}
+#sate-calendario *{box-sizing:border-box}
+.calendario-intro,.calendario-leyenda,.calendario-rango{color:var(--ipn-tenue);font-size:var(--ipn-tamano-s);line-height:1.6}
+.calendario-controles,.calendario-nav{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ipn-esp-2);margin-block:var(--ipn-esp-4)}
+.calendario-segmento{display:inline-flex;max-width:100%;gap:var(--ipn-esp-1);padding:var(--ipn-esp-1);border:1px solid var(--ipn-linea);border-radius:var(--ipn-radio);background:var(--ipn-hundido)}
+.calendario-segmento .sate-btn{border:0;padding-inline:var(--ipn-esp-3);white-space:nowrap;background:transparent;color:var(--ipn-tenue)}
+.calendario-segmento .sate-btn[aria-pressed=true]{color:var(--ipn-acento);background:var(--ipn-superficie);box-shadow:0 0 0 1px var(--ipn-linea);font-weight:600}
+.calendario-selector{display:flex;align-items:center;gap:var(--ipn-esp-2);margin-left:auto;font-size:var(--ipn-tamano-s);min-width:0}
+.calendario-selector select{width:auto;min-width:0;max-width:100%;min-height:2.5rem;background:var(--ipn-superficie);color:var(--ipn-texto);border:1px solid var(--ipn-borde-control);border-radius:var(--ipn-radio);padding:var(--ipn-esp-2)}
+.calendario-filtros{display:flex;flex-wrap:wrap;gap:var(--ipn-esp-1) var(--ipn-esp-4);border:0;border-block:1px solid var(--ipn-linea);margin:var(--ipn-esp-4) 0;padding:var(--ipn-esp-2) 0}
+.calendario-filtros legend{padding-right:var(--ipn-esp-2);font-size:var(--ipn-tamano-xs);color:var(--ipn-tenue)}
+.calendario-filtro{display:flex;align-items:center;gap:var(--ipn-esp-2);min-height:2.5rem;cursor:pointer;font-size:var(--ipn-tamano-s)}
+.calendario-filtro input{width:1rem;height:1rem;accent-color:currentColor;margin:0}
+.calendario-filtro span{border-bottom:2px solid currentColor}
+.calendario-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(14rem,.42fr);gap:var(--ipn-esp-5);align-items:start}
+.calendario-contenido{min-width:0}
+.calendario-detalle{min-width:0;position:sticky;top:var(--ipn-esp-4);padding:var(--ipn-esp-4);border:1px solid var(--ipn-linea);border-radius:var(--ipn-radio);background:var(--ipn-hundido);font-size:var(--ipn-tamano-s);line-height:1.6;overflow-wrap:break-word}
+.calendario-detalle h3{margin-top:0;font-size:var(--ipn-tamano-l)}
+.calendario-detalle h4{margin:0;color:var(--ipn-texto);font-size:var(--ipn-tamano-m)}
+.calendario-detalle-evento{border-left:3px solid currentColor;padding-left:var(--ipn-esp-3);margin-top:var(--ipn-esp-4)}
+.calendario-detalle-evento p{color:var(--ipn-texto);margin-block:var(--ipn-esp-2)}
+.calendario-detalle-evento .calendario-fuente{font-size:var(--ipn-tamano-xs);color:var(--ipn-tenue)}
+.calendario-detalle-evento .calendario-categoria{color:inherit;font-weight:600;font-size:var(--ipn-tamano-xs)}
+/* Texto y trazos conservan el significado al prescindir del color. */
+#sate-calendario [data-categoria=academico]{color:var(--ipn-cal-academico)}
+#sate-calendario [data-categoria=gestion]{color:var(--ipn-cal-gestion)}
+#sate-calendario [data-categoria=becas]{color:var(--ipn-cal-becas)}
+#sate-calendario [data-categoria=servicios]{color:var(--ipn-cal-servicios)}
+#sate-calendario [data-categoria=tt]{color:var(--ipn-cal-tt);stroke-dasharray:4 3;border-left-style:dashed}
+#sate-calendario [data-categoria=feriado]{color:var(--ipn-cal-feriado);stroke-dasharray:2 3;border-left-style:dotted}
+.calendario-categorias{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--ipn-esp-2) var(--ipn-esp-4);list-style:none;padding:0;margin-block:var(--ipn-esp-3);font-size:var(--ipn-tamano-xs)}
+.calendario-categorias li{display:flex;align-items:center;gap:var(--ipn-esp-2)}
+.calendario-muestra{width:1.25rem;border-top:4px solid currentColor;border-radius:2px}
+[data-categoria=tt] .calendario-muestra{border-top-style:dashed}
+[data-categoria=feriado] .calendario-muestra{border-top-style:dotted}
+.calendario-anillo{display:block;width:100%;max-width:36rem;margin-inline:auto;height:auto}
+.calendario-banda{display:none;width:100%;height:auto}
+.calendario-pista{fill:none;stroke:var(--ipn-linea);stroke-width:1;opacity:.45}
+.calendario-tick{stroke:var(--ipn-tenue);stroke-width:1;opacity:.55}
+.calendario-arco{fill:none;stroke:currentColor;stroke-width:11;stroke-linecap:round;cursor:pointer}
+circle.calendario-arco{fill:currentColor;stroke-width:2}
+.calendario-arco:hover,.calendario-arco:focus-visible{stroke-width:15;outline:2px solid var(--ipn-acento);outline-offset:4px}
+.calendario-arco[data-atenuado=true],.calendario-proceso[data-atenuado=true]{opacity:.35}
+.calendario-proceso[data-resaltado=true],.calendario-proceso[aria-pressed=true]{background:color-mix(in srgb,currentColor 10%,var(--ipn-superficie));box-shadow:inset 0 0 0 1px currentColor}
+.calendario-arco[aria-pressed=true]{stroke-width:14}
+.calendario-aguja{stroke:var(--ipn-acento);stroke-width:2;pointer-events:none}
+.calendario-svg-mes{fill:var(--ipn-tenue);font-family:var(--ipn-fuente-texto);font-size:14px}
+.calendario-svg-periodo{fill:var(--ipn-texto);font-family:var(--ipn-fuente-texto);font-size:24px;font-weight:600}
+.calendario-svg-hoy{fill:var(--ipn-texto);font-family:var(--ipn-fuente-texto);font-size:14px;font-weight:600;pointer-events:none}
+.calendario-procesos{list-style:none;padding:0;margin:0;border-top:1px solid var(--ipn-linea)}
+.calendario-procesos li{border-bottom:1px solid var(--ipn-linea);padding-block:var(--ipn-esp-2)}
+.calendario-proceso{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.7fr);align-items:center;gap:var(--ipn-esp-3);width:100%;min-height:2.75rem;text-align:left;border:0;border-left:3px solid currentColor;padding:var(--ipn-esp-2) var(--ipn-esp-3);background:var(--ipn-superficie);font:inherit;cursor:pointer}
+.calendario-proceso span{color:var(--ipn-texto);line-height:1.5}
+.calendario-proceso small{color:var(--ipn-tenue);font-size:var(--ipn-tamano-xs);line-height:1.5}
+.calendario-nav h3{flex:1;margin:0;font-size:var(--ipn-tamano-l);white-space:nowrap}
+.calendario-nav .sate-btn{padding-inline:var(--ipn-esp-3);color:var(--ipn-texto)}
+.calendario-nav .sate-btn:disabled{opacity:.5;cursor:default}
+.calendario-mes{width:100%;min-width:0;margin-top:var(--ipn-esp-3);border:1px solid var(--ipn-linea);border-radius:var(--ipn-radio);overflow:hidden;background:var(--ipn-superficie)}
+.calendario-dias-semana,.calendario-fechas,.calendario-barras,.calendario-mas{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.calendario-dias-semana{background:var(--ipn-hundido);text-align:center;font-size:var(--ipn-tamano-xs);color:var(--ipn-tenue);padding-block:var(--ipn-esp-2)}
+.calendario-semana{position:relative;min-height:9rem;border-top:1px solid var(--ipn-linea);padding-bottom:var(--ipn-esp-1)}
+.calendario-fechas{position:relative}
+.calendario-celda{min-width:0;border-right:1px solid var(--ipn-linea);padding:var(--ipn-esp-1)}
+.calendario-celda:last-child{border-right:0}
+.calendario-dia{width:100%;min-height:2.75rem;border:0;border-radius:var(--ipn-radio);background:transparent;color:var(--ipn-texto);font:inherit;font-size:var(--ipn-tamano-s);text-align:center;padding:0;cursor:pointer}
+.calendario-fuera .calendario-dia{color:var(--ipn-tenue)}
+.calendario-dia[aria-current=date]{width:2.75rem;max-width:100%;aspect-ratio:1;border:2px solid var(--ipn-acento);border-radius:50%;background:color-mix(in srgb,var(--ipn-acento) 10%,var(--ipn-superficie));color:var(--ipn-texto);font-weight:700}
+.calendario-celda:has([aria-current=date]){text-align:center}
+.calendario-feriado .calendario-dia{border-bottom:2px dotted var(--ipn-cal-feriado)}
+.calendario-barras{gap:var(--ipn-esp-1) 0;position:relative;grid-auto-rows:1.5rem;padding-top:var(--ipn-esp-1)}
+.calendario-pill{min-width:0;width:100%;min-height:1.5rem;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;border:0;border-left:3px solid currentColor;border-radius:4px;padding:1px var(--ipn-esp-1);background:color-mix(in srgb,currentColor 8%,var(--ipn-superficie));font-family:var(--ipn-fuente-texto);font-size:var(--ipn-tamano-xs);cursor:pointer}
+.calendario-pill[data-continua=false]{border-radius:999px;border-left-width:5px}
+.calendario-mas{margin-top:var(--ipn-esp-1)}
+.calendario-mas .sate-btn{min-width:0;min-height:2rem;padding:0;font-size:var(--ipn-tamano-xs);color:var(--ipn-acento);border:0;background:transparent;white-space:nowrap}
+:is(.calendario-dia,.calendario-pill,.calendario-proceso,.calendario-filtro input,.calendario-selector select):focus-visible{outline:2px solid var(--ipn-acento);outline-offset:-2px}
+@media(max-width:720px){
+  .calendario-layout{grid-template-columns:minmax(0,1fr);gap:var(--ipn-esp-4)}
+  .calendario-detalle{position:static}
+  .calendario-anillo{display:none}
+  .calendario-banda{display:block}
+  .calendario-banda .calendario-svg-mes,.calendario-banda .calendario-svg-hoy{font-size:22px}
+  .calendario-controles{align-items:flex-start}
+  .calendario-selector{margin-left:0}
+  .calendario-nav h3{flex-basis:100%}
+  .calendario-celda{padding:2px}
+  .calendario-pill{padding-inline:2px}
+  .calendario-proceso{grid-template-columns:minmax(0,1fr);gap:var(--ipn-esp-1)}
+}
+.sate-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sate-sin-scroll{overflow:hidden}
+.situacion-cifras{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--ipn-esp-3);margin:var(--ipn-esp-4) 0}
+.situacion-cifra{display:flex;flex-direction:column;gap:var(--ipn-esp-2);padding:var(--ipn-esp-3);background:var(--ipn-superficie);border:1px solid var(--ipn-linea);border-radius:var(--ipn-radio);color:var(--ipn-texto)}
+.situacion-cifra b{font-size:var(--ipn-tamano-l)}
+.situacion-cifra progress{width:100%;accent-color:var(--ipn-acento)}
+.situacion-materias{padding:0;list-style:none}
+.situacion-materias li{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ipn-esp-2);padding:var(--ipn-esp-2) 0;border-bottom:1px solid var(--ipn-linea)}
+.situacion-materias li>span:first-child{flex:1;min-width:9rem}
+.situacion-pill{padding:var(--ipn-esp-1) var(--ipn-esp-2);border-radius:var(--ipn-radio);background:var(--ipn-aviso-suave);color:var(--ipn-aviso);font-size:var(--ipn-tamano-xs)}
+.situacion-fuente{color:var(--ipn-tenue);font-size:var(--ipn-tamano-s)}
+#sate-situacion>.sate-chips{margin-bottom:var(--ipn-esp-3)}
+#sate-situacion .sate-globo{max-height:60dvh;overflow:auto}
+@media(max-width:720px){.situacion-cifras{grid-template-columns:repeat(2,minmax(0,1fr))}#sate-situacion .sate-avisos{grid-template-columns:1fr}body[data-sate-pestana=situacion] .bar-top{gap:var(--ipn-esp-2);padding-block:var(--ipn-esp-2)}}
+:where(.sate-chip,.sate-btn,.sate-enlace,.sate-ayuda__btn,.sate-pestana,.sate-barra__btn,.sate-modal__x,.sate-aviso__x,.sate-desp summary){font:inherit;color:inherit}
+:is(.sate-chip,.sate-btn,.sate-enlace,.sate-ayuda__btn,.sate-pestana,.sate-barra__btn,.sate-modal__x,.sate-aviso__x,.sate-desp summary):focus-visible{outline:2px solid var(--ipn-acento);outline-offset:2px}
+
+/* chips: el color indica el estado; la marca (✓ ! ✕ i) lo repite sin depender del color */
+.sate-chips{display:flex;flex-wrap:wrap;gap:var(--ipn-esp-2);padding:var(--ipn-esp-1)}   /* se acomodan en varias líneas, sin barra lateral */
+.sate-chips__item{flex:none;display:inline-flex}
+.sate-chip{display:inline-flex;align-items:center;gap:var(--ipn-esp-2);min-height:2.25rem;padding:0 var(--ipn-esp-3);border:1px solid var(--chip-c);border-radius:999px;background:var(--chip-s);font-family:var(--ipn-fuente-texto);font-size:var(--ipn-tamano-s);white-space:nowrap}
+.sate-chip[data-estado=ok]{--chip-c:var(--ipn-ok);--chip-s:var(--ipn-ok-suave)}
+.sate-chip[data-estado=aviso]{--chip-c:var(--ipn-aviso);--chip-s:var(--ipn-aviso-suave)}
+.sate-chip[data-estado=error]{--chip-c:var(--ipn-error);--chip-s:var(--ipn-error-suave)}
+.sate-chip[data-estado=info]{--chip-c:var(--ipn-info);--chip-s:var(--ipn-info-suave)}
+button.sate-chip{cursor:pointer}
+.sate-chip__marca{display:inline-grid;place-items:center;width:1.1rem;height:1.1rem;border-radius:50%;background:var(--chip-c);color:var(--chip-s);font-size:.7rem;font-weight:700;line-height:1}
+.sate-chip__texto{color:var(--ipn-texto)}
+
+/* avisos */
+.sate-avisos{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:var(--ipn-esp-3)}
+.sate-aviso{position:relative;padding:var(--ipn-esp-3) var(--ipn-esp-4);border-left:4px solid var(--av-c);border-radius:var(--ipn-radio);background:var(--av-s);color:var(--ipn-texto);font-family:var(--ipn-fuente-texto);font-size:var(--ipn-tamano-s)}
+.sate-aviso[data-estado=ok]{--av-c:var(--ipn-ok);--av-s:var(--ipn-ok-suave)}
+.sate-aviso[data-estado=aviso]{--av-c:var(--ipn-aviso);--av-s:var(--ipn-aviso-suave)}
+.sate-aviso[data-estado=error]{--av-c:var(--ipn-error);--av-s:var(--ipn-error-suave)}
+.sate-aviso[data-estado=info]{--av-c:var(--ipn-info);--av-s:var(--ipn-info-suave)}
+.sate-aviso p{margin:0}
+.sate-aviso__titulo{font-weight:600;color:var(--av-c)}
+.sate-aviso__cuerpo{margin-top:var(--ipn-esp-1)!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sate-aviso__x{position:absolute;top:var(--ipn-esp-1);right:var(--ipn-esp-1);width:2rem;height:2rem;border:0;background:none;cursor:pointer;border-radius:50%}
+.sate-enlace{display:inline-block;margin-top:var(--ipn-esp-2);padding:0;border:0;background:none;color:var(--ipn-acento);text-decoration:underline;cursor:pointer;font-size:var(--ipn-tamano-s)}
+
+/* botones */
+.sate-btn{min-height:2.5rem;padding:0 var(--ipn-esp-4);border:1px solid var(--ipn-borde-control);border-radius:var(--ipn-radio);background:var(--ipn-superficie);cursor:pointer;font-family:var(--ipn-fuente-texto);font-size:var(--ipn-tamano-s)}
+.sate-btn--primario{background:var(--ipn-acento);border-color:var(--ipn-acento);color:var(--ipn-sobre-acento)}
+
+/* modal */
+.sate-modal{box-sizing:border-box;width:min(36rem,calc(100vw - var(--ipn-esp-5)));max-height:calc(100dvh - var(--ipn-esp-6));padding:0;border:1px solid var(--ipn-linea);border-radius:var(--ipn-radio);background:var(--ipn-superficie);color:var(--ipn-texto);font-family:var(--ipn-fuente-texto);overflow:hidden}
+.sate-modal[open]{display:flex;flex-direction:column}
+.sate-modal::backdrop{background:rgba(9,9,11,.55)}   /* oscurece en claro y en oscuro (con --ipn-texto se aclaraba en oscuro) */
+.sate-modal--pequeno{width:min(24rem,calc(100vw - var(--ipn-esp-5)))}
+.sate-modal__cab{display:flex;align-items:center;gap:var(--ipn-esp-3);padding:var(--ipn-esp-3) var(--ipn-esp-4);border-bottom:1px solid var(--ipn-linea)}
+.sate-modal__titulo{flex:1;margin:0;font-size:var(--ipn-tamano-m);font-weight:600}
+.sate-modal__x{flex:none;width:2.5rem;height:2.5rem;border:0;border-radius:50%;background:none;cursor:pointer}
+.sate-modal__cuerpo{flex:1;overflow:auto;padding:var(--ipn-esp-4);font-size:var(--ipn-tamano-s);line-height:1.5}
+.sate-modal__cuerpo p{margin:0 0 var(--ipn-esp-3)}
+.sate-modal__cuerpo a{color:var(--ipn-acento)}
+.sate-modal__pie{display:flex;justify-content:flex-end;gap:var(--ipn-esp-2);padding:var(--ipn-esp-3) var(--ipn-esp-4);border-top:1px solid var(--ipn-linea)}
+.sate-modal__pie[hidden]{display:none}
+@media (max-width:720px){
+  .sate-modal,.sate-modal--pequeno{width:100%;max-width:100%;margin:auto 0 0;border-radius:var(--ipn-radio) var(--ipn-radio) 0 0;border-bottom:0;height:calc(100dvh - var(--ipn-esp-5));max-height:none;padding-bottom:env(safe-area-inset-bottom,0px)}
+  .sate-modal--pequeno{height:auto;max-height:calc(100dvh - var(--ipn-esp-5))}
+  .sate-modal[open]{animation:sate-sube var(--ipn-duracion-media) ease-out}
+}
+@keyframes sate-sube{from{transform:translateY(2rem);opacity:0}}
+@media (prefers-reduced-motion:reduce){.sate-modal[open]{animation:none}}
+
+/* ayuda */
+.sate-ayuda{display:inline-block;position:relative;vertical-align:middle}
+.sate-ayuda__btn{display:inline-grid;place-items:center;min-width:1.75rem;min-height:1.75rem;border:0;background:none;color:var(--ipn-tenue);cursor:pointer;border-radius:50%;font-size:var(--ipn-tamano-m);padding:0}
+.sate-ayuda__btn:hover{color:var(--ipn-acento)}
+.sate-globo{position:fixed;z-index:60;box-sizing:border-box;padding:var(--ipn-esp-3);border:1px solid var(--ipn-linea);border-radius:var(--ipn-radio);background:var(--ipn-superficie);color:var(--ipn-texto);font-family:var(--ipn-fuente-texto);font-size:var(--ipn-tamano-s);font-weight:400;line-height:1.45;text-align:left}
+.sate-globo[hidden]{display:none}
+.sate-globo a{color:var(--ipn-acento)}
+
+/* desplegable */
+.sate-desp{border:1px solid var(--ipn-linea);border-radius:var(--ipn-radio);background:var(--ipn-superficie);color:var(--ipn-texto);font-family:var(--ipn-fuente-texto)}
+.sate-desp summary{display:flex;align-items:center;gap:var(--ipn-esp-2);min-height:2.75rem;padding:0 var(--ipn-esp-4);cursor:pointer;font-weight:600;font-size:var(--ipn-tamano-s);list-style:none}
+.sate-desp summary::-webkit-details-marker{display:none}
+.sate-desp summary::before{content:"▸";color:var(--ipn-tenue);transition:transform var(--ipn-duracion-rapida)}
+.sate-desp[open] summary::before{transform:rotate(90deg)}
+.sate-desp__cuerpo{padding:0 var(--ipn-esp-4) var(--ipn-esp-3);font-size:var(--ipn-tamano-s)}
+.sate-desp__cuerpo p{margin:0}
+
+/* pestañas */
+.sate-pestanas{display:flex;width:max-content;max-width:100%;box-sizing:border-box;gap:var(--ipn-esp-1);padding:var(--ipn-esp-2);border:1px solid var(--ipn-linea);border-radius:999px;background:var(--ipn-hundido);box-shadow:inset 0 1px 3px var(--ipn-linea);overflow-x:auto;font-family:var(--ipn-fuente-texto)}
+.sate-pestana{position:relative;display:flex;align-items:center;justify-content:center;gap:var(--ipn-esp-2);flex:none;min-height:2.75rem;padding:var(--ipn-esp-2) var(--ipn-esp-4);border:0;border-radius:999px;background:transparent;color:var(--ipn-tenue);cursor:pointer;font-size:var(--ipn-tamano-s);white-space:nowrap;transition:background var(--ipn-duracion-rapida),box-shadow var(--ipn-duracion-rapida)}
+.sate-pestana:hover,.sate-barra__btn:hover{background:var(--ipn-superficie);color:var(--ipn-texto)}
+.sate-pestana[aria-selected=true]{color:var(--ipn-acento);background:var(--ipn-superficie);box-shadow:0 0 0 1px var(--ipn-linea),0 2px 4px var(--ipn-linea);font-weight:600}
+.sate-pestana__icono{display:inline-flex;flex:none;width:1.25rem;height:1.25rem}
+.sate-pestana__icono svg{width:100%;height:100%}
+[data-pestanas=v3] .sate-pestana__icono{display:none}
+[data-pestanas=v3] .sate-pestana{padding-bottom:var(--ipn-esp-4)}
+[data-pestanas=v3] .sate-pestana[aria-selected=true]::after{content:'';position:absolute;bottom:.3rem;left:calc(50% - .18rem);width:.36rem;height:.36rem;border-radius:50%;background:var(--ipn-acento)}
+.sate-pestana:focus-visible,.sate-barra__btn:focus-visible,.trayectoria-minimapa button:focus-visible{outline:2px solid var(--ipn-acento);outline-offset:2px}
+.sate-pestanas--seg{display:inline-flex;border:1px solid var(--ipn-linea);border-radius:var(--ipn-radio);padding:var(--ipn-esp-1);background:var(--ipn-hundido)}
+.sate-pestanas--seg .sate-pestana{min-height:2.25rem;border:0;border-radius:calc(var(--ipn-radio) - 2px)}
+.sate-pestanas--seg .sate-pestana[aria-selected=true]{background:var(--ipn-superficie);box-shadow:0 0 0 1px var(--ipn-linea)}
+
+/* barra inferior: teléfono y contenedores donde tampoco caben los textos cortos */
+.sate-barra{display:none;position:fixed;left:var(--ipn-esp-2);right:var(--ipn-esp-2);bottom:var(--ipn-esp-2);z-index:40;box-sizing:border-box;min-height:calc(64px + env(safe-area-inset-bottom,0px));gap:var(--ipn-esp-1);padding:var(--ipn-esp-2);padding-bottom:calc(var(--ipn-esp-2) + env(safe-area-inset-bottom,0px));border:1px solid var(--ipn-linea);border-radius:1.5rem;background:var(--ipn-hundido);box-shadow:inset 0 1px 3px var(--ipn-linea);font-family:var(--ipn-fuente-texto)}
+.sate-barra__btn{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--ipn-esp-1);flex:1;min-width:0;min-height:48px;border:0;border-radius:1rem;background:none;color:var(--ipn-tenue);font-size:var(--ipn-tamano-xs);cursor:pointer;padding:var(--ipn-esp-1) 2px;transition:background var(--ipn-duracion-rapida)}
+.sate-barra__btn[aria-current=page]{color:var(--ipn-acento);background:var(--ipn-superficie);box-shadow:0 0 0 1px var(--ipn-linea),0 2px 4px var(--ipn-linea);font-weight:600}
+[data-pestanas] .sate-barra .sate-pestana__icono{display:inline-flex}
+body.sate-flotante:has(.sate-barra){padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+body.sate-flotante .sate-barra{display:flex}
+@media(max-width:720px){.sate-barra{display:flex}#sate-tabs{display:none}body:has(.sate-barra){padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
+
+/* La separación sigue los grupos del catálogo, también en la navegación móvil. */
+.sate-pestana.sate-grupo-inicio{margin-left:var(--ipn-esp-4)}
+.sate-grupo-inicio::before{content:'';position:absolute;left:calc(-1 * var(--ipn-esp-2) - 1px);top:20%;height:60%;width:1px;background:var(--ipn-linea)}
+.sate-barra__btn.sate-grupo-inicio{margin-left:var(--ipn-esp-2)}
+.trayectoria-resumen{font-weight:600;line-height:1.6}
+#sate-presente{display:grid;gap:.65rem;margin-bottom:1.5rem}
+#sate-presente[hidden]{display:none}
+/* resumen a todo el ancho; debajo, contenido acotado a la izquierda y minimapa a la derecha con la misma altura */
+.trayectoria-resumen{grid-column:1 / -1}
+.trayectoria-minimapa{grid-column:2;grid-row:2 / span 4;align-self:stretch;display:flex;flex-direction:column}
+.trayectoria-minimapa button{flex:1;display:flex;align-items:center;justify-content:center}
+#sate-presente:has(.trayectoria-minimapa){grid-template-columns:minmax(0,1.5fr) minmax(260px,1fr);column-gap:var(--ipn-esp-5)}
+.trayectoria-minimapa button{display:block;width:100%;border:1px solid var(--ipn-linea);border-radius:var(--ipn-radio);padding:var(--ipn-esp-2);background:var(--ipn-hundido);cursor:pointer}
+.trayectoria-minimapa button:hover{border-color:var(--ipn-acento)}
+.trayectoria-minimapa svg{display:block;width:100%;height:auto;max-height:260px}
+.trayectoria-minimapa .mm-leg{display:flex;flex-direction:column;align-items:center;gap:var(--ipn-esp-1);margin-top:var(--ipn-esp-2);font-size:var(--ipn-tamano-xs);color:var(--ipn-texto)}
+@media(max-width:720px){#sate-presente:has(.trayectoria-minimapa){grid-template-columns:minmax(0,1fr)}.trayectoria-minimapa{grid-column:1;grid-row:2;width:100%}}
+.trayectoria-escenario{padding:1rem 0;border-block:1px solid var(--ipn-linea);margin:1rem 0}
+#sate-avisos-globales{margin-block:.65rem}
+.sate-barra__btn .sate-pestana__texto{white-space:nowrap;overflow-wrap:normal}
+@media(max-width:720px){.sate-barra__btn{min-width:0;padding-inline:.3rem;font-size:.72rem}}
+@media(prefers-reduced-motion:reduce){.sate-pestana,.sate-barra__btn{transition:none}}
+
+.mm-leg .mm-fila{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--ipn-esp-1) var(--ipn-esp-3)}
+
+/* Los componentes nuevos conservan el acento histórico de Horarios. */
+:root,:root[data-theme],:root:not([data-theme]){--ipn-acento:var(--accent);--ipn-texto:var(--fg);--ipn-tenue:var(--muted);--ipn-superficie:var(--surface);--ipn-linea:var(--line);--ipn-hundido:var(--sunken);--ipn-ok:var(--ok)}
+@media(max-width:720px){#sate-tabs{display:none}}
+
+.ipnt-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:4px 12px 4px 6px;font:inherit;font-size:.86rem;font-weight:600;cursor:pointer;white-space:nowrap;position:relative}
+.ipnt-btn:hover{border-color:var(--accent)}
+.ipnt-btn svg{flex:none;color:var(--muted)}
+.ipnt-btn.on svg{color:var(--ok)}
+.ipnt-btn.warn::after{content:"";position:absolute;top:1px;right:1px;width:8px;height:8px;border-radius:50%;background:var(--warn)}
+@media (max-width:600px){.ipnt-btn span{display:none}.ipnt-btn{padding:4px 6px}}
+.ipnt-dlg h3{margin:16px 0 6px;font-size:1rem}
+.ipnt-dlg .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ipnt-dlg .chk{display:flex;gap:8px;align-items:flex-start;font-size:.9rem;margin-top:10px}
+.ipnt-dlg .chk input{margin-top:3px}
+.ipnt-state{font-size:.88rem;min-height:1.3em;margin:8px 0 0}
+.ipnt-state.ok{color:var(--ok)} .ipnt-state.bad{color:var(--bad)} .ipnt-state.warn{color:var(--warn)}
+.ipnt-file{position:relative;overflow:hidden}
+.ipnt-file input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.ipnt-ms{display:inline-flex;align-items:center;gap:8px}
+.ipnt-dlg button:disabled{opacity:.5;cursor:not-allowed}
+.ipnt-conf-op{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:10px}
+.ipnt-conf-op .btn{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:10px 14px;border-radius:10px;height:auto;white-space:normal}
+.ipnt-conf-op small{font-weight:400;font-size:.8rem;color:inherit;opacity:.85}
+.ipnt-prueba{margin:10px 0 0;font-size:.84rem;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.ipnt-hola{width:min(640px,calc(100vw / var(--ui-zoom,1) - 32px));max-height:calc(100dvh - 24px);overflow:auto}
+.ipnt-hola .lead{margin:0;font-size:.95rem;color:var(--muted)}
+.ipnt-unis{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.ipnt-uni{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:10px 12px;font:inherit;cursor:pointer}
+.ipnt-uni b{font-size:1rem} .ipnt-uni small{color:var(--muted);font-size:.78rem;line-height:1.3}
+.ipnt-uni em{font-style:normal;font-size:.72rem;font-weight:600;color:var(--warn)}
+.ipnt-uni[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.ipnt-cars{display:flex;flex-wrap:wrap;gap:8px}
+.ipnt-hola .alt{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+
+.map-plan{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.plan-panel{margin:0;border-top:1px solid var(--line);padding:12px}
+.plan-head{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px}
+.plan-head .actions{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto}
+.plan-resumen{display:flex;flex-wrap:wrap;gap:4px 12px;margin:0;font-size:.84rem}
+.plan-resumen span{white-space:nowrap;border-left:4px solid var(--accent);padding-left:6px}
+.plan-resumen .plan-2{border-color:var(--plan-segundo)}
+.plan-panel>.sate-desp__cuerpo{padding:12px 0 0}
+.insp[hidden],.mapnote[hidden]{display:none}
+.map-plan .mapwrap{border:0;border-radius:0}
+.map-plan .tlist{margin:0;padding:12px}
+@media(max-width:720px){.plan-resumen{display:grid;gap:4px;font-size:.78rem}.plan-head .actions{margin-left:0}}
+.plan-grupos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.plan-grupo{min-width:0;border-top:3px solid var(--accent);padding-top:8px}
+.plan-grupo.plan-2{border-color:var(--plan-segundo)}
+.tl-row.want{border-right:3px solid var(--accent)}
+.tl-row.want.plan-2{border-right-color:var(--plan-segundo)}
+.tl-row.plan-2 .tl-want{color:var(--plan-segundo)}
+.tl-row.plan-2 .tl-want[aria-pressed="true"]{background:var(--plan-segundo);color:var(--plan-segundo-fg)}
+.plan-panel .wchips{overflow-wrap:anywhere}
+.plan-marca{font-weight:700;margin-right:4px}
+.box.want.plan-2,.box.want.plan-2.offered-no{background:var(--plan-segundo);border-color:var(--plan-segundo);color:var(--plan-segundo-fg)}
+.box.want::after{content:none}
+.box .plan-marca{position:absolute;top:1px;right:3px;margin:0;font-size:.95em}
+.plan-leyenda{display:flex;gap:12px;flex-wrap:wrap}
+.plan-leyenda span{border-left:4px solid var(--accent);padding-left:6px}
+.plan-leyenda .plan-2{border-color:var(--plan-segundo)}
+@media(max-width:720px){.plan-grupos{grid-template-columns:1fr}}
+
+.maptools{flex-wrap:nowrap;gap:8px}
+#map-ayuda{margin-left:auto;white-space:nowrap}
+#legend{flex-wrap:nowrap;margin-bottom:10px;white-space:nowrap}
+#plan-opciones[hidden],#plan-periodos [hidden],#plan-activo[hidden],#plan-leyenda[hidden]{display:none}
+.plan-grupos.un-periodo{grid-template-columns:1fr}
+.plan-bandeja{position:sticky;bottom:0;z-index:30;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 -3px 12px #0001}
+.plan-bandeja .plan-resumen span{white-space:normal}
+body.sate-flotante:has(.sate-barra) .plan-bandeja{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+@media(max-width:720px){#legend{display:none}.maptools{gap:4px}.maptools .seg button{padding:7px 5px;font-size:.7rem}#map-ayuda{font-size:.7rem}.plan-bandeja{bottom:calc(96px + env(safe-area-inset-bottom,0px))}.plan-bandeja .actions{gap:4px}.plan-bandeja .btn{padding:6px;font-size:.75rem}}
+</style>
+
+<style>
+.inst{background:var(--surface);border-bottom:3px solid var(--accent);padding-inline:16px}
+.inst-in{max-width:1480px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;padding-block:12px}
+.inst-in img{height:80px;width:auto;display:block}
+.inst-in .unit img{height:72px}
+.inst-in .unit{margin-left:auto}
+/* versión del logo según el tema (sistema o selector claro/oscuro de la página) */
+.inst .logo-dk{display:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .inst .logo-dk{display:block}:root:not([data-theme="light"]) .inst .logo-lt{display:none}}
+:root[data-theme="dark"] .inst .logo-dk{display:block}:root[data-theme="dark"] .inst .logo-lt{display:none}
+.inst-name{max-width:1480px;margin:0 auto;padding-block:0 10px;font:600 .95rem "Noto Sans",system-ui,sans-serif;color:var(--fg)}
+.inst-foot{background:#fff;margin-top:40px;border-top:1px solid var(--line)}
+.inst-foot img{display:block;width:min(1100px,100%);height:auto;margin:0 auto}
+@media (max-width:640px){.inst-in{flex-wrap:nowrap;gap:10px}.inst-in img{height:76px}.inst-in .unit img{height:44px}.inst-in .unit{margin-left:auto}.inst-name{font-size:.78rem;font-weight:500}}
+@media (max-height:520px) and (orientation:landscape){.inst-in{padding-block:6px}.inst-in img{height:76px}.inst-in .unit img{height:44px}.inst-name{display:none}}
+</style>
+<header class="inst" role="banner">
+  <div class="inst-in">
+    <span><img class="logo-lt" src="../assets/logos/ipn-horizontal-guinda.webp" alt="Instituto Politécnico Nacional. La Técnica al Servicio de la Patria" width="264" height="80"><img class="logo-dk" src="../assets/logos/ipn-horizontal-calado.webp" alt="Instituto Politécnico Nacional. La Técnica al Servicio de la Patria" width="264" height="80"></span>
+  </div>
+  <div class="inst-name"></div>
+</header>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      
+<style>.ipnt-home{display:inline-flex;align-items:center;gap:6px;margin:0 0 6px;padding:2px 8px 2px 2px;border-radius:999px;color:var(--muted);font-size:.86rem;font-weight:600;text-decoration:none}
+.ipnt-home:hover{color:var(--accent);background:var(--surface)}.ipnt-home img{border-radius:6px}</style>
+      <div class="title-row"><div class="sate-identidad"><h1 id="sate-titulo">SATE</h1><button class="btn unit-switch" id="b-unidad" type="button" aria-haspopup="dialog" aria-label="Cambiar unidad académica" title="Cambiar unidad académica">▾</button><span id="sate-leyenda"></span></div><div class="header-actions"><button class="enc-btn" type="button" data-encuesta hidden title="Responde la encuesta o reporta un error"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Opinar</span></button><button class="theme-btn" id="theme-btn" type="button" aria-label="Cambiar tema claro u oscuro" title="Cambiar a tema oscuro">
+<svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+<svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+</button>
+<script>(function(){
+  var r=document.documentElement,b=document.getElementById('theme-btn'),mq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null;
+  var dark=function(){var t=r.getAttribute('data-theme');return t?t==='dark':!!(mq&&mq.matches)};
+  var label=function(){var d=dark();b.title=d?'Cambiar a tema claro':'Cambiar a tema oscuro';b.setAttribute('aria-label',b.title);b.setAttribute('aria-pressed',String(d))};
+  var auto=function(){r.removeAttribute('data-theme');try{sessionStorage.removeItem('theme')}catch(e){}};
+  b.addEventListener('click',function(){var n=dark()?'light':'dark',sys=mq&&mq.matches?'dark':'light';
+    if(n===sys)auto();else{r.setAttribute('data-theme',n);try{sessionStorage.setItem('theme',n)}catch(e){}}
+    label();window.dispatchEvent(new Event('resize'))});
+  if(mq&&mq.addEventListener)mq.addEventListener('change',function(){auto();label();window.dispatchEvent(new Event('resize'))});
+  label();
+})();</script><button class="ipnt-btn" id="ipnt-open" type="button" aria-haspopup="dialog" title="Inicia sesión para guardar tus datos en tu nube">
+<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4s6.3 1.8 7.5 5.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Iniciar sesión</span></button>
+<dialog class="saes-dlg ipnt-dlg" id="ipnt-dlg" aria-labelledby="ipnt-h">
+  <div class="dl-head"><h2 id="ipnt-h">Tu cuenta y tus datos</h2><button class="x" id="ipnt-x" type="button" aria-label="Cerrar">×</button></div>
+  <div id="ipnt-out">
+    <p style="margin:0;font-size:.92rem">Sin sesión, tus planes, marcas y actividades se guardan solo en este navegador. Inicia sesión para conservarlos en tu propia nube y usarlos en cualquier dispositivo.</p>
+    <div class="row" style="margin-top:12px"><button class="btn primary ipnt-ms" id="ipnt-login" type="button">
+      <svg viewBox="0 0 21 21" width="16" height="16" aria-hidden="true"><path fill="#f25022" d="M1 1h9v9H1z"/><path fill="#7fba00" d="M11 1h9v9h-9z"/><path fill="#00a4ef" d="M1 11h9v9H1z"/><path fill="#ffb900" d="M11 11h9v9h-9z"/></svg>
+      Continuar con Microsoft</button>
+      <button class="btn ipnt-ms" id="ipnt-glogin" type="button" hidden>
+      <svg viewBox="0 0 48 48" width="16" height="16" aria-hidden="true"><path fill="#ea4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.2C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285f4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.5 5.8c4.4-4 6.8-10 6.8-17.2z"/><path fill="#fbbc05" d="M10.6 28.5c-.5-1.4-.8-2.9-.8-4.5s.3-3.1.8-4.5l-7.9-6.2C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.2z"/><path fill="#34a853" d="M24 48c6.5 0 11.9-2.1 15.8-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.3 2.3-6.2 0-11.5-4.1-13.4-9.8l-7.9 6.2C6.6 42.6 14.6 48 24 48z"/></svg>
+      Continuar con Google</button></div>
+    <p class="saes-note" style="margin:8px 0 0">Microsoft: se guarda en tu OneDrive.<span id="ipnt-gnote" hidden> Google: se guarda en el espacio privado de la aplicación en tu Google Drive.</span></p>
+    <p class="ipnt-prueba ipnt-msprueba" hidden><b>Cuentas institucionales en proceso de autorización.</b> El acceso con @alumno.ipn.mx e @ipn.mx estará disponible cuando la aplicación sea autorizada por el área de cómputo del IPN. Mientras tanto, puedes usar una cuenta personal de Microsoft (Outlook o Hotmail) o tu cuenta de Google.</p><p class="ipnt-prueba"  hidden><b>Acceso con Google en fase de prueba.</b> Durante esta etapa, el inicio de sesión con Google está disponible solo para las cuentas registradas como usuarios de prueba. Para solicitar acceso, escribe a <span class="ipnt-contacto"></span> desde la cuenta de Google que deseas usar.</p>
+    <p class="saes-note" id="ipnt-soon" style="margin:8px 0 0">El inicio de sesión estará disponible próximamente. Mientras tanto, usa el respaldo en archivo.</p>
+  </div>
+  <div id="ipnt-in" hidden>
+    <p style="margin:0;font-size:.92rem"><b id="ipnt-who"></b></p>
+    <div class="row" style="margin-top:10px"><button class="btn" id="ipnt-sync" type="button">Sincronizar ahora</button><button class="btn primary" id="ipnt-relogin" type="button" hidden>Volver a iniciar sesión</button><button class="btn" id="ipnt-logout" type="button">Cerrar sesión</button><button class="link" id="ipnt-wipe" type="button">Cerrar sesión y borrar mis datos de este navegador</button></div>
+    <div class="row" id="ipnt-wipe-ok" hidden style="margin-top:8px;font-size:.88rem">¿Borrar de este navegador tus planes, marcas, actividades y datos del SAES? Tu copia en <span id="ipnt-where">la nube</span> se conserva. <button class="btn" id="ipnt-wipe-yes" type="button">Sí, borrar</button></div>
+    <label class="chk"><input type="checkbox" id="ipnt-saes"><span>Guardar también mis datos del SAES (kárdex, estado general y cita) en mi nube.</span></label>
+  </div>
+  <p class="ipnt-state" id="ipnt-state" aria-live="polite"></p>
+  <h3>Respaldo en archivo</h3>
+  <p class="saes-note" style="margin:0 0 8px">Descarga tus datos para guardarlos o pasarlos a otro navegador. Restaurar reemplaza los datos de este navegador por los del archivo.</p>
+  <div class="row"><button class="btn" id="ipnt-down" type="button">Descargar respaldo</button><label class="btn ipnt-file">Restaurar desde archivo<input type="file" id="ipnt-file" accept=".json,application/json"></label></div>
+  <p class="ipnt-state" id="ipnt-filemsg" aria-live="polite"></p>
+  <p class="saes-note" style="margin:14px 0 0">Tus datos se guardan en tu propia nube: en OneDrive, en la carpeta <b>Aplicaciones › IPN-tools</b>; en Google Drive, en un espacio privado de la aplicación que no aparece entre tus archivos. La herramienta solo tiene acceso a ese espacio. No hay servidor intermedio: nadie más puede consultarlos. <a href="../privacidad.html" target="_blank" rel="noopener">Aviso de privacidad</a> · <a href="../condiciones.html" target="_blank" rel="noopener">Condiciones de uso</a></p>
+</dialog>
+<dialog class="saes-dlg ipnt-dlg" id="ipnt-conf" aria-labelledby="ipnt-conf-h">
+  <div class="dl-head"><h2 id="ipnt-conf-h">Ya hay datos en tu cuenta</h2></div>
+  <p id="ipnt-conf-txt" style="margin:0;font-size:.95rem"></p>
+  <p style="margin:10px 0 0;font-size:.92rem">¿Cuáles quieres conservar?</p>
+  <div class="ipnt-conf-op">
+    <button class="btn primary" type="button" data-conf="nube"><b>Usar los datos de mi cuenta</b><small>Reemplazan lo que hay en este navegador.</small></button>
+    <button class="btn" type="button" data-conf="local"><b>Conservar los de este navegador</b><small>Reemplazan lo guardado en tu cuenta.</small></button>
+  </div>
+  <p class="saes-note" style="margin:10px 0 0">En ambos casos se suma lo que solo exista de un lado (por ejemplo, tus actividades de Electivas si aquí no las tienes).</p>
+</dialog>
+<dialog class="saes-dlg ipnt-dlg ipnt-hola" id="ipnt-hola" aria-labelledby="ipnt-hola-h">
+  <div class="dl-head"><h2 id="ipnt-hola-h">Bienvenida</h2><button class="x" type="button" data-hola-x aria-label="Cerrar">×</button></div>
+  <p class="lead" id="ipnt-h-lead">Selecciona tu unidad y programa académico.</p>
+  <div id="ipnt-h-uni"><h3>1. Elige tu unidad académica</h3>
+  <div class="ipnt-unis" id="ipnt-h-unis"></div></div>
+  <div id="ipnt-h-cars"></div>
+  <div class="alt">
+    <div id="ipnt-h-login"><p style="margin:0 0 8px;font-size:.92rem">¿Ya la usaste en otro dispositivo? Inicia sesión y se cargan tus datos.</p>
+      <div class="row"><button class="btn ipnt-ms" id="ipnt-h-ms" type="button" data-prov="ms"><svg viewBox="0 0 21 21" width="16" height="16" aria-hidden="true"><path fill="#f25022" d="M1 1h9v9H1z"/><path fill="#7fba00" d="M11 1h9v9h-9z"/><path fill="#00a4ef" d="M1 11h9v9H1z"/><path fill="#ffb900" d="M11 11h9v9h-9z"/></svg>Continuar con Microsoft</button>
+      <button class="btn ipnt-ms" id="ipnt-h-go" type="button" data-prov="google"><svg viewBox="0 0 48 48" width="16" height="16" aria-hidden="true"><path fill="#ea4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.2C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285f4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.5 5.8c4.4-4 6.8-10 6.8-17.2z"/><path fill="#fbbc05" d="M10.6 28.5c-.5-1.4-.8-2.9-.8-4.5s.3-3.1.8-4.5l-7.9-6.2C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.2z"/><path fill="#34a853" d="M24 48c6.5 0 11.9-2.1 15.8-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.3 2.3-6.2 0-11.5-4.1-13.4-9.8l-7.9 6.2C6.6 42.6 14.6 48 24 48z"/></svg>Continuar con Google</button></div><p class="ipnt-prueba ipnt-msprueba" hidden><b>Cuentas institucionales en proceso de autorización.</b> El acceso con @alumno.ipn.mx e @ipn.mx estará disponible cuando la aplicación sea autorizada por el área de cómputo del IPN. Mientras tanto, puedes usar una cuenta personal de Microsoft (Outlook o Hotmail) o tu cuenta de Google.</p><p class="ipnt-prueba"  hidden><b>Acceso con Google en fase de prueba.</b> Durante esta etapa, el inicio de sesión con Google está disponible solo para las cuentas registradas como usuarios de prueba. Para solicitar acceso, escribe a <span class="ipnt-contacto"></span> desde la cuenta de Google que deseas usar.</p></div>
+    <p id="ipnt-h-yo" hidden style="margin:0;font-size:.92rem"></p>
+    <p class="ipnt-state" id="ipnt-h-msg" aria-live="polite"></p>
+    <p style="margin:6px 0 0"><button class="link" type="button" data-hola-x>Explorar sin elegir</button></p>
+  </div>
+</dialog></div></div>
+      <p id="sate-nombre">Sistema de Apoyo a la Trayectoria Escolar</p>
+      <div class="sate-fila-avisos"><div id="sate-avisos-globales"></div><div class="sate-datos"><button class="btn saes-open" id="saes-open" type="button" data-saes-open aria-haspopup="dialog"><span>Actualizar datos del SAES</span></button>
+<span id="sate-saes-indicador" role="status" aria-label="Sin datos del SAES" title="Sin datos del SAES"><span aria-hidden="true">SAES</span></span></div></div>
+    </div>
+    <div class="sate-navegacion"><div id="sate-tabs"></div><button id="t-tray" hidden></button>
+      <div class="sate-controles">
+        <label class="field"><span class="sate-sr">Carrera</span><select id="f-carrera"></select></label>
+      </div>
+    </div>
+  </header>
+
+  <div class="bar-top">
+    <div class="field" id="sate-oferta-periodo"><span>Periodo de la oferta</span><div class="seg" role="group" aria-label="Periodo">
+      <button data-per="proximo">Próximo</button><button data-per="actual">Actual</button>
+    </div></div>
+    <div class="notice" id="notice"></div>
+  </div>
+  <div class="saes-mm" id="saes-mismatch" role="status" hidden></div>
+  <div class="mobnote" id="mobnote" role="note" hidden><span>Esta herramienta se aprovecha mejor en una <b>computadora</b> o tableta. En el teléfono, <b>gíralo a horizontal</b> para ver el mapa completo; en vertical se muestra una versión simplificada en lista.</span><button class="link" type="button" id="b-mobnote">Entendido</button></div>
+
+  <div id="sate-simulacion" class="tag sim" role="status" hidden><span id="sate-simulacion-texto"></span> <button class="link" type="button" id="sate-simulacion-quitar"></button></div>
+  <section id="sate-calendario" class="card" hidden></section>
+  <section id="sate-trayectoria" class="card" hidden>
+    <h2 id="desempeno-titulo"></h2>
+    <div id="sate-presente"></div>
+    <div id="desempeno-vacio" hidden><p id="desempeno-vacio-texto"></p><button class="btn" type="button" id="desempeno-lector"></button></div>
+    <details class="sate-desp" id="desempeno-simulacion" hidden><summary id="desempeno-sim-titulo"></summary><div class="sate-desp__cuerpo est-sim" id="est-sim"></div></details>
+    <div class="kstats" id="kstats" hidden></div>
+  </section>
+  <!-- ============ PANTALLA 1: TRAYECTORIA ============ -->
+  <section hidden id="v-tray" data-view-panel="tray" role="tabpanel" aria-labelledby="t-tray">
+    <!-- La planeación anual se activa por unidad desde los datos. -->
+    <div class="maptools">
+      <div class="seg" role="group" aria-label="Vista de la trayectoria"><button data-mview="mapa">Mapa</button><button data-mview="lista">Lista</button></div>
+      <div class="seg" role="group" aria-label="Zoom" id="zoomseg">
+        <button data-zoom="-1" aria-label="Alejar">−</button><button data-zoom="0" aria-label="Mapa completo">Mapa completo</button><button data-zoom="1" aria-label="Acercar">+</button>
+      </div>
+      <button class="link" type="button" id="map-ayuda"></button>
+    </div>
+    <div class="legend" id="legend" aria-label="Simbología"></div>
+    <label class="tgl" id="sug-tgl" hidden title="Muestra u oculta el indicador de materias sugeridas"><input type="checkbox" id="sug-on"><span class="tgl-ui" aria-hidden="true"></span><i class="l-sug" aria-hidden="true"></i><span>Ver sugeridas</span></label>
+    <div id="plan-opciones" hidden>
+      <div class="seg" role="group" id="plan-periodos"><button type="button" data-plan-paso="0"></button><button type="button" data-plan-paso="1"></button><button class="link" type="button" id="plan-supuesto" hidden>ⓘ</button></div>
+      <span id="plan-activo" role="status" aria-live="polite"></span>
+      <div class="plan-leyenda" id="plan-leyenda"></div>
+    </div>
+    <div class="mapcut" id="mapcut" hidden><button class="minimap" type="button" id="minimap" aria-label="Avance completo en miniatura; muestra el mapa completo"></button><div class="mapcut-info"><b>Tu avance <span id="mapcut-sim"></span></b><span id="mapcut-txt"></span><span class="mm-leg" id="mm-leg"></span><div class="seg sm mapvista" role="group" aria-label="Qué mostrar del mapa" id="mapvista"><button type="button" data-vista="todo">Mapa completo</button><button type="button" data-vista="pend">Pendientes</button><button type="button" data-vista="sigue">Recomendaciones</button></div></div></div>
+    <div class="map-plan">
+    <div class="mapwrap" id="mapwrap"><div class="areas" id="areas"></div><div class="map" id="map"></div></div>
+    <div class="tlist" id="tlist" hidden></div>
+    <ul class="mapnote" id="mapnote" hidden></ul>
+    <section class="plan-panel" id="plan-panel">
+      <div class="insp" id="insp" aria-live="polite" hidden></div>
+      <div class="sate-desp__cuerpo">
+      <p id="plan-carga" role="status" hidden></p>
+    <div class="card chosenbar" aria-labelledby="h-chosen">
+      <div class="cb-head">
+        <h3 class="sub" id="h-chosen">Materias que quieres cursar</h3>
+        <span class="muted" id="chosen-help"></span>
+      </div>
+      <div class="plan-grupos" id="chosen"></div>
+      <small id="chosen-req"></small>
+    </div>
+      <div class="card"><h3 class="sub" id="h-sugg">Sugeridas</h3><div class="sugg" id="sugg"></div>
+        <div class="actions" style="margin-top:10px"><button class="btn" id="b-sugg">Elegir las sugeridas</button><button class="btn" id="b-all" title="Agrega al banco todas las materias que ya puedes cursar y tienen grupos; después indica en «Generar horarios» cuántas quieres llevar">Elegir todas las que puedes cursar</button></div></div>
+      </div>
+    </section>
+    </div>
+    <div class="below">
+      <div class="card" data-personal hidden><h3 class="sub">Seriación recomendada por nivel</h3><div class="lvls" id="lvls"></div></div>
+      <div class="card wide" id="lineas-card"><h3 class="sub">Optativas y líneas de especialización</h3><div id="lineas"></div></div>
+    </div>
+      <div class="plan-head plan-bandeja"><p class="plan-resumen" id="plan-resumen" role="status" aria-live="polite"></p>
+        <div class="actions"><button class="btn" type="button" id="plan-simular"></button><button class="btn primary" type="button" id="b-go"></button><button class="btn" type="button" id="b-none"></button><button class="btn" type="button" id="plan-deshacer" hidden></button></div>
+        <span class="sate-sr" id="plan-anuncio" role="status" aria-live="polite" aria-atomic="true"></span>
+      </div>
+  </section>
+
+  <!-- ============ PANTALLA 2: HORARIO ============ -->
+  <section id="v-hor" hidden></section>
+  <!-- módulo "Exportar horario": formato, estilo, contenido de cada clase y color de extracurriculares -->
+  
+  <footer id="foot"><span id="foot-info"></span><div class="ipnt-apoyo"><a href="https://github.com/sponsors/Silver-VS" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Apoya el proyecto</span></a><small>Donar es voluntario; el proyecto es gratuito y lo mantiene un alumno del IPN.</small></div></footer>
+</div>
+
+
+<section class="wrap" id="sate-tramites" hidden></section>
+<p class="wrap" id="sate-carga" role="status">Cargando…</p>
+<script>window.SATE_CONFIG={"unidades":{"upiita":{"pestanas":["trayectoria","mapa","horarios","calendario"],"tramites":[],"leyenda":"prueba","logo":{"claro":"assets/logos/upiita-oro.webp","oscuro":"assets/logos/upiita-blanco.webp","alt":"UPIITA, inicio del sitio de la unidad","enlace":"https://www.upiita.ipn.mx/"},"grupos":[["trayectoria"],["mapa","horarios","calendario"]],"planDosPeriodos":false,"siglas":"UPIITA","nombre":"Unidad Profesional Interdisciplinaria en Ingeniería y Tecnologías Avanzadas","saes":"https://www.saes.upiita.ipn.mx/"},"escom":{"pestanas":["trayectoria","mapa","horarios"],"tramites":[],"leyenda":"prueba","grupos":[["trayectoria"],["mapa","horarios"]],"planDosPeriodos":false,"siglas":"ESCOM","nombre":"Escuela Superior de Cómputo","saes":"https://www.saes.escom.ipn.mx/"},"upibi":{"pestanas":["trayectoria","mapa","horarios"],"tramites":[],"leyenda":"prueba","grupos":[["trayectoria"],["mapa","horarios"]],"planDosPeriodos":false,"siglas":"UPIBI","nombre":"Unidad Profesional Interdisciplinaria de Biotecnología","saes":"https://www.saes.upibi.ipn.mx/"}},"textos":{"proyecto.nombre":"HADES","proyecto.apoyo.enlace":"Apoya el proyecto","proyecto.apoyo.ayuda":"Donar es voluntario; el proyecto es gratuito y lo mantiene un alumno del IPN.","sate.pie":"SATE te ayuda a entender tu situación escolar y a planear tu trayectoria. Tus datos del SAES solo se leen, nunca se modifican, y se guardan únicamente en este navegador o en tu propia nube si inicias sesión. Los trámites oficiales se hacen en el SAES y con Gestión Escolar, donde se confirman tu cita, tu carga autorizada y los cupos.","sate.nombre":"Sistema de Apoyo a la Trayectoria Escolar","sate.siglas":"SATE","sate.leyenda.prueba":"SATE está en fase de prueba en la {unidad}. Puede tener errores: confirma siempre tu información en el SAES y en tu Gestión Escolar.","sate.encabezado.unidad":"Cambiar unidad académica","sate.encabezado.carrera":"Carrera","sate.encabezado.prueba":"Fase de prueba ⓘ","sate.encabezado.actualizar":"Actualizar datos del SAES","sate.encabezado.indicador":"SAES","sate.encabezado.usando_datos":"Datos del SAES actualizados el {fecha}","sate.encabezado.sin_datos":"Sin datos del SAES","sate.pestana.situacion.titulo":"Situación escolar","sate.pestana.situacion.corto":"Situación","sate.pestana.mapa.titulo":"Mapa curricular","sate.pestana.mapa.corto":"Mapa","sate.pestana.horarios.titulo":"Horarios de clase","sate.pestana.horarios.corto":"Horarios","sate.pestana.calendario.titulo":"Calendario escolar","sate.pestana.calendario.corto":"Calendario","sate.pestana.desempeno.titulo":"Desempeño","sate.pestana.desempeno.corto":"Desempeño","sate.pestana.tramites.titulo":"Ventanilla digital","sate.pestana.tramites.corto":"Ventanilla","sate.pestana.trayectoria.titulo":"Mi trayectoria","sate.pestana.trayectoria.corto":"Trayectoria","sate.situacion.que_hacer":"Qué hacer","sate.situacion.ventanilla":"Consultar en Ventanilla digital","sate.situacion.entendido":"Entendido","sate.situacion.sin_datos":"Conoce tu situación escolar","sate.situacion.lector_invitacion":"Usa el Lector para cargar tus datos del SAES y consultar tus adeudos, tu carga y tus próximas actividades.","sate.situacion.usar_lector":"Usar el Lector","sate.situacion.desfase":"Desfase","sate.situacion.plazo_titulo":"Plazos por vencer","sate.situacion.como_desfase":"Cómo funciona el desfase","sate.situacion.explicacion_desfase":"Una materia reprobada se considera desfasada cuando transcurren más de dos periodos sin acreditarla. El orden recomendado del mapa por niveles no es desfase. La referencia es el periodo que planeas y los datos del SAES; confirma cualquier diferencia con Gestión Escolar. Recursar una materia no elimina el adeudo hasta acreditarla.","sate.situacion.recursar":"Puedes recursar sin dictamen","sate.situacion.recursar_cuerpo":"El aviso de tu unidad permite inscribirte en ventanillas el {fecha}, con tope de {cr} créditos.","sate.situacion.revisar_desfase":"Revisa tus materias desfasadas","sate.situacion.desfase_dictamen":"Desfase y dictamen","sate.situacion.desfase_cuerpo":"Tienes {n} materias desfasadas. Confirma con Gestión Escolar las opciones para continuar.","sate.situacion.dictamen_detalle":"Según el aviso del periodo, necesitas revisar si cuentas con dictamen vigente. Consulta Gestión Escolar antes de planear la reinscripción; el Lector todavía no confirma la vigencia del dictamen.","sate.situacion.limite_detalle":"La autorización sin dictamen cubre hasta {n} materias en su primer periodo de desfase. Consulta tus opciones en ventanillas.","sate.situacion.desfase_detalle":"Consulta el plazo de cada materia y el aviso vigente. Puedes revisar opciones de recursamiento o ETS con Gestión Escolar. Esta orientación no sustituye una resolución oficial.","sate.situacion.plazo_proximo":"Hay materias cuyo plazo para acreditarlas llega al periodo que planeas.","sate.situacion.sin_confirmar":"Sin confirmar","sate.situacion.sin_desfase":"No se detecta desfase con los datos disponibles.","sate.situacion.ninguno":"Ninguno","sate.situacion.adeudos":"Adeudos","sate.situacion.adeudos_cuerpo":"{n, plural, one {Hay # materia pendiente de acreditar; retiene} other {Hay # materias pendientes de acreditar; retienen}} {cr} créditos en tu carga.","sate.situacion.adeudos_detalle":"Los créditos de materias reprobadas se retienen hasta acreditarlas. Inscribir un recursamiento no los suma de nuevo. Revisa abajo las opciones por materia.","sate.situacion.ets":"ETS","sate.situacion.ets_fecha":"{actividad}: hasta el {fecha}.","sate.situacion.ets_sin_aviso":"Consulta si existe un aviso vigente de ETS para tus adeudos.","sate.situacion.ets_detalle":"El examen a título de suficiencia evalúa todo el temario. Consulta las fechas y requisitos vigentes en Ventanilla digital y Gestión Escolar. No uses datos de pago de otro periodo.","sate.situacion.reinscripcion":"Reinscripción","sate.situacion.cita":"Tu cita en el SAES: {fecha}.","sate.situacion.cita_vencida":"Tu cita registrada ({fecha}) ya pasó. Vuelve a leer el SAES para confirmar tu inscripción.","sate.situacion.sin_cita":"Tus datos no muestran cita. Revisa el SAES y el calendario de tu unidad.","sate.situacion.cita_detalle":"Que no aparezca tu cita no significa una baja ni que no te hayas reinscrito. Actualiza tus datos con el Lector o consulta a Gestión Escolar; si tuviste baja temporal autorizada, menciónalo.","sate.situacion.carga":"Carga autorizada","sate.situacion.carga_sin_dato":"Carga autorizada sin confirmar en el SAES","sate.situacion.carga_cuerpo":"Tope de {cr} créditos, incluidos {ret} retenidos por adeudos.","sate.situacion.carga_detalle":"La carga autorizada del SAES incluye los créditos retenidos por adeudos. Si aplica la autorización del primer periodo de desfase, se usa la carga media más los créditos de la materia de mayor valor del plan. Confirma la autorización vigente antes de inscribirte.","sate.situacion.creditos":"Créditos","sate.situacion.creditos_valor":"{obt} / {total}","sate.situacion.promedio":"Promedio oficial","sate.situacion.ayuda_promedio":"Cómo se calcula","sate.situacion.promedio_detalle":"El promedio oficial es el reportado por el SAES e incluye calificaciones reprobadas. Tu promedio sin reprobadas es {promedio}, calculado con las materias acreditadas, incluidas equivalencias y revalidaciones.","sate.situacion.periodo":"Periodo que planeas","sate.situacion.autorizada":"Carga autorizada: {cr} créditos","sate.situacion.materias":"{n} materias","sate.situacion.pendientes":"Materias pendientes de acreditar","sate.situacion.materia_desfasada":"Desfasada","sate.situacion.materia_reprobada":"Reprobada","sate.situacion.opciones":"ⓘ Opciones","sate.situacion.opciones_materia":"Opciones para {materia}","sate.situacion.opcion_recurse":"La estás recursando. Acreditarla regulariza este adeudo; si no, consulta las opciones de ETS y dictamen.","sate.situacion.opcion_agotada":"Ya cursaste esta materia al menos dos veces. Consulta la opción de ETS u otra modalidad y confirma con Gestión Escolar si necesitas dictamen (RGE, art. 48).","sate.situacion.opcion_dictamen":"Revisa con Gestión Escolar si necesitas dictamen para recursar. También puedes consultar ETS.","sate.situacion.opcion_desfasada":"El plazo de esta materia ya transcurrió. Consulta Gestión Escolar para confirmar si aplica la autorización de recursamiento sin dictamen o si necesitas uno; también puedes revisar ETS.","sate.situacion.opcion_plazo":"El plazo para acreditar esta materia es {periodo}. Consulta recursamiento o ETS.","sate.situacion.opcion_actualizar":"Actualiza tus datos del SAES para conocer el periodo y confirma las opciones de reinscripción o ETS con Gestión Escolar.","sate.situacion.lo_que_sigue":"Lo que sigue para ti","sate.situacion.siguiente":"{actividad}: desde el {fecha}.","sate.situacion.calendario":"Ver calendario completo","sate.situacion.calendario_sin_aviso":"No hay calendario vigente para el periodo que planeas. Consulta Gestión Escolar.","sate.situacion.calendario_globo":"{calendario}","sate.situacion.calendario_fuente":"Fuente: {fuente}","sate.situacion.fuente":"Datos del SAES actualizados el {fecha}. Aquí ves tus datos reales, sin simulación.","sate.situacion.actualizar":"Actualizar mis datos del SAES","sate.situacion.actualizar_detalle":"Los datos son una copia del SAES y no se actualizan solos. Usa el Lector después de inscribirte o de que se publiquen tus calificaciones.","sate.situacion.actualizar_cita":"Tu cita ya pasó. Si ya te inscribiste, usa el Lector para cargar tu horario definitivo.","sate.situacion.actualizar_publicacion":"Las citas de {periodo} se publicaron el {fecha}. Usa el Lector para traer tu nueva cita.","sate.situacion.actualizar_antiguedad":"Estos datos tienen {dias} días. Usa el Lector después de inscribirte o de que se publiquen tus calificaciones.","sate.calendario.anterior":"Mes anterior","sate.calendario.proximo":"Mes siguiente","sate.calendario.filtros":"Filtrar por categoría","sate.calendario.instrucciones":"Explora las fechas confirmadas del periodo. Selecciona un proceso o un día para consultar su detalle y fuente.","sate.calendario.sin_eventos":"Sin eventos confirmados para esta selección.","sate.calendario.leyenda":"Las categorías acompañan cada proceso; consulta el detalle para ver las fechas y la fuente.","sate.calendario.vista":"Vista del calendario","sate.calendario.vista_periodo":"Vista de periodo","sate.calendario.vista_mes":"Vista de mes","sate.calendario.periodo":"Periodo","sate.calendario.periodo_nombre":"Periodo {periodo}","sate.calendario.grafico_periodo":"Procesos del periodo {periodo}","sate.calendario.semanas":"{n} semanas","sate.calendario.procesos":"Procesos y fechas","sate.calendario.detalle":"Detalle del proceso","sate.calendario.categorias_presentes":"Categorías presentes en el periodo","sate.calendario.escala":"Escala del calendario","sate.calendario.mes":"Mes","sate.calendario.titulo_mes":"{mes} {anio}","sate.calendario.semana":"Semana","sate.calendario.semana_anterior":"Semana anterior","sate.calendario.semana_proxima":"Semana siguiente","sate.calendario.boton_hoy":"Hoy","sate.calendario.flecha_anterior":"‹","sate.calendario.flecha_proxima":"›","sate.calendario.mas":"+{n} más","sate.calendario.leyenda_periodo":"Los arcos representan procesos de varios días; los puntos, fechas puntuales. Al pasar el cursor o enfocar una marca se resalta su proceso en la lista. Las marcas pequeñas indican semanas y la aguja indica hoy. El detalle muestra inicialmente el próximo proceso disponible.","sate.calendario.leyenda_mes":"Las barras continúan a lo largo de los días de cada semana; las píldoras redondeadas indican fechas puntuales. El círculo marca hoy. Selecciona +N más para consultar todos los procesos de ese día. Usa las flechas del teclado para recorrer las fechas.","sate.calendario.categoria_academico":"Académico","sate.calendario.categoria_gestion":"Gestión","sate.calendario.categoria_becas":"Becas","sate.calendario.categoria_servicios":"Servicios","sate.calendario.categoria_tt":"TT","sate.calendario.categoria_feriado":"Descanso","sate.calendario.reinscripcion":"Reinscripción {periodo}","sate.calendario.gestion":"Calendario de Gestión Escolar","sate.calendario.actividades":"Actividades del calendario","sate.calendario.aplica":"Lo que te aplica","sate.calendario.todas":"Todas","sate.calendario.hoy":"hoy","sate.calendario.ultimo":"último día: hoy","sate.calendario.en_curso":"en curso, hasta el {dia}","sate.calendario.rango":"{desde} al {hasta}","sate.calendario.entre_dias":"{desde} a {hasta}","sate.calendario.saes":"En el SAES","sate.calendario.ventanillas":"En ventanillas","sate.calendario.siguiente":"Siguiente","sate.calendario.te_aplica":"Te aplica","sate.calendario.fuente":"Fuente: {fuente}.","sate.minimapa.abrir":"Tu avance en el mapa. Abrir Mapa curricular","sate.minimapa.done":"{n, plural, one {# acreditada} other {# acreditadas}}","sate.minimapa.curso":"{n} en curso","sate.minimapa.pend":"{n} por cursar","sate.minimapa.fail":"{n, plural, one {# reprobada} other {# reprobadas}}","sate.minimapa.late":"{n, plural, one {# desfasada} other {# desfasadas}}","sate.tramite.ets.titulo":"Examen a título de suficiencia","sate.tramite.reinscripcion.titulo":"Reinscripción","sate.tramite.dictamen.titulo":"Dictamen","sate.tramite.electivas.titulo":"Electivas","sate.migracion.abrir":"Abrir {tramite}","sate.migracion.tramites":"Esta sección está en preparación. Consulta el aviso vigente y realiza el trámite ante Gestión Escolar.","sate.desempeno.sim_activa":"Simulación activa","sate.desempeno.quitar":"Quitar","sate.desempeno.sim_titulo":"Simulación de fin de semestre","sate.desempeno.sin_datos":"Lee tus datos del SAES para consultar tus estadísticas, metas y simulación de fin de semestre.","sate.desempeno.lector":"Usar el Lector del SAES","sate.desempeno.materias":"{n, plural, one {# materia} other {# materias}}","sate.desempeno.error_graficas":"No se pudo cargar la biblioteca de gráficas.","sate.desempeno.sim_aviso":"Simulación: no modifica tus datos del SAES","sate.desempeno.simular":"Simular fin de semestre","sate.desempeno.reiniciar":"Reiniciar simulación","sate.desempeno.reiniciar_ayuda":"Regresa todas las materias a su valor inicial (en curso aprobadas con 8 y reprobadas pendientes) y todos los bloques a mostrar la simulación","sate.desempeno.sim_efecto":"El mapa, las sugeridas y las estadísticas se recalculan con tu simulación; tus datos del SAES no cambian.","sate.desempeno.sim_ayuda":"Prueba qué pasaría con tus materias en curso y tus reprobadas: aprobar con cierta calificación, reprobar o acreditar por ETS, recursamiento o extraordinario.","sate.desempeno.calificacion":"Calificación","sate.desempeno.en_curso_eqv":"En curso por equivalencia","sate.desempeno.en_curso":"En curso","sate.desempeno.aprobada":"Aprobada","sate.desempeno.reprobada":"Reprobada","sate.desempeno.recursar":"pasa a recursar","sate.desempeno.como_acredita":"Cómo se acredita","sate.desempeno.pendiente":"Sigue pendiente","sate.desempeno.acreditada_por":"Acreditada por {forma}","sate.planeacion.sin_trayectoria":"Esta carrera aún no tiene una trayectoria recomendada: sus materias se muestran por nivel según el SAES, sin seriación.","sate.planeacion.propuesta":"Esta carrera aún no tiene una trayectoria recomendada: las áreas y la seriación (líneas punteadas) son una propuesta hecha a partir del plan de estudios oficial, sujeta a validación por la academia.","sate.planeacion.flechas":"Trayectoria recomendada: las flechas indican la seriación recomendada.","sate.planeacion.sombreado":"Se sombrean las materias que conviene aprobar antes de las que elegiste; en cursiva, las que no tienen grupos en el periodo consultado.","sate.planeacion.niveles":"En este plan las materias se organizan por niveles (1, 2, 3…), no por semestres: el nivel indica el orden recomendado y en un mismo periodo puedes inscribir materias de distintos niveles si cumples sus requisitos y las reglas de inscripción de tu unidad académica.","sate.planeacion.flechas_lejanas":"Las flechas entre materias lejanas aparecen al resaltar una materia.","sate.planeacion.resaltar_tactil":"Al tocar una materia se resaltan en azul sus requisitos y en naranja las materias que dependen de ella.","sate.planeacion.resaltar_cursor":"Al pasar el cursor sobre una materia se resaltan en azul sus requisitos y en naranja las materias que dependen de ella.","sate.planeacion.flechas_ocultas":"Se omiten {n} flechas redundantes (requisitos que ya llegan a través de otra materia de la cadena).","sate.planeacion.leer_mapa":"Cómo leer el mapa","sate.planeacion.zoom_completo":"Mapa completo","sate.planeacion.zoom_completo_corto":"Completo","sate.planeacion.bandeja":"{n, plural, one {# materia} other {# materias}} · {creditos} de {tope} créditos para {periodo}","sate.planeacion.bandeja_sin_tope":"{n, plural, one {# materia} other {# materias}} · {creditos} créditos para {periodo}","sate.planeacion.bandeja_vacia":"Elige en el mapa las materias que quieres cursar en {periodo}","sate.planeacion.periodo_elegido":"Periodo {periodo}","sate.planeacion.agregada":"{materia} agregada a {periodo}","sate.planeacion.quitada":"{materia} quitada de {periodo}","sate.planeacion.deshacer":"Deshacer","sate.planeacion.deshecho":"Se deshizo el último cambio.","sate.planeacion.oferta_vacia":"Aún no eliges materias en el mapa.","sate.planeacion.elegir_mapa":"Elegir en el mapa","sate.planeacion.oferta_toda":"Ver toda la oferta","sate.planeacion.filtro_elegidas":"Solo las elegidas en el Mapa curricular","sate.planeacion.estado_disponible":"Puedes cursarla","sate.planeacion.estado_elegida":"Quiero cursarla","sate.planeacion.estado_recurse":"Por recursar","sate.planeacion.estado_acreditada":"Ya acreditada","sate.planeacion.estado_curso":"En curso","sate.planeacion.estado_requisito":"Conviene cursarla antes","sate.planeacion.estado_libre":"Optativa o electiva (libre)","sate.planeacion.estado_desfase":"Desfasada","sate.planeacion.nivel":"Nivel {n}","sate.planeacion.explorar_cursor":"Coloca el cursor sobre una materia para ver sus requisitos y las materias que dependen de ella. Haz clic para agregarla a tu plan.","sate.planeacion.explorar_tactil":"Toca una materia para ver sus requisitos y las materias que dependen de ella. Tócala de nuevo o elige «Quiero cursarla» para agregarla a tu plan.","sate.planeacion.explorar_tactil_anual":"Toca una materia para ver sus requisitos. Tócala de nuevo o usa «Quiero cursarla» para agregarla al periodo activo.","sate.planeacion.supuesto_titulo":"Supuesto del periodo {periodo}","sate.planeacion.pie":"{marca} · {periodo}: {n, plural, one {# materia} other {# materias}} · {creditos}{carga} cr","sate.planeacion.pie_tope":" de {tope}","sate.planeacion.titulo":"Planear en el mapa","sate.planeacion.periodos":"Periodo de planeación","sate.planeacion.elegidas":"Materias que quieres cursar","sate.planeacion.simular":"Simular cómo termina este semestre","sate.planeacion.supuesto":"Este periodo supone acreditadas las materias elegidas en el anterior. Su oferta y carga autorizada deberán confirmarse; los horarios se arman para el primer periodo.","sate.planeacion.horario_n":"El armado de horario corresponde a este primer periodo.","sate.planeacion.agregar":"Agregar sugeridas","sate.planeacion.sugeridas":"Sugeridas para {periodo}","sate.planeacion.cuenta":"{n, plural, one {# materia} other {# materias}} · {creditos} créditos","sate.planeacion.resumen":"{n, plural, one {# materia} other {# materias}} · {creditos} de {tope} créditos","sate.planeacion.vacio":"Selecciona en el mapa las materias que quieres cursar.","sate.planeacion.requisitos":"Por seriación, conviene cursar antes: {materias}.","sate.planeacion.carga":"{creditos} de {tope} créditos de carga autorizada o de referencia; {retenidos} retenidos por adeudos.","sate.planeacion.sin_carga":"{creditos} créditos elegidos. Carga autorizada sin datos: confírmala en el SAES.","sate.planeacion.periodo_proximo":"Periodo N","sate.planeacion.periodo_siguiente":"Periodo N+1","sate.planeacion.meta":"{creditos} de {meta} créditos nuevos sugeridos; {retenidos} retenidos por adeudos.","sate.planeacion.activo":"Periodo activo: {periodo}","sate.planeacion.asignada":"{marca} · Periodo {periodo}","sate.planeacion.horarios":"Ir a horarios de {periodo}","sate.planeacion.quitar_activo":"Quitar todas de {periodo}","sate.planeacion.quitar":"Quitar {materia} del periodo {periodo}","sate.planeacion.sin_grupos":"(sin grupos)","sate.planeacion.obligatoria":"Obligatoria por desfase: cúrsala en este periodo.","sate.trayectoria.resumen":"Periodo {periodo} · {avance} de la carrera · {desfase}. Lo próximo: {proximo}","sate.trayectoria.siguiente_paso":"Tu siguiente paso","sate.trayectoria.sin_avance":"avance por confirmar","sate.trayectoria.y_si":"¿Y si…?","sate.trayectoria.sin_datos":"Aquí verás cómo vas en tu carrera, tus pendientes y tu desempeño, y podrás explorar metas y simular el fin de semestre. Lee tus datos del SAES con el Lector.","sate.horarios.priorizar":"priorizar","sate.horarios.inscrito_cargado":"Horario inscrito cargado en la versión {version} ({periodo}).","sate.horarios.periodo_proximo":"próximo periodo","sate.horarios.periodo_actual":"periodo actual","sate.horarios.inscrito_sin_oferta":"{n, plural, one {# materia no aparece en la oferta capturada y se muestra con las horas del SAES.} other {# materias no aparecen en la oferta capturada y se muestran con las horas del SAES.}}","sate.horarios.version":"Versión","sate.horarios.horario":"Horario {version}","sate.horarios.vacio":"vacío","sate.horarios.eliminar_horario":"Eliminar el horario {version}","sate.horarios.nuevo_ayuda":"Agregar un horario vacío","sate.horarios.nuevo":"+ Nuevo","sate.horarios.duplicar":"Duplicar {version}","sate.horarios.buscar_hueco":"Buscar materias para {dia} {horas}","sate.horarios.actividad":"Actividad extracurricular","sate.horarios.extra":"extra","sate.horarios.traslape":"traslape","sate.horarios.vista_previa":"vista previa","sate.horarios.horario_vacio":"Aún no hay materias en este horario.","sate.horarios.creditos_horario":"créditos en el horario","sate.horarios.materias_horario":"<b>{n}</b> {n, plural, one {materia} other {materias}}","sate.horarios.horas_semana":"h de clase a la semana","sate.horarios.traslapes":"{n, plural, one {# traslape} other {# traslapes}}","sate.horarios.sin_traslapes":"Sin traslapes","sate.horarios.sin_horario":"{n} sin horario publicado","sate.horarios.falta_obligatoria":"Falta {nombre}: obligatoria por desfase","sate.horarios.horario_inicio":"Agrega grupos desde la oferta o genera horarios automáticamente.","sate.horarios.previa_tactil":"Toca un grupo de la oferta para ver su vista previa.","sate.horarios.previa_cursor":"Al colocar el cursor sobre un grupo se muestra su vista previa.","sate.horarios.quitar_filtro":"Quitar filtro {nombre}","sate.horarios.quitar_todos":"Quitar todos","sate.horarios.excluir":"excluir","sate.horarios.hueco":"hueco","sate.horarios.quitar_hueco":"Quitar filtro de hueco","sate.horarios.quitar":"Quitar {nombre}","sate.horarios.quitar_opcion":"Quitar","sate.horarios.agregar":"Agregar","sate.horarios.choca":"Choca con {nombre}","sate.horarios.reemplaza":"Reemplaza {grupo}","sate.horarios.profesor_excluido":"profesor excluido","sate.horarios.profesor_excluido_ayuda":"Profesor excluido: se trata como «No». Quítalo de «Excluir profesores» para marcar este grupo.","sate.horarios.marcar":"Marcar opción","sate.horarios.si":"Sí","sate.horarios.quiza":"Quizá","sate.horarios.no":"No","sate.horarios.salon":"Salón:","sate.horarios.nota":"Nota","sate.horarios.nota_placeholder":"Nota sobre este grupo o profesor","sate.horarios.nivel":"Nivel {n}","sate.horarios.linea":"Línea de especialización","sate.horarios.solo_opcion":"Mostrar solo la opción elegida","sate.horarios.mas_opciones":"{n, plural, one {Ver # opción más} other {Ver # opciones más}}","sate.horarios.cuenta_materias":"{n, plural, one {# materia} other {# materias}} · {opciones, plural, one {# opción} other {# opciones}}","sate.horarios.cuenta_grupos":"{n, plural, one {# grupo} other {# grupos}} · {materias, plural, one {# materia} other {# materias}}","sate.horarios.agregar_grupo":"Agregar grupo completo","sate.horarios.carga_total":"Carga total: {n} cr · {estado}","sate.horarios.carga_autorizada":"autorizada {n}","sate.horarios.mas_filtros":"Más filtros","sate.horarios.mas_filtros_activos":"Más filtros ({n})","sate.horarios.ocultar_acreditadas":"Ocultar las ya acreditadas","sate.horarios.elegidas":"{n, plural, one {Solo la elegida en el Mapa curricular} other {Solo las # elegidas en el Mapa curricular}}","sate.horarios.recursar":"por recursar","sate.horarios.acreditada":"ya acreditada","sate.horarios.semestre":"de tu semestre","sate.horarios.disponible":"puedes cursarla","sate.horarios.curso":"en curso","sate.horarios.desfasada":"desfasada","sate.horarios.desfasada_dictamen":"desfasada: requiere dictamen","sate.horarios.desfasada_recursar":"desfasada: recursar","sate.horarios.carga_resumen":"{n} de {max} créditos","sate.horarios.carga_falta":" · te faltan {f} para la carga mínima","sate.horarios.carga_ayuda":"{ret} créditos retenidos por reprobadas: cuentan aunque no las inscribas y recursarlas no suma de nuevo. Tu carga incluye {nuevos} créditos de materias nuevas, de {libre} permitidos. El tope total es de {tope} créditos, incluidos los retenidos. Confirma tu carga autorizada en el SAES.","sate.horarios.actividad_dias":"Selecciona al menos un día","sate.horarios.actividad_horas":"La hora final debe ser posterior a la inicial","sate.horarios.materia":"Materia","sate.horarios.profesor":"Profesor","sate.horarios.grupo":"Grupo","sate.horarios.tipo_materia":"materia","sate.horarios.tipo_profesor":"profesor","sate.horarios.tipo_grupo":"grupo","sate.horarios.todos":"Todos","sate.horarios.generador_vacio":"Selecciona materias en el Mapa curricular o mediante el buscador para generar horarios.","sate.horarios.oferta_sin_resultados":"No hay grupos que cumplan los filtros. Cambia el turno o el nivel, retira algún filtro de búsqueda o desactiva «Solo las elegidas en el mapa».","sate.horarios.carga_menor":"Menor a la mínima","sate.horarios.carga_excede":"Excede la carga autorizada","sate.horarios.carga_excede_media":"Excede la carga media (con adeudos)","sate.horarios.carga_mayor":"Mayor a la máxima","sate.horarios.carga_min_media":"Entre mínima y media","sate.horarios.carga_media_max":"Entre media y máxima","sate.horarios.minima":"mínima","sate.horarios.media":"media","sate.horarios.maxima":"máxima","sate.horarios.exportacion_vacia":"Agrega materias a tu horario para exportarlo.","sate.horarios.exportacion_todos_vacia":"Agrega materias a algún horario para exportarlo.","sate.horarios.exportacion_generando":"Generando…","sate.horarios.copiado":"Copiado","sate.horarios.copiar":"Copiar texto","sate.horarios.descarga_cancelada":"Descarga cancelada.","sate.horarios.descarga_error":"No se pudo guardar el archivo en esta vista.","sate.horarios.descanso_al_menos":"al menos ","sate.horarios.descanso_duracion":"Duración del descanso","sate.horarios.descanso_entre":" libres entre ","sate.horarios.desde":"Desde","sate.horarios.hasta":"Hasta","sate.horarios.descanso_dias":"Días del descanso","sate.horarios.todos_dias":"Todos los días","sate.horarios.quitar_descanso":"Quitar descanso","sate.horarios.agregar_descanso":"+ Agregar descanso","sate.horarios.y":"y","sate.horarios.minutos_30":"30 min","sate.horarios.hora_1":"1 h","sate.horarios.hora_media":"1 h 30 min","sate.horarios.horas_2":"2 h","sate.horarios.generador_auto":"Selección automática entre tus <b>{n}</b> materias: busca cerca de <b>{meta} créditos nuevos</b> (carga media{tope}) con un horario saludable: hasta 8 h en la escuela (idealmente 6.5 h o menos), no más de 3 clases seguidas, al menos 1 h para comer entre 12:00 y 16:30, pocas horas libres y clases repartidas entre los días.","sate.horarios.generador_tope":", sin rebasar {n} cr en total","sate.horarios.generador_relajado":"Con tus exclusiones y filtros ninguna combinación cumple todos estos criterios; se muestran las más cercanas. Revisa la permanencia y los descansos de cada opción, o reduce las exclusiones.","sate.horarios.generador_carga_menor":"Con la oferta actual, las combinaciones que cumplen estos criterios llegan a <b>{n} créditos nuevos</b>. Para una carga mayor elige un número de materias por horario; esas opciones pueden tener jornadas más largas.","sate.horarios.generador_numero":"Horarios de <b>{n} materias</b> elegidas entre tus <b>{total}</b> seleccionadas{tope}. Cada opción combina materias distintas.","sate.horarios.generador_carga_tope":", sin rebasar tu carga permitida ({n} cr en total)","sate.horarios.generador_dias":"Con todas las materias seleccionadas, el mínimo es de <b>{n, plural, one {# día} other {# días}}</b> a la semana.","sate.horarios.generador_dias_imposible":"En {n} días no es posible incluirlas todas; las opciones omiten al menos una materia.","sate.horarios.generador_dias_posible":"Es posible en {n} días o menos.","sate.horarios.optativas_cubiertas":"el plan ya tiene {n, plural, one {cubierto su espacio} other {cubiertos sus # espacios}} de optativa de nivel {nivel}","sate.horarios.optativas_libres":"el plan solo tiene {n, plural, one {un espacio libre} other {# espacios libres}} de optativa de nivel {nivel} y elegiste {elegidas}","sate.horarios.optativas_aviso":"Optativas de un mismo nivel: {detalle}. Ninguna opción lleva más optativas de ese nivel que espacios por cubrir; para cursar optativas adicionales agrégalas a mano.","sate.horarios.obligatoria_sin_grupos":"<b>{nombre}</b> es obligatoria por desfase y ningún grupo cumple los filtros actuales. Ajusta el turno, el horario, los descansos o los días.","sate.horarios.obligatoria_incluida":"Todas las opciones incluyen <b>{nombre}</b>, obligatoria por desfase.","sate.horarios.generador_sin_resultados":"No hay combinaciones que cumplan los criterios. Reduce las preferencias o exclusiones, cambia el turno o amplía el horario y los descansos.","sate.horarios.sin_grupos":"Sin grupos que cumplan los filtros: {nombre}.","sate.horarios.opcion":"Opción {n}","sate.horarios.cantidad_materias":"{n, plural, one {# materia} other {# materias}}","sate.horarios.cantidad_dias":"{n, plural, one {# día} other {# días}}","sate.horarios.jornada_comida":"hasta {n} h en la escuela · con espacio para comer","sate.horarios.sin_materias":"sin {n}: {nombre}","sate.horarios.usar":"Usar en {version}","sate.horarios.usar_nuevo":"Usar en un horario nuevo","sate.horarios.ver":"Ver","sate.horarios.busqueda_prioridad":"Se analizaron las combinaciones de mayor prioridad (desfasadas, reprobadas, atrasadas y sugeridas primero).","sate.horarios.busqueda_limitada":"Búsqueda limitada por el número de combinaciones; reduce las materias seleccionadas para un análisis completo.","componentes.cerrar":"Cerrar","componentes.descartar":"Descartar","componentes.barra.etiqueta":"Secciones","componentes.ayuda.boton":"Ayuda","componentes.ayuda.titulo":"Ayuda","componentes.estado.ok":"Todo en orden","componentes.estado.aviso":"Atención","componentes.estado.error":"Requiere acción","componentes.estado.info":"Información"}};</script>
+<script src="componentes.js"></script>
+<script src="rutas.js"></script>
+<script src="inicio.js"></script>
+
+<style>
+.enc-dlg{width:min(560px,calc(100vw / var(--ui-zoom,1) - 24px))}
+.enc-dlg form{display:flex;flex-direction:column;gap:16px;margin-top:8px}
+.enc-dlg .enc-intro{margin:2px 0 0;color:var(--muted);font-size:.92rem}
+.enc-dlg fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+.enc-dlg legend{font-weight:600;font-size:.95rem;padding:0;margin-bottom:6px}
+.enc-dlg legend small{font-weight:400;color:var(--muted)}
+.enc-esc{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.enc-esc.n11{grid-template-columns:repeat(11,1fr);gap:4px}
+.enc-esc label,.enc-opc label{position:relative}
+.enc-esc input,.enc-opc input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.enc-esc span{display:flex;align-items:center;justify-content:center;min-height:40px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-weight:600;font-variant-numeric:tabular-nums;cursor:pointer}
+.enc-esc.n11 span{min-height:36px;font-size:.85rem}
+.enc-esc input:checked+span,.enc-opc input:checked+span{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.enc-esc input:focus-visible+span,.enc-opc input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.enc-ext{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-top:-2px}
+.enc-opc{display:flex;flex-wrap:wrap;gap:6px}
+.enc-opc span{display:inline-flex;align-items:center;padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:.86rem;cursor:pointer}
+.enc-dlg textarea{width:100%;box-sizing:border-box;min-height:64px;resize:vertical;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);padding:8px 10px;font:inherit;font-size:.9rem}
+.enc-dlg .enc-nota{font-size:.8rem;color:var(--muted);margin:0}
+.enc-dlg .enc-acc{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end}
+.enc-dlg .enc-acc .enc-no{margin-right:auto;border:0;background:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:.82rem;padding:4px 0}
+.enc-dlg .enc-msg{min-height:1.2em;font-size:.86rem;color:var(--muted);margin:0}
+.enc-dlg .enc-msg.bad{color:var(--bad,#b42318)}
+.enc-dlg .enc-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.enc-apoyo-pie{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);text-align:center}
+.enc-gracias{text-align:center;padding:18px 4px 6px}
+.enc-gracias b{display:block;font-size:1.15rem;margin-bottom:6px}
+.enc-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:4px 12px 4px 8px;font:inherit;font-size:.86rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.enc-btn:hover{border-color:var(--accent)}
+.enc-btn svg{flex:none;color:var(--accent)}
+.enc-btn[hidden]{display:none}
+@media (max-width:560px){.enc-btn{width:36px;height:36px;padding:0;justify-content:center}.enc-btn span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
+.enc-link{border:0;background:none;color:var(--accent);text-decoration:underline;cursor:pointer;font:inherit;padding:0}
+@media (max-width:480px){.enc-esc.n11{grid-template-columns:repeat(6,1fr)}}
+</style>
+<script>
+(()=>{
+const C={"activa": true, "fase": "pruebas-2026-10", "endpoint": "https://script.google.com/macros/s/AKfycbyk3lyUjzBE7W6HVyLn_BZqw-euTpjZpR4nVFM97j-2-ejy4_4vGTKDulfmYgrwPlfP/exec", "cierre": null, "seguimientoDias": 4, "unidad": ""};
+const APOYO="<div class=\"ipnt-apoyo\"><a href=\"https://github.com/sponsors/Silver-VS\" target=\"_blank\" rel=\"noopener\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z\"/></svg><span>Apoya el proyecto</span></a><small>Donar es voluntario; el proyecto es gratuito y lo mantiene un alumno del IPN.</small></div>";
+const K='ipnt.encuesta', DIA=864e5, ahora=()=>Date.now();
+const ls={get(){try{return JSON.parse(localStorage.getItem(K))||{}}catch(e){return {}}},set(v){try{localStorage.setItem(K,JSON.stringify(v))}catch(e){}}};
+let E=ls.get();
+E.id=E.id||(crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)+ahora().toString(36));
+E.uso=E.uso||{min:0,ses:0,exp:0,gen:0};E.pos=E.pos||0;E.hasta=E.hasta||0;
+try{if(!sessionStorage.getItem(K)){sessionStorage.setItem(K,'1');E.uso.ses++}}catch(e){}
+ls.set(E);
+const guardar=()=>ls.set(E);
+const activa=!!(C.activa&&C.endpoint);
+let mostrada=false;   // una vez por visita
+
+/* ---------- cuándo aparece ---------- */
+// exportó un horario, generó horarios y siguió revisándolos 3 minutos, o lleva media hora de uso activo
+const usoSuficiente=()=>{const u=E.uso;return u.exp>=1||u.genAt!=null&&u.min-u.genAt>=3||u.min>=30};
+const fechaSeguimiento=()=>C.cierre?new Date(C.cierre+'T23:59:00').getTime():(E.resp?.t||0)+(C.seguimientoDias||4)*DIA;
+function pendiente(){
+  if(!activa||E.no||ahora()<E.hasta)return null;
+  if(!E.resp)return usoSuficiente()?'completa':null;
+  if(E.resp.inscrito==='aun'&&!E.seg&&ahora()>=fechaSeguimiento())return 'seguimiento';
+  return null;
+}
+function intentar(motivo,demora){
+  const tipo=pendiente();if(!tipo||mostrada)return;
+  if(document.querySelector('dialog[open]'))return;   // no interrumpir otro diálogo
+  mostrada=true;setTimeout(()=>{if(document.querySelector('dialog[open]')){mostrada=false;return}abrir(tipo,motivo)},demora||0);
+}
+// tiempo activo: cuenta medio minuto si la pestaña está visible y hubo interacción reciente
+let ultimo=ahora();
+['pointerdown','keydown','scroll','touchstart'].forEach(ev=>addEventListener(ev,()=>{ultimo=ahora()},{passive:true}));
+setInterval(()=>{if(document.visibilityState==='visible'&&ahora()-ultimo<60e3){E.uso.min+=.5;guardar();intentar('tiempo')}},30e3);
+
+/* ---------- formulario ---------- */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const escala=(n,etq,ext,extra)=>`<div class="enc-esc${n===11?' n11':''}">${Array.from({length:n},(_,i)=>{const v=n===11?i:i+1;return `<label><input type="radio" name="${etq}" value="${v}"${i===0?' required':''}><span>${v}</span></label>`}).join('')}</div><div class="enc-ext"><span>${ext[0]}</span><span>${ext[1]}</span></div>${extra||''}`;
+const opciones=(nombre,tipo,ops,req)=>`<div class="enc-opc">${ops.map(([v,t],i)=>`<label><input type="${tipo}" name="${nombre}" value="${v}"${req&&i===0?' required':''}><span>${esc(t)}</span></label>`).join('')}</div>`;
+const INSCRITO=[['igual','Sí, con el horario que planeé'],['parecido','Sí, con uno parecido'],['distinto','Sí, con uno distinto'],['aun','Todavía no']];
+const FUNCIONES=[['mapa','Mapa curricular'],['manual','Armar horario a mano'],['generador','Generador automático'],['exportar','Exportar horario'],['estado','Estado académico y simulación'],['metas','Metas de término y promedio'],['estadisticas','Estadísticas'],['equivalencias','Equivalencias']];
+function formulario(tipo){
+  if(tipo==='comentario') return `
+    <fieldset><legend>¿Sobre qué es tu comentario?</legend>${opciones('tema','radio',[['error','Un error o dato incorrecto'],['sugerencia','Una sugerencia'],['otro','Otro']],true)}</fieldset>
+    <fieldset><legend>Cuéntanos</legend><textarea name="comentario" maxlength="1000" required placeholder="Qué pasó o qué te gustaría que tuviera"></textarea></fieldset>`;
+  if(tipo==='seguimiento') return `
+    <fieldset><legend>¿Ya te inscribiste en el SAES?</legend>${opciones('inscrito','radio',[...INSCRITO.slice(0,3),['no','No me inscribí este periodo']],true)}</fieldset>
+    <fieldset><legend>¿Qué tan útil fue IPN-tools para llegar a tu cita con el horario listo?</legend>${escala(5,'util_cita',['Nada útil','Muy útil'])}</fieldset>
+    <fieldset><legend>¿Algo que quieras agregar? <small>(opcional)</small></legend><textarea name="comentario" maxlength="1000"></textarea></fieldset>`;
+  return `
+    <fieldset><legend>En general, ¿qué tan satisfecho estás con IPN-tools?</legend>${escala(5,'satisfaccion',['Nada satisfecho','Muy satisfecho'])}</fieldset>
+    <fieldset><legend>¿Qué tan útil fue para armar tu horario?</legend>${escala(5,'util_horario',['Nada útil','Muy útil'],`<div class="enc-opc"><label><input type="radio" name="util_horario" value="na"><span>No la usé para eso</span></label></div>`)}</fieldset>
+    <fieldset><legend>¿Qué funciones usaste? <small>(elige las que apliquen)</small></legend>${opciones('funciones','checkbox',FUNCIONES)}</fieldset>
+    <fieldset><legend>Comparado con como armabas tu horario antes, el tiempo que te tomó fue…</legend>${opciones('tiempo','radio',[['mucho_menor','Mucho menor'],['menor','Menor'],['igual','Igual'],['mayor','Mayor'],['primera','Es mi primera reinscripción']],true)}</fieldset>
+    <fieldset><legend>¿Ya te inscribiste en el SAES?</legend>${opciones('inscrito','radio',INSCRITO,true)}</fieldset>
+    <fieldset><legend>Del 0 al 10, ¿qué tan probable es que la recomiendes a un compañero?</legend>${escala(11,'recomendacion',['Nada probable','Muy probable'])}</fieldset>
+    <fieldset><legend>¿Encontraste algún error o dato incorrecto? <small>(opcional)</small></legend><textarea name="errores" maxlength="1000" placeholder="Por ejemplo: una seriación, un grupo o un promedio que no coincide con el SAES"></textarea></fieldset>
+    <fieldset><legend>¿Qué agregarías o mejorarías? <small>(opcional)</small></legend><textarea name="mejoras" maxlength="1000"></textarea></fieldset>`;
+}
+let dlg=null;
+function abrir(tipo,motivo){
+  tipo=tipo||(E.resp?'seguimiento':'completa');
+  dlg?.remove();
+  dlg=document.createElement('dialog');dlg.className='saes-dlg enc-dlg';dlg.setAttribute('aria-labelledby','enc-h');
+  const seg=tipo==='seguimiento', com=tipo==='comentario', otra=E.pos>=1&&motivo!=='manual';
+  dlg.innerHTML=`<div class="dl-head"><h2 id="enc-h">${com?'Danos tu opinión':seg?'Dos preguntas rápidas':'¿Te está sirviendo IPN-tools?'}</h2><button class="x" type="button" data-enc-cerrar aria-label="Cerrar">×</button></div>
+    <p class="enc-intro">${com?'Ya contestaste la encuesta, ¡gracias! Aquí puedes reportar un error o dejarnos una sugerencia cuando quieras.':seg?'Nos ayuda a saber si la herramienta sirvió en tu reinscripción. Son 30 segundos.':'Estamos en fase de pruebas. Tus respuestas, anónimas, nos ayudan a saber si la herramienta te sirve y qué mejorar. Son 2 minutos.'}</p>
+    <form novalidate>${formulario(tipo)}
+      <div class="enc-hp" aria-hidden="true"><label>No llenar <input name="web" tabindex="-1" autocomplete="off"></label></div>
+      <p class="enc-nota">No escribas tu nombre, boleta ni otros datos personales. Más información en el <a href="../privacidad.html" target="_blank" rel="noopener">aviso de privacidad</a>.</p>
+      <p class="enc-msg" role="status"></p>
+      <div class="enc-acc">${otra?'<button type="button" class="enc-no" data-enc-nunca>No volver a preguntar</button>':''}<button type="button" class="btn" data-enc-cerrar>${motivo==='manual'?'Cancelar':'Ahora no'}</button><button type="submit" class="btn primary">Enviar</button></div>
+    </form>${APOYO?'<div class="enc-apoyo-pie">'+APOYO+'</div>':''}`;
+  document.body.appendChild(dlg);
+  dlg.querySelectorAll('[data-enc-cerrar]').forEach(b=>b.addEventListener('click',()=>{posponer();dlg.close()}));
+  dlg.addEventListener('cancel',()=>posponer());
+  dlg.querySelector('[data-enc-nunca]')?.addEventListener('click',()=>{E.no=ahora();guardar();dlg.close()});
+  dlg.querySelector('form').addEventListener('submit',ev=>{ev.preventDefault();enviar(tipo,motivo,ev.currentTarget)});
+  dlg.addEventListener('close',()=>{setTimeout(()=>dlg?.remove(),0)});
+  dlg.showModal();
+}
+// lo que se puede responder a voluntad: la encuesta si no se ha contestado, o el seguimiento si se dijo «todavía no»
+function manual(){if(!activa)return null;if(!E.resp)return 'completa';return E.resp.inscrito==='aun'&&!E.seg?'seguimiento':'comentario'}
+let enviado=false;
+function posponer(){if(enviado)return;E.pos++;E.hasta=ahora()+(E.pos<=2?1:3)*DIA;guardar()}
+
+/* ---------- envío ---------- */
+function contexto(){
+  let c={};try{c=window.ENCUESTA_CTX?.()||{}}catch(e){}
+  return {...c,unidad:c.unidad||C.unidad||'',fase:C.fase||'',version:C.version||'',
+    movil:matchMedia('(max-width:700px)').matches,minutos:E.uso.min,sesiones:E.uso.ses,exportaciones:E.uso.exp,generaciones:E.uso.gen};
+}
+async function mandar(datos){
+  const body=JSON.stringify(datos);
+  try{const r=await fetch(C.endpoint,{method:'POST',body,redirect:'follow'});const j=await r.json();if(!j.ok)throw new Error(j.error||'rechazada');return true}
+  catch(e){   // si el navegador no deja leer la respuesta, se envía sin leerla
+    if(e instanceof TypeError){try{await fetch(C.endpoint,{method:'POST',body,mode:'no-cors'});return true}catch(e2){}}
+    if(String(e.message).match(/rechazada|inválid/i))throw e;
+    throw new Error('sin conexión');
+  }
+}
+async function enviar(tipo,motivo,f){
+  const msg=f.querySelector('.enc-msg');msg.className='enc-msg';
+  const falta=[...f.querySelectorAll('fieldset')].find(fs=>fs.querySelector('input[required]')&&!fs.querySelector('input:checked')||fs.querySelector('textarea[required]')&&!fs.querySelector('textarea').value.trim());
+  if(falta){msg.textContent='Falta responder: '+falta.querySelector('legend').firstChild.textContent.trim();msg.classList.add('bad');falta.scrollIntoView({block:'center',behavior:'smooth'});return}
+  const fd=new FormData(f), r={};
+  for(const [k,v] of fd.entries()){if(k==='funciones')(r[k]=r[k]||[]).push(v);else r[k]=String(v).trim().slice(0,1000)}
+  if(r.funciones)r.funciones=r.funciones.join(',');
+  const datos={tipo,motivo:motivo||'',id:E.id,respuestas:r,contexto:contexto(),web:r.web||''};delete r.web;
+  const b=f.querySelector('[type=submit]');b.disabled=true;msg.textContent='Enviando…';
+  try{await mandar(datos)}
+  catch(e){b.disabled=false;msg.classList.add('bad');msg.textContent=e.message==='sin conexión'?'No se pudo enviar. Revisa tu conexión e inténtalo de nuevo.':'No se pudo registrar la respuesta. Inténtalo más tarde.';return}
+  enviado=true;
+  if(tipo==='seguimiento')E.seg=ahora();else if(tipo==='completa')E.resp={t:ahora(),inscrito:r.inscrito};
+  E.hasta=0;guardar();enlaces();
+  dlg.querySelector('.enc-apoyo-pie')?.remove();   // el agradecimiento ya trae el enlace
+  f.outerHTML='<div class="enc-gracias"><b>¡Gracias por tu respuesta!</b>'+(r.inscrito==='aun'&&tipo==='completa'?'Cuando cierre la reinscripción te haremos una última pregunta.':'Nos ayuda a mejorar IPN-tools para todo el alumnado.')+APOYO+'</div>';
+  // Se conserva el cierre manual para dar tiempo a leer el aviso y usar el enlace.
+}
+
+/* ---------- API para la página ---------- */
+window.ENCUESTA={
+  marcar(ev){if(ev==='exp')E.uso.exp++;else if(ev==='gen'){E.uso.gen++;if(E.uso.genAt==null)E.uso.genAt=E.uso.min}guardar();intentar(ev,1500)},
+  abrir(){const t=manual();if(!t)return false;abrir(t,'manual');return true},
+  get respondida(){return !!E.resp},
+  get activa(){return activa}
+};
+document.addEventListener('click',e=>{const b=e.target.closest?.('[data-encuesta]');if(!b)return;e.preventDefault();window.ENCUESTA.abrir()});
+// botón «Opinar» y enlace del pie: visibles mientras la encuesta esté activa
+const enlaces=()=>document.querySelectorAll('[data-encuesta]').forEach(b=>{b.hidden=!activa});
+enlaces();
+if(activa)setTimeout(()=>intentar('visita'),4000);
+})();
+</script>
