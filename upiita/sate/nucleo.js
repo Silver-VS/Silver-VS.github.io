@@ -457,6 +457,19 @@ const SAES={
       SAES.save(d);paste.value='';msg.innerHTML='<span class="ok">Datos del SAES cargados.</span>';onLoad(d);setTimeout(()=>SAES.close(),900)};
     paste.addEventListener('paste',e=>{e.preventDefault();take(e.clipboardData.getData('text'))});
     paste.addEventListener('input',()=>{if(paste.value.trim().startsWith('{'))take(paste.value)});
+    dl.querySelector('#saes-paste-clip').addEventListener('click',async e=>{
+      const boton=e.currentTarget;
+      let texto;
+      try{
+        if(!navigator.clipboard?.readText)throw new Error('clipboard-unavailable');
+        texto=await navigator.clipboard.readText();
+      }catch(err){
+        // El permiso depende del navegador: conservar siempre el pegado manual.
+        msg.textContent=boton.dataset.fallback;paste.focus();return;
+      }
+      take(texto);
+    });
+    if(typeof matchMedia==='function'&&matchMedia('(hover:none)').matches)dl.querySelector('#saes-manual').open=true;
     // copiar el código: portapapeles moderno, luego execCommand; si ambos fallan, queda seleccionado para copiarlo a mano
     dl.querySelector('#saes-copybm').addEventListener('click',async e=>{const b=e.currentTarget,box=dl.querySelector('#saes-bmcode'),m=dl.querySelector('#saes-copymsg');
       let ok=false;try{await navigator.clipboard.writeText(box.value);ok=true}catch(err){}
@@ -484,8 +497,10 @@ const SAES={
   },
   status(d){
     const st=document.getElementById('saes-status'), btn=document.getElementById('saes-open');
-    if(btn){btn.querySelector('span').textContent=SATE.texto('sate.encabezado.actualizar')}
     const indicador=document.getElementById('sate-saes-indicador'), usando=!!d&&!d.demo;
+    if(btn){const clave='sate.encabezado.'+(usando?'actualizar':'cargar');
+      btn.querySelector('.sate-texto-largo').textContent=SATE.texto(clave);
+      btn.querySelector('.sate-texto-corto').textContent=SATE.texto(clave+'_corto')}
     if(indicador){
       const fecha=usando?new Date(d.leido).toLocaleString('es-MX',{dateStyle:'medium',timeStyle:'short'}):'';
       const texto=SATE.texto(usando?'sate.encabezado.usando_datos':'sate.encabezado.sin_datos',{fecha});
