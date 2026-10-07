@@ -469,7 +469,6 @@ const SAES={
       }
       take(texto);
     });
-    if(typeof matchMedia==='function'&&matchMedia('(hover:none)').matches)dl.querySelector('#saes-manual').open=true;
     // copiar el código: portapapeles moderno, luego execCommand; si ambos fallan, queda seleccionado para copiarlo a mano
     dl.querySelector('#saes-copybm').addEventListener('click',async e=>{const b=e.currentTarget,box=dl.querySelector('#saes-bmcode'),m=dl.querySelector('#saes-copymsg');
       let ok=false;try{await navigator.clipboard.writeText(box.value);ok=true}catch(err){}
@@ -477,6 +476,7 @@ const SAES={
       b.textContent=ok?'Copiado ✓':'Copiar';m.textContent=ok?'Código copiado. Pégalo como dirección (URL) del marcador.':'El navegador no permitió copiar: el código ya está seleccionado; mantén presionado y elige «Copiar».';
       if(ok)setTimeout(()=>{b.textContent='Copiar'},2500)});
     dl.querySelector('#saes-again').addEventListener('click',()=>{dl.querySelector('#saes-steps').hidden=false});
+    dl.querySelector('#saes-install').addEventListener('click',()=>{dl.querySelector('#saes-manual').open=true});
     dl.querySelector('#saes-clear').addEventListener('click',e=>{
       if(!e.target.dataset.confirm){e.target.dataset.confirm='1';e.target.textContent='Confirmar: borrar mis datos';setTimeout(()=>{delete e.target.dataset.confirm;e.target.textContent='Borrar mis datos'},4000);return}
       SAES.clear();msg.textContent='Tus datos del SAES se borraron de este navegador.';onLoad(null)});
@@ -508,6 +508,10 @@ const SAES={
     }
     if(!st)return;
     st.hidden=!d;document.getElementById('saes-steps').hidden=!!d;document.getElementById('saes-clear').hidden=!d;
+    // El recordatorio arriba solo ayuda cuando la copia tiene más de 30 días.
+    const antiguo=!!d&&Date.now()-new Date(d.leido).getTime()>30*24*60*60*1000;
+    document.getElementById('saes-stale').hidden=!antiguo;
+    const aviso=document.getElementById('saes-reminder');if(aviso)aviso.hidden=antiguo;
     if(!d)return;
     const f=new Date(d.leido).toLocaleString('es-MX',{dateStyle:'medium',timeStyle:'short'});
     st.querySelector('#saes-who').textContent=`${d.carrera_nombre||''} · boleta ${d.boleta||'—'} · leídos el ${f}`;
