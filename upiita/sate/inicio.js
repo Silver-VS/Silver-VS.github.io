@@ -7,21 +7,34 @@
   if (cascaron && ['v1','v3'].includes(variante)) cascaron.setAttribute('data-pestanas', variante);
   let api, actual, tabs, barra, version = 0;
   const leer = k => { try { return localStorage.getItem(k); } catch { return null; } };
+  const solicitada = location.hash.match(/^#\/([a-z0-9-]+)\//)?.[1] || new URLSearchParams(location.search).getAll('sateUnidad').at(-1) || leer('ipnt.unidad');
+  if (solicitada && /^[a-z0-9-]+$/.test(solicitada) && !config[solicitada]) {
+    const siglas = SATE_CONFIG.nombresUnidades?.[solicitada] || solicitada.toUpperCase();
+    config[solicitada] = {generica:true,siglas,nombre:siglas,realce:SATE_CONFIG.identidadUnidades?.[solicitada]?.realce,saes:'https://saes.'+solicitada+'.ipn.mx/',
+      pestanas:['trayectoria','mapa'],grupos:[['trayectoria'],['mapa']],tramites:[]};
+  }
   const inicial = SateRutas.ruta(location.hash, leer('ipnt.unidad') || 'upiita', config);
   const recordada = leer('ipnt.unidad');
   const unidad = inicial?.unidad || new URLSearchParams(location.search).getAll('sateUnidad').at(-1) || recordada || 'upiita';
   window.SATE_UNIDAD = config[unidad] ? unidad : Object.keys(config)[0];
   const u = window.SATE_UNIDAD, cfg = config[u];
   let unidadRealce = inicial || recordada || new URLSearchParams(location.search).has('sateUnidad') ? u : null;
-  const raiz = document.documentElement, temaSistema = matchMedia('(prefers-color-scheme: dark)');
+  const raiz = document.documentElement, temaSistema = typeof matchMedia === 'function' ? matchMedia('(prefers-color-scheme: dark)') : { matches: false, addEventListener() {} };
   function aplicarRealce(id = unidadRealce) {
     unidadRealce = id;
     const tema = raiz.getAttribute('data-theme') || raiz.getAttribute('data-tema');
     const oscuro = tema ? tema === 'dark' || tema === 'oscuro' : temaSistema.matches;
-    raiz.style.setProperty('--sate-realce', config[id]?.realce?.[oscuro ? 'oscuro' : 'claro'] || 'var(--ipn-acento)');
+    const realce = config[id]?.realce?.[oscuro ? 'oscuro' : 'claro'];
+    // Elegir el mayor contraste evita texto blanco ilegible sobre los realces claros del tema oscuro.
+    const luminancia = hex => hex.slice(1).match(/../g).map(h => parseInt(h,16)/255)
+      .map(c => c <= .04045 ? c/12.92 : ((c+.055)/1.055)**2.4)
+      .reduce((s,c,i) => s+c*[.2126,.7152,.0722][i],0);
+    const l = realce ? luminancia(realce) : null, negro = luminancia('#18181b');
+    raiz.style.setProperty('--sate-realce', realce || 'var(--sate-acento-base)');
+    raiz.style.setProperty('--sate-sobre-realce', realce ? (1.05/(l+.05) >= (l+.05)/(negro+.05) ? '#ffffff' : '#18181b') : 'var(--sate-sobre-base)');
   }
   aplicarRealce();
-  new MutationObserver(() => aplicarRealce()).observe(raiz, {attributes:true,attributeFilter:['data-theme','data-tema']});
+  if (typeof MutationObserver === 'function') new MutationObserver(() => aplicarRealce()).observe(raiz, {attributes:true,attributeFilter:['data-theme','data-tema']});
   temaSistema.addEventListener('change', () => aplicarRealce());
   // plurales ICU mínimos del TOML: {n, plural, one {# materia} other {# materias}} (un nivel, «#» = el número)
   const reglaPlural = new Intl.PluralRules('es-MX'), numero = new Intl.NumberFormat('es-MX');
@@ -57,6 +70,7 @@
     }).catch(e => { oferta = null; throw e; });
   }
   async function modulo(id) {
+    if (cfg.generica) return modulos[id];
     if (id === 'trayectoria') await script('desempeno.js');
     if (id === 'calendario') await script('calendario.js');
     if (id === 'mapa' || id === 'horarios') await script(id + '.js');
@@ -105,7 +119,7 @@
       document.body.classList.toggle('sate-flotante', escalon === 'flotante');
       // Si el cambio oculta el botón enfocado, conservar el foco en la navegación equivalente.
       if (escalon === 'flotante' && tabs.contains(foco)) barra.querySelector('[data-id="'+foco.dataset.id+'"]').focus();
-      else if (escalon !== 'flotante' && !matchMedia('(max-width:720px)').matches && barra.contains(foco)) tabs.querySelector('[data-id="'+foco.dataset.id+'"]').focus();
+      else if (escalon !== 'flotante' && !(typeof matchMedia === 'function' && matchMedia('(max-width:720px)').matches) && barra.contains(foco)) tabs.querySelector('[data-id="'+foco.dataset.id+'"]').focus();
     }
     function programar() { if (!pendiente) { pendiente = true; requestAnimationFrame(calcular); } }
     new ResizeObserver(programar).observe(navegacion);
@@ -115,13 +129,24 @@
     addEventListener('resize',programar);
     programar();
   }
+  function logoUnidad(id, nombre) {
+    const img = document.createElement('img'); img.className = 'sate-logo-unidad';
+    img.src = '../assets/logos/unidades/' + (SATE_CONFIG.identidadUnidades?.[id]?.logo || 'ipn') + '.webp';
+    img.alt = nombre; img.onerror = () => { img.hidden = true; };
+    return img;
+  }
   function elegirUnidad() {
     const caja = document.createElement('div');
     for (const [id, c] of Object.entries(config)) {
       const b = document.createElement('button'); b.className = 'btn'; b.textContent = c.siglas;
+      b.className += ' sate-selector-unidad'; b.prepend(logoUnidad(id, c.nombre));
       b.onclick = () => { aplicarRealce(id); if (api) IPNT.set('ipnt.unidad', id); location.hash = '#/' + id + '/mapa'; if (id !== u) location.reload(); else SateUI.cerrarModal(); };
       caja.appendChild(b);
     }
+    const ayuda = document.createElement('p'); ayuda.textContent = '¿Tu unidad no aparece? Usa el Lector desde tu SAES. Guarda el marcador, ejecútalo en tu sesión y abre SATE desde el resumen; después pega tus datos.';
+    const boton = document.createElement('button'); boton.className='btn'; boton.textContent='Cómo usar el Lector';
+    boton.onclick=()=>{SateUI.cerrarModal();SAES.open()};
+    caja.appendChild(ayuda); caja.appendChild(boton);
     SateUI.modal('Unidad académica', caja);
   }
   async function activar(r) {
@@ -130,7 +155,7 @@
     if (r.unidad !== u) { IPNT.set('ipnt.unidad', r.unidad); location.reload(); return; }
     const v = ++version;
     // El mapa y sus sugeridas necesitan los grupos; no pintar una copia parcial de la oferta.
-    if (r.pestana === 'mapa' || r.pestana === 'horarios') await cargarOferta();
+    if (!cfg.generica && (r.pestana === 'mapa' || r.pestana === 'horarios')) await cargarOferta();
     const m = await modulo(r.pestana);
     if (r.pestana === 'tramites' && r.tramite === 'electivas') await SateElectivas.preparar();
     if (v !== version) return;
@@ -154,7 +179,7 @@
   }
   function repintar() {
     if (!actual) return;
-    if (window.SATE_DATA.mapas[api.estado.car]?.generico && actual.pestana !== 'horarios') { ir('horarios'); return; }
+    if (!cfg.generica && window.SATE_DATA.mapas[api.estado.car]?.generico && actual.pestana !== 'horarios') { ir('horarios'); return; }
     api.renderTop(); api.renderAviso(); SATE.presente.avisos(); modulos[actual.pestana].mostrar(actual);
     SATE.calendario?.pintarRecorte(actual.pestana);
     document.body.setAttribute('data-sate-pestana',actual.pestana);
@@ -164,7 +189,7 @@
   }
   window.SATE = {texto, modulos, error, script, identidadSaes, get actual(){return actual}, pestana(id, m) { modulos[id] = m; }, ir, elegirUnidad, repintar, cargarOferta,
     async nucleoListo(a) {
-      api = a; await script('situacion.js'); SateUI.usarAlmacen({leer,guardar:(k,v)=>IPNT.set(k,v)});
+      api = a; if (!cfg.generica) await script('situacion.js'); SateUI.usarAlmacen({leer,guardar:(k,v)=>IPNT.set(k,v)});
       const r = SateRutas.ruta(location.hash, u, config) ||
         SateRutas.ruta('#/' + u + '/' + (api.personal() && cfg.pestanas.includes('trayectoria') ? 'trayectoria' : 'mapa'), u, config);
       const items = cfg.pestanas.map(id => ({id,grupo:cfg.grupos.findIndex(g=>g.includes(id)),texto:texto('sate.pestana.'+id+'.titulo'),corto:texto('sate.pestana.'+id+'.corto')}));
@@ -182,7 +207,7 @@
     }
   };
   const siglasUnidad = document.createElement('span'); siglasUnidad.className = 'sate-unidad'; siglasUnidad.textContent = cfg.siglas;
-  document.getElementById('sate-titulo').replaceChildren(texto('sate.siglas') + ' ', siglasUnidad);
+  document.getElementById('sate-titulo').replaceChildren(logoUnidad(u, cfg.nombre), texto('sate.siglas') + ' ', siglasUnidad);
   if (cfg.leyenda) {
     const ayuda = SateUI.ayuda('sate.leyenda.'+cfg.leyenda,{unidad:cfg.siglas});
     const boton = ayuda.querySelector('button');
@@ -207,5 +232,6 @@
       }
     }
   }
-  json('nucleo').then(d=>{window.SATE_DATA=Object.assign({periodos:{actual:[],proximo:[]},asig:[],prof:[]},d);return script('nucleo.js')}).catch(error);
+  if (cfg.generica) script('generico.js').catch(error);
+  else json('nucleo').then(d=>{window.SATE_DATA=Object.assign({periodos:{actual:[],proximo:[]},asig:[],prof:[]},d);return script('nucleo.js')}).catch(error);
 })();

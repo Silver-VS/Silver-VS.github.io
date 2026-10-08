@@ -452,11 +452,16 @@ const SAES={
     document.addEventListener('click',e=>{if(!e.target.closest?.('[data-saes-open]'))return;e.preventDefault();SAES.open()});
     dl.querySelector('#saes-x').addEventListener('click',()=>SAES.close());
     dl.addEventListener('click',e=>{if(e.target===dl)SAES.close()});   // clic fuera de la ventana
-    const take=t=>{const d=SAES.parse(t);if(!d){msg.innerHTML='<span class="bad">El contenido no corresponde al Lector IPN-tools. Ejecuta el marcador en el SAES y selecciona «Copiar mis datos».</span>';return}
+    const take=async t=>{const d=SAES.parse(t);if(!d){msg.innerHTML='<span class="bad">El contenido no corresponde al Lector IPN-tools. Ejecuta el marcador en el SAES y selecciona «Copiar mis datos».</span>';return}
       if((d.unidad||'upiita')!==SAES.U()){msg.innerHTML='<span class="bad">Estos datos son del SAES de '+String(d.unidad||'upiita').toUpperCase()+'. Esta página es de la '+SAES.U().toUpperCase()+'.</span>';return}
-      SAES.save(d);paste.value='';msg.innerHTML='<span class="ok">Datos del SAES cargados.</span>';onLoad(d);setTimeout(()=>SAES.close(),900)};
-    paste.addEventListener('paste',e=>{e.preventDefault();take(e.clipboardData.getData('text'))});
-    paste.addEventListener('input',()=>{if(paste.value.trim().startsWith('{'))take(paste.value)});
+      const aceptar=()=>{SAES.save(d);paste.value='';msg.textContent='Datos del SAES cargados.';onLoad(d);setTimeout(()=>SAES.close(),900)};
+      if(globalThis.SATE){
+        try{await SATE.script('tramites.js');SateTramites.confirmarSaes(d,msg,aceptar)}
+        catch(e){console.error('Lector: confirmación no disponible',{fase:'identidad',error:e.name});msg.textContent='No se pudieron guardar tus datos. Intenta de nuevo.'}
+      }else aceptar();
+    };
+    paste.addEventListener('paste',e=>{e.preventDefault();return take(e.clipboardData.getData('text'))});
+    paste.addEventListener('input',()=>{if(paste.value.trim().startsWith('{'))return take(paste.value)});
     dl.querySelector('#saes-paste-clip').addEventListener('click',async e=>{
       const boton=e.currentTarget;
       let texto;
@@ -467,7 +472,7 @@ const SAES={
         // El permiso depende del navegador: conservar siempre el pegado manual.
         msg.textContent=boton.dataset.fallback;paste.focus();return;
       }
-      take(texto);
+      return take(texto);
     });
     // copiar el código: portapapeles moderno, luego execCommand; si ambos fallan, queda seleccionado para copiarlo a mano
     dl.querySelector('#saes-copybm').addEventListener('click',async e=>{const b=e.currentTarget,box=dl.querySelector('#saes-bmcode'),m=dl.querySelector('#saes-copymsg');
@@ -1119,7 +1124,8 @@ function renderSide0(){
   if(menu.dataset.telefono!==String(MQ_PHONE.matches)){menu.dataset.telefono=String(MQ_PHONE.matches);menu.open=!MQ_PHONE.matches}
   menu.querySelector('summary').textContent='⋯';menu.querySelector('summary').setAttribute('aria-label',tx('acciones'));
   $('#b-sugg').textContent=tx('agregar');$('#b-go').hidden=false;
-  etiqueta('#b-go',tx('horarios',{periodo:planEtiqueta(0)}),tx('horarios_corto'));etiqueta('#b-none',tx('quitar_activo',{periodo:planEtiqueta(PLAN_PASO)}),tx('quitar_corto'));
+  const periodoConocido=planInicio()!=null;
+  etiqueta('#b-go',tx(periodoConocido?'horarios':'horarios_neutro',{periodo:planEtiqueta(0)}),tx('horarios_corto'));etiqueta('#b-none',tx(periodoConocido?'quitar_activo':'quitar_corto',{periodo:planEtiqueta(PLAN_PASO)}),tx('quitar_corto'));
   $('#plan-activo').hidden=$('#plan-leyenda').hidden=!PLAN_DOS_PERIODOS;
   $('#chosen').classList.toggle('un-periodo',!PLAN_DOS_PERIODOS);
   for(const id of ['#plan-simular','#b-go','#b-none'])$(id).disabled=!want.length;

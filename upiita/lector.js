@@ -6,8 +6,8 @@ alert('Abre este marcador dentro del SAES de tu unidad (por ejemplo, saes.upiita
 return;
 }
 var UNIDAD = UM[1].toLowerCase();
-var SIG = UNIDAD.toUpperCase();
-if (TOOL) TOOL = TOOL.replace(/horarios(-[a-z]+)?\.html$/, 'horarios-' + UNIDAD + '.html');   // herramienta de esa unidad
+var SIG = {"esimez": "ESIME Zacatenco", "esime-zac": "ESIME Zacatenco", "esimeazc": "ESIME Azcapotzalco", "esimecul": "ESIME Culhuacán", "esimetic": "ESIME Ticomán", "encb": "ENCB", "upiicsa": "UPIICSA", "esiaz": "ESIA Zacatenco", "esiat": "ESIA Ticomán", "esiatec": "ESIA Tecamachalco", "esfm": "ESFM", "esm": "ESM", "ese": "ESE", "est": "EST", "enba": "ENBA", "enmh": "ENMH", "escasto": "ESCA Santo Tomás", "escatep": "ESCA Tepepan", "eseo": "ESEO", "esiqie": "ESIQIE", "esit": "ESIT", "cicsma": "CICS Milpa Alta", "upiig": "UPIIG", "upiip": "UPIIP", "upiiz": "UPIIZ", "upiem": "UPIEM", "upiih": "UPIIH", "upiic": "UPIIC", "upiit": "UPIIT"}[UNIDAD] || UNIDAD.toUpperCase();
+if (TOOL) TOOL = TOOL.replace(/horarios(-[a-z]+)?\.html$/, ["upiita", "escom", "upibi"].includes(UNIDAD) ? 'horarios-' + UNIDAD + '.html' : 'sate/index.html?sateUnidad=' + UNIDAD);
 // claves: letra + 3 dígitos (B101) o con letras (optativas de la ESCOM); siempre con al menos un dígito
 var CLAVE = /^(?=[A-Z0-9]*\d)[A-Z][A-Z0-9]{2,6}$/i;
 var byId = function (d, id) { return d.querySelector('[id$="mainCopy_' + id + '"]'); };
@@ -56,14 +56,42 @@ var cita = await get('/Alumnos/Reinscripciones/fichas_reinscripcion.aspx');
 var kx = await get('/Alumnos/boleta/kardex.aspx');
 var gen = clean((byId(cita, 'Lbl_General') || {}).textContent);
 var p = pairs(cita);
-var acred = [], kxRep = [];
-kx.querySelectorAll('[id*="Lbl_Kardex"] table tr').forEach(function (tr) {
+var acred = [], kxRep = [], materias = {};
+var materia = function (k, n, s) {
+if (!CLAVE.test(k || '')) return;
+k = k.toUpperCase();
+var anterior = materias[k] || [k, null];
+materias[k] = [clean(n) || anterior[0], s > 0 ? s : anterior[1]];
+};
+var semestreTitulo = function (s) {
+s = clean(s).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+var m = s.match(/^(?:(?:SEMESTRE|NIVEL)\s*:?)?\s*(\d{1,2})[º°.o]?(?:\s*(?:SEMESTRE|NIVEL))?$/);
+if (m) return +m[1] || null;
+var ordinales = ['PRIMER','SEGUNDO','TERCER','CUARTO','QUINTO','SEXTO','SEPTIMO','OCTAVO','NOVENO','DECIMO','UNDECIMO','DUODECIMO'];
+m = s.match(/^(\w+)\s+(?:SEMESTRE|NIVEL)$/);
+var ordinal = m ? m[1].replace(/^PRIMERO$/, 'PRIMER').replace(/^TERCERO$/, 'TERCER') : '';
+return ordinales.indexOf(ordinal) >= 0 ? ordinales.indexOf(ordinal) + 1 : null;
+};
+var ordenTabla = 0;
+kx.querySelectorAll('[id*="Lbl_Kardex"] table').forEach(function (tabla) {
+var filas = Array.prototype.slice.call(tabla.rows).filter(function (tr) { return tr.closest('table') === tabla; });
+if (!filas.some(function (tr) { return tr.cells.length >= 6 && CLAVE.test(clean(tr.cells[0].textContent)); })) return;
+ordenTabla++;
+var titulo = tabla.caption ? semestreTitulo(tabla.caption.textContent) : null;
+filas.forEach(function (tr) { titulo = semestreTitulo(tr.textContent) || titulo; });
+var previo = tabla.previousElementSibling;
+while (previo && !clean(previo.textContent)) previo = previo.previousElementSibling;
+if (!titulo && previo && previo.tagName !== 'TABLE') titulo = semestreTitulo(previo.textContent);
+var semestre = titulo || ordenTabla;
+filas.forEach(function (tr) {
 var c = Array.prototype.map.call(tr.cells, function (x) { return clean(x.textContent); });
 if (c.length >= 6 && CLAVE.test(c[0])) {
+materia(c[0], c[1], semestre);
 var cal = num(c[5]);
 if (cal !== null && cal >= 6) acred.push([c[0].toUpperCase(), cal, c[3], c[4]]);
 else if (cal !== null && cal >= 0) kxRep.push([c[0].toUpperCase(), cal, c[3], c[4]]);   // reprobadas que aparecen en el kárdex (cuentan en el promedio oficial)
 }
+});
 });
 var repro = [];
 cita.querySelectorAll('table').forEach(function (t) {
@@ -84,7 +112,10 @@ if (el.tagName !== 'TABLE' || !/GV_/i.test(el.id)) return;
 var dest = /Reprobadas/i.test(el.id) ? 'reprobadas' : sec;   // UPIITA: GV_Reprobadas
 Array.prototype.slice.call(el.rows, 1).forEach(function (r) {
 var c = Array.prototype.map.call(r.cells, function (x) { return clean(x.textContent); });
-if (CLAVE.test(c[1] || '')) secc[dest].push([c[1].toUpperCase(), c[3] || null, num(c[4]), num(c[0])]);
+if (CLAVE.test(c[1] || '')) {
+secc[dest].push([c[1].toUpperCase(), c[3] || null, num(c[4]), num(c[0])]);
+materia(c[1], c[2], num(c[0]));
+}
 });
 });
 estado = secc.reprobadas.map(function (r) { return r.slice(0, 3); });
@@ -93,7 +124,7 @@ try {
 var hor = await getRaw('/Alumnos/Informacion_semestral/Horario_Alumno.aspx');
 hor.querySelectorAll('[id*="GV_Horario"] [id*="Lbl_Materia"]').forEach(function (s) {
 var m = clean(s.textContent).match(/^((?=[A-Z0-9]*\d)[A-Z][A-Z0-9]{2,6})\b/i);
-if (m) curso.push(m[1].toUpperCase());
+if (m) { curso.push(m[1].toUpperCase()); materia(m[1], clean(s.textContent).slice(m[0].length).replace(/^\s*-\s*/, ''), null); }
 });
 var gvh = byId(hor, 'GV_Horario');
 if (gvh && gvh.rows.length > 1) {
@@ -104,6 +135,8 @@ Array.prototype.slice.call(gvh.rows, 1).forEach(function (r) {
 var c = Array.prototype.map.call(r.cells, function (x) { return clean(x.textContent); });
 var m = (c[1] || '').match(/^((?=[A-Z0-9]*\d)[A-Z][A-Z0-9]{2,6})\s*-\s*(.*)$/i);
 if (!m) return;
+materia(m[1], m[2], null);
+if (curso.indexOf(m[1].toUpperCase()) < 0) curso.push(m[1].toUpperCase());
 var ses = [];
 hdr.forEach(function (h, i) {
 var d = DIAS.indexOf(h), t = (c[i] || '').match(/(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})/);
@@ -131,6 +164,7 @@ var claveCar = Object.keys(freq).sort(function (a, b) { return freq[b] - freq[a]
 var data = {
 upiita_saes: 1,
 unidad: UNIDAD,
+materias: materias,
 leido: new Date().toISOString(),
 boleta: (gen.match(/BOLETA:\s*(\d{10})/i) || [])[1] || ((label(cita, /^BOLETA:?$/i) || '').match(/\d{10}/) || [])[0] || null,
 nombre: (gen.match(/NOMBRE:\s*(.+?)\s*(CARRERA|PLAN|$)/i) || [])[1] || label(cita, /^NOMBRE:?$/i) || clean((byId(cita, 'Lbl_Nombre') || {}).textContent),
@@ -162,7 +196,7 @@ horario_inscrito: horario,
 acreditadas: acred,
 kardex_reprobadas: kxRep,
 agenda: agenda,
-lector: '279d517'
+lector: 'b9d2142'
 };
 var json = JSON.stringify(data);
 var row = function (k, v) { return '<tr><td style="color:#52525b;padding:2px 12px 2px 0">' + k + '</td><td style="font-weight:600">' + (v == null || v === '' ? '—' : v) + '</td></tr>'; };
@@ -176,7 +210,7 @@ row('Carga autorizada', data.avance.autorizada) + row('Reprobadas', repro.length
 row('Cita de reinscripción', data.cita.inicio) + '</table>' +
 '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">' +
 '<button id="ul-copy" style="background:#750946;color:#fff;border:0;border-radius:999px;padding:8px 16px;font-weight:600;cursor:pointer">Copiar mis datos</button>' +
-(TOOL ? '<a id="ul-open" href="' + TOOL + '" target="_blank" rel="noopener" style="border:1px solid #d9d9de;border-radius:999px;padding:8px 16px;color:#18181b;text-decoration:none;font-weight:500">Abrir Horarios ' + SIG + '</a>' : '') + '</div>' +
+(TOOL ? '<a id="ul-open" href="' + TOOL + '" target="_blank" rel="noopener" style="border:1px solid #d9d9de;border-radius:999px;padding:8px 16px;color:#18181b;text-decoration:none;font-weight:500">Abrir SATE ' + SIG + '</a>' : '') + '</div>' +
 '<p id="ul-msg" style="margin:10px 0 0;color:#52525b;font-size:13px">Después, en la herramienta, pulsa <b>Usar mis datos del SAES</b> y pega con Ctrl+V.</p>' +
 '<textarea id="ul-txt" readonly style="position:absolute;left:-9999px;width:1px;height:1px"></textarea>';
 document.getElementById('ul-x').onclick = function () { box.remove(); };

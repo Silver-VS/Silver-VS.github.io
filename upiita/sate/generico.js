@@ -1,207 +1,9 @@
-<!doctype html>
-<html lang="es">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" href="assets/icono/favicon.ico">
-<title>IPN-tools · Herramientas de libre acceso para el alumnado del IPN</title>
-<meta name="description" content="Arma tu horario y planea tu trayectoria escolar: mapa curricular, avance, metas y horario sin traslapes, con tus datos del SAES. UPIITA, ESCOM y UPIBI.">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="IPN-tools">
-<meta property="og:locale" content="es_MX">
-<meta property="og:url" content="https://silver-vs.github.io/upiita/">
-<meta property="og:title" content="IPN-tools · Herramientas de libre acceso para el alumnado del IPN">
-<meta property="og:description" content="Arma tu horario y planea tu trayectoria escolar: mapa curricular, avance, metas y horario sin traslapes, con tus datos del SAES. UPIITA, ESCOM y UPIBI.">
-<meta property="og:image" content="https://silver-vs.github.io/upiita/assets/icono/ipn-tools-og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="IPN-tools: arma tu horario y planea tu trayectoria">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="IPN-tools · Herramientas de libre acceso para el alumnado del IPN">
-<meta name="twitter:description" content="Arma tu horario y planea tu trayectoria escolar: mapa curricular, avance, metas y horario sin traslapes, con tus datos del SAES. UPIITA, ESCOM y UPIBI.">
-<meta name="twitter:image" content="https://silver-vs.github.io/upiita/assets/icono/ipn-tools-og.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap">
-<style>
-:root{--bg:#fafafa;--surface:#fff;--fg:#18181b;--muted:#52525b;--line:#d9d9de;--accent:#750946;--accent-fg:#fff;--ok:#3a6449;--warn:#6e521d;--bad:#9e2f52;--r:6px}
-@media (prefers-color-scheme:dark){:root{--bg:#09090b;--surface:#18181b;--fg:#e4e4e7;--muted:#a1a1aa;--line:#323237;--accent:#ec9cbf;--accent-fg:#1d0a13;--ok:#93c4a2;--warn:#dcbd88;--bad:#ee9fb7;color-scheme:dark}}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 "Noto Sans",system-ui,sans-serif;padding-inline:16px}
-main{max-width:760px;margin:0 auto;padding-block:48px 40px}
-.brand{display:flex;align-items:center;gap:14px;margin-bottom:8px}
-.brand .ipnt-btn{margin-left:auto}
-.btn{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:var(--r);padding:6px 12px;cursor:pointer;font:inherit;font-weight:500;font-size:.88rem}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
-.link{border:0;background:none;color:var(--accent);cursor:pointer;font:inherit;font-weight:600;font-size:.84rem;padding:0}
-
-.saes-tactil{display:none}
-@media(hover:none){.saes-arrastre{display:none}.saes-tactil{display:block}}
-.saes-videos{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:12px 0 2px;font-size:.88rem}
-.saes-vid{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;text-decoration:none;color:var(--fg);font-weight:600;background:var(--surface)}
-.saes-vid:hover{border-color:var(--accent)}
-.saes-vlist{color:var(--accent);font-weight:600;margin-left:4px}
-.saes-vid svg{color:var(--accent)}
-.saes-vid.rec{border-color:var(--accent);background:var(--accent-soft,var(--surface));color:var(--accent)}
-.saes-open{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
-.saes-open::before{content:"";width:9px;height:9px;border-radius:50%;border:2px solid currentColor;flex:none}
-.saes-open.on::before{background:var(--ok);border-color:var(--ok)}
-.saes-dlg{width:min(600px,calc(100vw / var(--ui-zoom,1) - 32px));max-height:calc(100vh / var(--ui-zoom,1) - 48px);overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);padding:20px 22px;box-shadow:0 24px 60px -16px rgba(0,0,0,.45)}
-.saes-dlg::backdrop{background:rgba(20,12,16,.45)}
-.saes-dlg h2{margin:0;font-size:1.25rem}
-.saes-dlg .dl-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px}
-.saes-dlg .x{border:0;background:none;font-size:1.5rem;line-height:1;cursor:pointer;color:var(--muted);padding:2px 6px}
-.saes-dlg ol{margin:10px 0;padding-left:1.3rem;display:flex;flex-direction:column;gap:12px;font-size:.92rem}
-.saes-dlg li>p{margin:4px 0}
-.saes-dlg details{margin-top:6px;font-size:.86rem;border-left:3px solid var(--line);padding:2px 0 2px 10px}
-.saes-dlg summary{cursor:pointer;color:var(--accent);font-weight:600}
-.saes-dlg details ul{margin:6px 0;padding-left:1.1rem;display:flex;flex-direction:column;gap:4px}
-.saes-dlg kbd{font-family:var(--f-mono,ui-monospace,monospace);font-size:.8em;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:var(--bg)}
-.saes-bm{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:var(--accent-fg);border-radius:999px;padding:5px 14px;font-weight:600;text-decoration:none;cursor:grab}
-.saes-paste{width:100%;min-height:2.8rem;resize:none;font-size:.9rem}
-.saes-note{font-size:.8rem;color:var(--muted)}
-.saes-code{display:flex;gap:8px;align-items:stretch;margin:6px 0 4px}
-.saes-code textarea{flex:1;min-width:0;font:12px/1.4 ui-monospace,Consolas,monospace;resize:vertical;word-break:break-all}
-.saes-mm[hidden]{display:none}
-.saes-mm{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-top:12px;padding:10px 12px 10px 14px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--r);background:var(--surface);font-size:.88rem}
-.saes-mm p{margin:0;flex:1 1 360px;min-width:0}
-.saes-mm .mm-act{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
-.saes-mm .x{border:0;background:none;font-size:1.3rem;line-height:1;cursor:pointer;color:var(--muted);padding:2px 6px}
-#saes-msg .ok{color:var(--ok);font-weight:600} #saes-msg .bad{color:var(--bad);font-weight:600}
-
-
-.ipnt-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:4px 12px 4px 6px;font:inherit;font-size:.86rem;font-weight:600;cursor:pointer;white-space:nowrap;position:relative}
-.ipnt-btn:hover{border-color:var(--accent)}
-.ipnt-btn svg{flex:none;color:var(--muted)}
-.ipnt-btn.on svg{color:var(--ok)}
-.ipnt-btn.warn::after{content:"";position:absolute;top:1px;right:1px;width:8px;height:8px;border-radius:50%;background:var(--warn)}
-@media (max-width:600px){.ipnt-btn span{display:none}.ipnt-btn{padding:4px 6px}}
-.ipnt-dlg h3{margin:16px 0 6px;font-size:1rem}
-.ipnt-dlg .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.ipnt-dlg .chk{display:flex;gap:8px;align-items:flex-start;font-size:.9rem;margin-top:10px}
-.ipnt-dlg .chk input{margin-top:3px}
-.ipnt-state{font-size:.88rem;min-height:1.3em;margin:8px 0 0}
-.ipnt-state.ok{color:var(--ok)} .ipnt-state.bad{color:var(--bad)} .ipnt-state.warn{color:var(--warn)}
-.ipnt-file{position:relative;overflow:hidden}
-.ipnt-file input{position:absolute;inset:0;opacity:0;cursor:pointer}
-.ipnt-ms{display:inline-flex;align-items:center;gap:8px}
-.ipnt-dlg button:disabled{opacity:.5;cursor:not-allowed}
-.ipnt-conf-op{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:10px}
-.ipnt-conf-op .btn{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:10px 14px;border-radius:10px;height:auto;white-space:normal}
-.ipnt-conf-op small{font-weight:400;font-size:.8rem;color:inherit;opacity:.85}
-.ipnt-prueba{margin:10px 0 0;font-size:.84rem;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
-.ipnt-hola{width:min(640px,calc(100vw / var(--ui-zoom,1) - 32px));max-height:calc(100dvh - 24px);overflow:auto}
-.ipnt-hola .lead{margin:0;font-size:.95rem;color:var(--muted)}
-.ipnt-unis{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
-.ipnt-uni{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:10px 12px;font:inherit;cursor:pointer}
-.ipnt-uni b{font-size:1rem} .ipnt-uni small{color:var(--muted);font-size:.78rem;line-height:1.3}
-.ipnt-uni em{font-style:normal;font-size:.72rem;font-weight:600;color:var(--warn)}
-.ipnt-uni[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
-.ipnt-cars{display:flex;flex-wrap:wrap;gap:8px}
-.ipnt-hola .alt{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
-
-.brand img{width:56px;height:56px;flex:none}
-h1{margin:0;font-size:2.2rem;letter-spacing:-.02em}
-.lead{color:var(--muted);margin:6px 0 28px;font-size:1.05rem;max-width:62ch}
-h2{font-size:1.1rem;margin:36px 0 10px}
-p{margin:0 0 10px;max-width:68ch}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-a.card{display:block;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;color:inherit;text-decoration:none}
-a.card:hover{border-color:var(--accent)}
-a.card b{display:block;font-size:1.1rem;margin-bottom:4px}
-a.card span{color:var(--muted);font-size:.92rem}
-ul{padding-left:1.2rem;margin:0 0 10px} li{margin-bottom:6px}
-a{color:var(--accent)}
-.unis{display:grid;gap:10px}
-.uni{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
-.uni>button{display:flex;align-items:center;gap:14px;width:100%;padding:14px 18px;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
-.uni>button b{font-size:1.1rem;min-width:4.5em}.uni>button span{color:var(--muted);font-size:.9rem;flex:1}
-.uni>button i{font-style:normal;color:var(--muted);transition:transform .15s}.uni>button[aria-expanded="true"] i{transform:rotate(90deg)}
-.uni>button[aria-expanded="true"]{border-bottom:1px solid var(--line)}.uni:has(>button[aria-expanded="true"]){border-color:var(--accent)}
-.uni .grid{padding:14px}.uni .grid[hidden]{display:none}.uni a.card{background:var(--bg)}
-footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;display:flex;flex-wrap:wrap;gap:8px 18px}
-
-.ipnt-apoyo{display:block;width:100%;box-sizing:border-box;color:var(--muted);overflow-wrap:anywhere}
-.ipnt-apoyo a{display:inline-flex;align-items:center;gap:.4em;min-height:44px;max-width:100%;color:var(--accent);text-decoration:underline}
-.ipnt-apoyo a:focus-visible{outline:2px solid currentColor;outline-offset:2px}
-.ipnt-apoyo svg{flex:none}
-.ipnt-apoyo small{display:block;font-size:inherit}
-
-</style>
-<main>
-  <div class="brand"><img src="assets/icono/ipn-tools-icono-192.png" alt="Ícono de IPN-tools"><h1>IPN-tools</h1><button class="ipnt-btn" id="ipnt-open" type="button" aria-haspopup="dialog" title="Inicia sesión para guardar tus datos en tu nube">
-<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4s6.3 1.8 7.5 5.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Iniciar sesión</span></button>
-<dialog class="saes-dlg ipnt-dlg" id="ipnt-dlg" aria-labelledby="ipnt-h">
-  <div class="dl-head"><h2 id="ipnt-h">Tu cuenta y tus datos</h2><button class="x" id="ipnt-x" type="button" aria-label="Cerrar">×</button></div>
-  <div id="ipnt-out">
-    <p style="margin:0;font-size:.92rem">Sin sesión, tus planes, marcas y actividades se guardan solo en este navegador. Inicia sesión para conservarlos en tu propia nube y usarlos en cualquier dispositivo.</p>
-    <div class="row" style="margin-top:12px"><button class="btn primary ipnt-ms" id="ipnt-login" type="button">
-      <svg viewBox="0 0 21 21" width="16" height="16" aria-hidden="true"><path fill="#f25022" d="M1 1h9v9H1z"/><path fill="#7fba00" d="M11 1h9v9h-9z"/><path fill="#00a4ef" d="M1 11h9v9H1z"/><path fill="#ffb900" d="M11 11h9v9h-9z"/></svg>
-      Continuar con Microsoft</button>
-      <button class="btn ipnt-ms" id="ipnt-glogin" type="button" hidden>
-      <svg viewBox="0 0 48 48" width="16" height="16" aria-hidden="true"><path fill="#ea4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.2C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285f4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.5 5.8c4.4-4 6.8-10 6.8-17.2z"/><path fill="#fbbc05" d="M10.6 28.5c-.5-1.4-.8-2.9-.8-4.5s.3-3.1.8-4.5l-7.9-6.2C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.2z"/><path fill="#34a853" d="M24 48c6.5 0 11.9-2.1 15.8-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.3 2.3-6.2 0-11.5-4.1-13.4-9.8l-7.9 6.2C6.6 42.6 14.6 48 24 48z"/></svg>
-      Continuar con Google</button></div>
-    <p class="saes-note" style="margin:8px 0 0">Microsoft: se guarda en tu OneDrive.<span id="ipnt-gnote" hidden> Google: se guarda en el espacio privado de la aplicación en tu Google Drive.</span></p>
-    <p class="ipnt-prueba ipnt-msprueba" hidden><b>Cuentas institucionales en proceso de autorización.</b> El acceso con @alumno.ipn.mx e @ipn.mx estará disponible cuando la aplicación sea autorizada por el área de cómputo del IPN. Mientras tanto, puedes usar una cuenta personal de Microsoft (Outlook o Hotmail) o tu cuenta de Google.</p><p class="ipnt-prueba"  hidden><b>Acceso con Google en fase de prueba.</b> Durante esta etapa, el inicio de sesión con Google está disponible solo para las cuentas registradas como usuarios de prueba. Para solicitar acceso, escribe a <span class="ipnt-contacto"></span> desde la cuenta de Google que deseas usar.</p>
-    <p class="saes-note" id="ipnt-soon" style="margin:8px 0 0">El inicio de sesión estará disponible próximamente. Mientras tanto, usa el respaldo en archivo.</p>
-  </div>
-  <div id="ipnt-in" hidden>
-    <p style="margin:0;font-size:.92rem"><b id="ipnt-who"></b></p>
-    <div class="row" style="margin-top:10px"><button class="btn" id="ipnt-sync" type="button">Sincronizar ahora</button><button class="btn primary" id="ipnt-relogin" type="button" hidden>Volver a iniciar sesión</button><button class="btn" id="ipnt-logout" type="button">Cerrar sesión</button><button class="link" id="ipnt-wipe" type="button">Cerrar sesión y borrar mis datos de este navegador</button></div>
-    <div class="row" id="ipnt-wipe-ok" hidden style="margin-top:8px;font-size:.88rem">¿Borrar de este navegador tus planes, marcas, actividades y datos del SAES? Tu copia en <span id="ipnt-where">la nube</span> se conserva. <button class="btn" id="ipnt-wipe-yes" type="button">Sí, borrar</button></div>
-    <label class="chk"><input type="checkbox" id="ipnt-saes"><span>Guardar también mis datos del SAES (kárdex, estado general y cita) en mi nube.</span></label>
-  </div>
-  <p class="ipnt-state" id="ipnt-state" aria-live="polite"></p>
-  <h3>Respaldo en archivo</h3>
-  <p class="saes-note" style="margin:0 0 8px">Descarga tus datos para guardarlos o pasarlos a otro navegador. Restaurar reemplaza los datos de este navegador por los del archivo.</p>
-  <div class="row"><button class="btn" id="ipnt-down" type="button">Descargar respaldo</button><label class="btn ipnt-file">Restaurar desde archivo<input type="file" id="ipnt-file" accept=".json,application/json"></label></div>
-  <p class="ipnt-state" id="ipnt-filemsg" aria-live="polite"></p>
-  <p class="saes-note" style="margin:14px 0 0">Tus datos se guardan en tu propia nube: en OneDrive, en la carpeta <b>Aplicaciones › IPN-tools</b>; en Google Drive, en un espacio privado de la aplicación que no aparece entre tus archivos. La herramienta solo tiene acceso a ese espacio. No hay servidor intermedio: nadie más puede consultarlos. <a href="privacidad.html" target="_blank" rel="noopener">Aviso de privacidad</a> · <a href="condiciones.html" target="_blank" rel="noopener">Condiciones de uso</a></p>
-</dialog>
-<dialog class="saes-dlg ipnt-dlg" id="ipnt-conf" aria-labelledby="ipnt-conf-h">
-  <div class="dl-head"><h2 id="ipnt-conf-h">Ya hay datos en tu cuenta</h2></div>
-  <p id="ipnt-conf-txt" style="margin:0;font-size:.95rem"></p>
-  <p style="margin:10px 0 0;font-size:.92rem">¿Cuáles quieres conservar?</p>
-  <div class="ipnt-conf-op">
-    <button class="btn primary" type="button" data-conf="nube"><b>Usar los datos de mi cuenta</b><small>Reemplazan lo que hay en este navegador.</small></button>
-    <button class="btn" type="button" data-conf="local"><b>Conservar los de este navegador</b><small>Reemplazan lo guardado en tu cuenta.</small></button>
-  </div>
-  <p class="saes-note" style="margin:10px 0 0">En ambos casos se suma lo que solo exista de un lado (por ejemplo, tus actividades de Electivas si aquí no las tienes).</p>
-</dialog>
-<dialog class="saes-dlg ipnt-dlg ipnt-hola" id="ipnt-hola" aria-labelledby="ipnt-hola-h">
-  <div class="dl-head"><h2 id="ipnt-hola-h">Bienvenida</h2><button class="x" type="button" data-hola-x aria-label="Cerrar">×</button></div>
-  <p class="lead" id="ipnt-h-lead">Selecciona tu unidad y programa académico.</p>
-  <div id="ipnt-h-uni"><h3>1. Elige tu unidad académica</h3>
-  <div class="ipnt-unis" id="ipnt-h-unis"></div></div>
-  <div id="ipnt-h-cars"></div>
-  <div class="alt">
-    <div id="ipnt-h-login"><p style="margin:0 0 8px;font-size:.92rem">¿Ya la usaste en otro dispositivo? Inicia sesión y se cargan tus datos.</p>
-      <div class="row"><button class="btn ipnt-ms" id="ipnt-h-ms" type="button" data-prov="ms"><svg viewBox="0 0 21 21" width="16" height="16" aria-hidden="true"><path fill="#f25022" d="M1 1h9v9H1z"/><path fill="#7fba00" d="M11 1h9v9h-9z"/><path fill="#00a4ef" d="M1 11h9v9H1z"/><path fill="#ffb900" d="M11 11h9v9h-9z"/></svg>Continuar con Microsoft</button>
-      <button class="btn ipnt-ms" id="ipnt-h-go" type="button" data-prov="google"><svg viewBox="0 0 48 48" width="16" height="16" aria-hidden="true"><path fill="#ea4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.2C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285f4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.5 5.8c4.4-4 6.8-10 6.8-17.2z"/><path fill="#fbbc05" d="M10.6 28.5c-.5-1.4-.8-2.9-.8-4.5s.3-3.1.8-4.5l-7.9-6.2C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.2z"/><path fill="#34a853" d="M24 48c6.5 0 11.9-2.1 15.8-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.3 2.3-6.2 0-11.5-4.1-13.4-9.8l-7.9 6.2C6.6 42.6 14.6 48 24 48z"/></svg>Continuar con Google</button></div><p class="ipnt-prueba ipnt-msprueba" hidden><b>Cuentas institucionales en proceso de autorización.</b> El acceso con @alumno.ipn.mx e @ipn.mx estará disponible cuando la aplicación sea autorizada por el área de cómputo del IPN. Mientras tanto, puedes usar una cuenta personal de Microsoft (Outlook o Hotmail) o tu cuenta de Google.</p><p class="ipnt-prueba"  hidden><b>Acceso con Google en fase de prueba.</b> Durante esta etapa, el inicio de sesión con Google está disponible solo para las cuentas registradas como usuarios de prueba. Para solicitar acceso, escribe a <span class="ipnt-contacto"></span> desde la cuenta de Google que deseas usar.</p></div>
-    <p id="ipnt-h-yo" hidden style="margin:0;font-size:.92rem"></p>
-    <p class="ipnt-state" id="ipnt-h-msg" aria-live="polite"></p>
-    <p style="margin:6px 0 0"><button class="link" type="button" data-hola-x>Explorar sin elegir</button></p>
-  </div>
-</dialog></div>
-  <p class="lead">Herramientas digitales de libre acceso para el alumnado del IPN. Apoyan la planeación de la reinscripción, el armado de horarios y la liberación de electivas; las unidades académicas se incorporan de forma gradual. Versión de prueba.</p>
-
-  <h2>Elige tu unidad académica</h2>
-  <div class="unis" id="unis"></div>
-  <p style="margin-top:14px"><b>¿Tu unidad no aparece? Usa el Lector desde tu SAES.</b> Guarda el marcador desde <a href="sate/index.html" data-saes-open>SATE</a>, ejecútalo en tu sesión del SAES y abre SATE desde el resumen. Copia y pega tus datos para ver tu trayectoria.</p>
-  <p style="margin-top:14px;font-size:.9rem"><a href="revision.html">Guía de revisión</a>: instructivo, perfil de demostración y casos de prueba.</p>
-
-  <h2>Tus datos</h2>
-  <p>IPN-tools no tiene servidor ni base de datos: todo se procesa en tu navegador. Si quieres usar tus datos en varios dispositivos, puedes iniciar sesión con Microsoft o con Google. Tu información se guarda en tu propio OneDrive o Google Drive, en un espacio al que solo tiene acceso la aplicación.</p>
-  <ul>
-    <li>Con Microsoft: acceso a la carpeta Aplicaciones › IPN-tools de tu OneDrive.</li>
-    <li>Con Google: acceso al espacio privado de la aplicación en tu Google Drive (no ve tus demás archivos).</li>
-  </ul>
-  <p>Consulta el <a href="privacidad.html">aviso de privacidad</a> y las <a href="condiciones.html">condiciones de uso</a>.</p>
-
-  <footer><span>Herramienta independiente; la inscripción oficial se hace en el SAES.</span><a href="privacidad.html">Aviso de privacidad</a><a href="condiciones.html">Condiciones de uso</a><a href="https://github.com/Silver-VS/IPN-tools">Código fuente</a><div class="ipnt-apoyo"><a href="https://github.com/sponsors/Silver-VS" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Apoya el proyecto</span></a><small>Donar es voluntario; el proyecto es gratuito y lo mantiene un alumno del IPN.</small></div></footer>
-</main>
-<script>
+/* Sin plan cargado: conservar el SAES como fuente, sin completar datos académicos por inferencia. */
+window.IPNT_UNIDAD = window.SATE_UNIDAD;
 
 /* ---------- perfil IPN-tools: respaldo y sincronización con la cuenta institucional (tools/cuenta.py) ---------- */
 var IPNT=window.IPNT=(()=>{
-  const CFG={"clientId": "7e8e5a95-4337-4652-8b07-3450306cda8f", "tenant": "common", "googleClientId": "959269733-d3h3qm0dtqpshebnabum1jr2g0l6geoa.apps.googleusercontent.com", "unidades": [{"id": "upiita", "siglas": "UPIITA", "nombre": "Unidad Profesional Interdisciplinaria en Ingenier\u00eda y Tecnolog\u00edas Avanzadas", "disponible": true, "url": "horarios-upiita.html"}, {"id": "escom", "siglas": "ESCOM", "nombre": "Escuela Superior de C\u00f3mputo", "disponible": true, "url": "horarios-escom.html"}, {"id": "upibi", "siglas": "UPIBI", "nombre": "Unidad Profesional Interdisciplinaria de Biotecnolog\u00eda", "disponible": true, "url": "horarios-upibi.html"}], "googlePrueba": true, "contacto": "vacevess1900@alumno.ipn.mx", "institucionalPendiente": true, "version": "1.2.0", "unidad": "upiita", "msal": "https://cdn.jsdelivr.net/npm/@azure/msal-browser@4.30.0/lib/msal-browser.min.js", "sri": "sha384-RGxxfG5yRS8DLU7ZJ8OoLhbV/BsJFHyPuMVHrTLbpj3t5Z15LnviJmaznKY/a7LZ"}, FILE='perfil.ipnt.json', MS_SCOPES=['Files.ReadWrite.AppFolder'],
+  const CFG={"clientId": "7e8e5a95-4337-4652-8b07-3450306cda8f", "tenant": "common", "googleClientId": "959269733-d3h3qm0dtqpshebnabum1jr2g0l6geoa.apps.googleusercontent.com", "unidades": [{"id": "upiita", "siglas": "UPIITA", "nombre": "Unidad Profesional Interdisciplinaria en Ingenier\u00eda y Tecnolog\u00edas Avanzadas", "disponible": true, "url": "horarios-upiita.html"}, {"id": "escom", "siglas": "ESCOM", "nombre": "Escuela Superior de C\u00f3mputo", "disponible": true, "url": "horarios-escom.html"}, {"id": "upibi", "siglas": "UPIBI", "nombre": "Unidad Profesional Interdisciplinaria de Biotecnolog\u00eda", "disponible": true, "url": "horarios-upibi.html"}], "googlePrueba": true, "contacto": "vacevess1900@alumno.ipn.mx", "institucionalPendiente": true, "version": "1.2.0", "unidad": window.SATE_UNIDAD, "msal": "https://cdn.jsdelivr.net/npm/@azure/msal-browser@4.30.0/lib/msal-browser.min.js", "sri": "sha384-RGxxfG5yRS8DLU7ZJ8OoLhbV/BsJFHyPuMVHrTLbpj3t5Z15LnviJmaznKY/a7LZ"}, FILE='perfil.ipnt.json', MS_SCOPES=['Files.ReadWrite.AppFolder'],
     GO_SCOPES='openid email profile https://www.googleapis.com/auth/drive.appdata';
   // qué se guarda: todo lo de Horarios (hu.) y Electivas (ue.), menos el estado de pantalla de cada dispositivo
   const SYNC=/^(hu\.|ue\.)|^saes\.alumno$|^perfil\.opciones$/, LOCAL=/^hu\.(?:[a-z]+\.)?(tab|per|tur|niv|view|mview|cview|mobnote)$/;
@@ -282,7 +84,7 @@ var IPNT=window.IPNT=(()=>{
     async entrar(){
       await this.listo();
       let r;
-      try{r=await this.pca.loginPopup({scopes:MS_SCOPES,prompt:'select_account',redirectUri:new URL('auth.html',location.href).href})}
+      try{r=await this.pca.loginPopup({scopes:MS_SCOPES,prompt:'select_account',redirectUri:new URL('../auth.html',location.href).href})}
       catch(e){ // ventanas emergentes bloqueadas (frecuente en teléfonos): inicio de sesión en la misma pestaña
         if(/popup_window_error|empty_window_error|block/i.test(String(e?.errorCode||e?.message))){ls.set('ipnt.prov','ms');await this.pca.loginRedirect({scopes:MS_SCOPES,prompt:'select_account'});return null}
         throw e}
@@ -578,23 +380,189 @@ var IPNT=window.IPNT=(()=>{
   return {bienvenida,diferencias,elegir,set,touch,borrar,documento,fusionar,validar,sincronizar,descargar,restaurar,get cuenta(){return cuenta},get proveedor(){return prov?.id||null}};
 })();
 
-// Unidades académicas y sus herramientas: al elegir una se despliegan sus herramientas (se recuerda en este navegador)
-(function(){
-  const UNIS=[{"id": "upiita", "siglas": "UPIITA", "nombre": "Unidad Profesional Interdisciplinaria en Ingeniería y Tecnologías Avanzadas", "disponible": true, "url": "horarios-upiita.html"}, {"id": "escom", "siglas": "ESCOM", "nombre": "Escuela Superior de Cómputo", "disponible": true, "url": "horarios-escom.html"}, {"id": "upibi", "siglas": "UPIBI", "nombre": "Unidad Profesional Interdisciplinaria de Biotecnología", "disponible": true, "url": "horarios-upibi.html"}];
-  const EXTRA={};
-  const DESC={upiita:'Sistema de Apoyo a la Trayectoria Escolar: tu avance, mapa curricular, horarios de clase y calendario escolar.',
-    escom:'Sistema de Apoyo a la Trayectoria Escolar: tu avance, mapas curriculares 2020 y horarios de clase.',
-    upibi:'Sistema de Apoyo a la Trayectoria Escolar: tu avance, mapas por nivel y horarios de clase.'};
-  const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  let sel=null;try{sel=localStorage.getItem('ipnt.unidad')}catch(e){}
-  const box=document.getElementById('unis');
-  const pinta=()=>{box.innerHTML=UNIS.filter(u=>u.disponible).map(u=>{const on=u.id===sel;
-    const tools=[{t:'SATE '+u.siglas,u:u.url,d:DESC[u.id]||'Mapa curricular, oferta del SAES y armado de horarios.'},...(EXTRA[u.id]||[])];  // la demostración solo se abre con #demo (decisión del dueño)
-    return `<div class="uni"><button type="button" data-uni="${esc(u.id)}" aria-expanded="${on}" aria-controls="t-${esc(u.id)}"><b>${esc(u.siglas)}</b><span>${esc(u.nombre)}</span><i aria-hidden="true">›</i></button>`+
-      `<div class="grid" id="t-${esc(u.id)}"${on?'':' hidden'}>${tools.map(x=>`<a class="card" href="${esc(x.u)}"><b>${esc(x.t)}</b><span>${esc(x.d)}</span></a>`).join('')}</div></div>`}).join('')};
-  box.addEventListener('click',e=>{const b=e.target.closest('[data-uni]');if(!b)return;
-    sel=sel===b.dataset.uni?null:b.dataset.uni;try{sel?localStorage.setItem('ipnt.unidad',sel):localStorage.removeItem('ipnt.unidad')}catch(e){}pinta()});
-  pinta();
+
+/* ---------- datos del SAES (v2): solo en este navegador ---------- */
+const SAES={
+  KEY:'saes.alumno',
+  U(){return window.IPNT_UNIDAD||'upiita'},   // unidad de la página; los datos sin unidad son de la UPIITA (versiones anteriores)
+  load(){try{const v=JSON.parse(localStorage.getItem(this.KEY)||'null');return v&&v.upiita_saes===1&&(v.unidad||'upiita')===this.U()?v:null}catch(e){return null}},
+  save(d){if(window.IPNT)IPNT.set(this.KEY,JSON.stringify(d));else try{localStorage.setItem(this.KEY,JSON.stringify(d))}catch(e){}},
+  clear(){try{localStorage.removeItem(this.KEY)}catch(e){}if(window.IPNT)IPNT.borrar(this.KEY)},
+  parse(t){try{const d=JSON.parse(String(t||'').trim());if(d&&d.upiita_saes===1&&Array.isArray(d.acreditadas))return d}catch(e){}return null},
+  autorizada(d){const s=String(d?.avance?.autorizada||'');   // «MEDIA-REPROBADAS = 40.00 - 22.50 CREDITOS»: el tope total es la media (incluye las reprobadas)
+    const m=s.match(/=\s*(\d+(?:\.\d+)?)\s*-\s*\d/)||s.match(/(\d+(?:\.\d+)?)\s*CR/i)||s.match(/(\d+(?:\.\d+)?)/);return m?+m[1]:null},
+  open(){const dl=document.getElementById('saes-dlg');if(!dl)return;if(dl.showModal&&!dl.open)dl.showModal();else dl.setAttribute('open','')},
+  close(){const dl=document.getElementById('saes-dlg');if(!dl)return;if(dl.close)dl.close();else dl.removeAttribute('open')},
+  /* conecta el botón y la ventana: abrir, arrastrar el marcador, copiar su código y pegar los datos */
+  wire(onLoad){
+    const dl=document.getElementById('saes-dlg');if(!dl)return;
+    const paste=dl.querySelector('#saes-paste'), msg=dl.querySelector('#saes-msg');
+    // delegado: también funciona con botones que se agregan después (p. ej. el recordatorio de Estado general)
+    document.addEventListener('click',e=>{if(!e.target.closest?.('[data-saes-open]'))return;e.preventDefault();SAES.open()});
+    dl.querySelector('#saes-x').addEventListener('click',()=>SAES.close());
+    dl.addEventListener('click',e=>{if(e.target===dl)SAES.close()});   // clic fuera de la ventana
+    const take=async t=>{const d=SAES.parse(t);if(!d){msg.innerHTML='<span class="bad">El contenido no corresponde al Lector IPN-tools. Ejecuta el marcador en el SAES y selecciona «Copiar mis datos».</span>';return}
+      if((d.unidad||'upiita')!==SAES.U()){msg.innerHTML='<span class="bad">Estos datos son del SAES de '+String(d.unidad||'upiita').toUpperCase()+'. Esta página es de la '+SAES.U().toUpperCase()+'.</span>';return}
+      const aceptar=()=>{SAES.save(d);paste.value='';msg.textContent='Datos del SAES cargados.';onLoad(d);setTimeout(()=>SAES.close(),900)};
+      if(globalThis.SATE){
+        try{await SATE.script('tramites.js');SateTramites.confirmarSaes(d,msg,aceptar)}
+        catch(e){console.error('Lector: confirmación no disponible',{fase:'identidad',error:e.name});msg.textContent='No se pudieron guardar tus datos. Intenta de nuevo.'}
+      }else aceptar();
+    };
+    paste.addEventListener('paste',e=>{e.preventDefault();return take(e.clipboardData.getData('text'))});
+    paste.addEventListener('input',()=>{if(paste.value.trim().startsWith('{'))return take(paste.value)});
+    dl.querySelector('#saes-paste-clip').addEventListener('click',async e=>{
+      const boton=e.currentTarget;
+      let texto;
+      try{
+        if(!navigator.clipboard?.readText)throw new Error('clipboard-unavailable');
+        texto=await navigator.clipboard.readText();
+      }catch(err){
+        // El permiso depende del navegador: conservar siempre el pegado manual.
+        msg.textContent=boton.dataset.fallback;paste.focus();return;
+      }
+      return take(texto);
+    });
+    // copiar el código: portapapeles moderno, luego execCommand; si ambos fallan, queda seleccionado para copiarlo a mano
+    dl.querySelector('#saes-copybm').addEventListener('click',async e=>{const b=e.currentTarget,box=dl.querySelector('#saes-bmcode'),m=dl.querySelector('#saes-copymsg');
+      let ok=false;try{await navigator.clipboard.writeText(box.value);ok=true}catch(err){}
+      if(!ok){box.focus();box.select();box.setSelectionRange(0,box.value.length);try{ok=document.execCommand('copy')}catch(err){}}
+      b.textContent=ok?'Copiado ✓':'Copiar';m.textContent=ok?'Código copiado. Pégalo como dirección (URL) del marcador.':'El navegador no permitió copiar: el código ya está seleccionado; mantén presionado y elige «Copiar».';
+      if(ok)setTimeout(()=>{b.textContent='Copiar'},2500)});
+    dl.querySelector('#saes-again').addEventListener('click',()=>{dl.querySelector('#saes-steps').hidden=false});
+    dl.querySelector('#saes-install').addEventListener('click',()=>{dl.querySelector('#saes-manual').open=true});
+    dl.querySelector('#saes-clear').addEventListener('click',e=>{
+      if(!e.target.dataset.confirm){e.target.dataset.confirm='1';e.target.textContent='Confirmar: borrar mis datos';setTimeout(()=>{delete e.target.dataset.confirm;e.target.textContent='Borrar mis datos'},4000);return}
+      SAES.clear();msg.textContent='Tus datos del SAES se borraron de este navegador.';onLoad(null)});
+  },
+  /* aviso cuando se explora una carrera distinta a la del perfil cargado: nada del perfil se aplica ni se modifica */
+  mismatch(car,nameOf,onBack,carOf=d=>d?.carrera){
+    const el=document.getElementById('saes-mismatch');if(!el)return;
+    const d=SAES.load(), cap=s=>String(s||'').toLowerCase().replace(/(^|\s)(\S)/g,(m,a,b)=>a+b.toUpperCase()).replace(/\b(En|De|Y)\b/g,w=>w.toLowerCase()).replace(/^Ingenieria\b/,'Ingeniería');
+    let hid=null;try{hid=localStorage.getItem('saes.aviso')}catch(e){}
+    if(!d||!d.carrera||carOf(d)===car||hid===d.leido){el.hidden=true;return}
+    const mine=cap(nameOf(carOf(d))||d.carrera_nombre), here=cap(nameOf(car));
+    el.innerHTML=`<p><b>Consultando ${here||'otra carrera'}.</b> Tus datos del SAES corresponden a ${mine}; el avance y las sugerencias no se aplican en esta carrera.</p>`+
+      `<div class="mm-act"><button class="btn" type="button" data-mm="back">Volver a ${mine}</button><button class="btn" type="button" data-mm="load">Usar datos de otra sesión</button><button class="x" type="button" data-mm="hide" aria-label="Ocultar este aviso" title="Ocultar este aviso">×</button></div>`;
+    el.hidden=false;
+    el.onclick=e=>{const a=e.target.closest('[data-mm]')?.dataset.mm;if(!a)return;
+      if(a==='back')onBack(carOf(d));else if(a==='load')SAES.open();
+      else{try{localStorage.setItem('saes.aviso',d.leido)}catch(err){}el.hidden=true}};
+  },
+  status(d){
+    const st=document.getElementById('saes-status'), btn=document.getElementById('saes-open');
+    if(btn){btn.classList.toggle('on',!!d);btn.querySelector('span').textContent=d?'Actualizar mis datos del SAES':'Usar mis datos del SAES';
+      btn.title=d?'Datos del SAES cargados. Selecciona para actualizarlos o eliminarlos.':'Incorpora tu avance desde el SAES (opcional)'}
+    if(!st)return;
+    st.hidden=!d;document.getElementById('saes-steps').hidden=!!d;document.getElementById('saes-clear').hidden=!d;
+    // El recordatorio arriba solo ayuda cuando la copia tiene más de 30 días.
+    const antiguo=!!d&&Date.now()-new Date(d.leido).getTime()>30*24*60*60*1000;
+    document.getElementById('saes-stale').hidden=!antiguo;
+    const aviso=document.getElementById('saes-reminder');if(aviso)aviso.hidden=antiguo;
+    if(!d)return;
+    const f=new Date(d.leido).toLocaleString('es-MX',{dateStyle:'medium',timeStyle:'short'});
+    st.querySelector('#saes-who').textContent=`${d.carrera_nombre||''} · boleta ${d.boleta||'—'} · leídos el ${f}`;
+  }
+};
+
+(function () {
+  const unidad = SATE_UNIDAD, $ = id => document.getElementById(id);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const numero = v => v != null && String(v).trim() !== '' && Number.isFinite(+v) && +v >= 0 ? +v : null;
+  const dato = v => numero(v) == null ? 'Sin dato del SAES' : esc(numero(v));
+  function datos(a) {
+    a ||= {};
+    const materias = new Map(), altas = new Set((a.acreditadas || []).filter(r => numero(r[1]) >= 6 && numero(r[1]) <= 10).map(r => r[0]));
+    const curso = new Set([...(a.en_curso || []), ...(a.horario_inscrito || []).map(r => r[1])]);
+    const reprobadas = new Set((a.reprobadas_periodo || []).map(r => r[0]));
+    const normal = s => String(s || '').normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase().replace(/\s+/g,' ').trim();
+    const reproNombres = new Set((a.reprobadas || []).map(r => normal(r[0])));
+    const desfasadas = new Set((a.desfasadas_saes || []).map(r => r[0]));
+    const agregar = (k, nombre, semestre, periodo) => {
+      if (!k) return;
+      const m = materias.get(k) || {clave:k,nombre:k,semestre:null,periodo:null};
+      if (nombre) m.nombre = nombre;
+      if (numero(semestre) > 0) m.semestre = numero(semestre);
+      if (periodo) m.periodo = periodo;
+      materias.set(k,m);
+    };
+    Object.entries(a.materias || {}).forEach(([k,m]) => {if(Array.isArray(m))agregar(k,m[0],m[1])});
+    for (const tipo of ['acreditadas','kardex_reprobadas']) for (const r of a[tipo] || []) agregar(r[0],null,null,r[2]);
+    for (const tipo of ['no_cursadas','reprobadas_periodo','desfasadas_saes']) for (const r of a[tipo] || []) agregar(r[0],null,r[3],null);
+    for (const k of curso) agregar(k,null,null,null);
+    for (const r of a.horario_inscrito || []) agregar(r[1],r[2],null,null);
+    const porSemestre = [...materias.values()].some(m => m.semestre != null), grupos = new Map();
+    for (const m of materias.values()) {
+      if (reproNombres.has(normal(m.nombre)) || reproNombres.has(normal(m.clave))) reprobadas.add(m.clave);
+      m.estado = altas.has(m.clave) ? 'Acreditada' : desfasadas.has(m.clave) ? 'Desfasada según el SAES' : curso.has(m.clave) ? 'En curso' : reprobadas.has(m.clave) ? 'Reprobada' : 'Por cursar';
+      m.color = altas.has(m.clave) ? 'var(--ok)' : desfasadas.has(m.clave) ? 'var(--ipn-desfasada)' : curso.has(m.clave) ? 'var(--accent)' : reprobadas.has(m.clave) ? 'var(--ipn-reprobada)' : 'var(--line)';
+      const grupo = porSemestre ? m.semestre == null ? 'Sin semestre informado' : 'Semestre '+m.semestre : m.periodo ? 'Periodo '+m.periodo : curso.has(m.clave) ? 'En curso' : 'Por cursar';
+      if (!grupos.has(grupo)) grupos.set(grupo,[]);
+      grupos.get(grupo).push(m);
+    }
+    const ordenados = [...grupos].sort((a,b) => {
+      if(porSemestre)return (a[1][0].semestre ?? Infinity)-(b[1][0].semestre ?? Infinity);
+      return (a[0].startsWith('Periodo ') ? 0 : 1)-(b[0].startsWith('Periodo ') ? 0 : 1)||a[0].localeCompare(b[0],'es',{numeric:true});
+    });
+    return {grupos:ordenados,materias:[...materias.values()],viejo:!a.materias};
+  }
+  window.SateGenerico = {datos};
+  let alumno = SAES.load(), conectado = false;
+  const abrir = SAES.open.bind(SAES);
+  SAES.open = async () => {
+    try {
+      await SATE.script('saes-dialogo.js'); SATE.identidadSaes();
+      if (!conectado) { SAES.wire(d => {alumno=d;SATE.repintar();estado()}); conectado=true; }
+      estado(); abrir();
+    } catch(e) { SATE.error(e); }
+  };
+  document.addEventListener('click',e=>{if(e.target.closest?.('[data-saes-open]')&&!conectado){e.preventDefault();SAES.open()}});
+  $('b-unidad').addEventListener('click',()=>SATE.elegirUnidad());
+  function estado() {
+    const hay = !!alumno, clave = 'sate.encabezado.'+(hay?'actualizar':'cargar');
+    $('saes-open').querySelector('.sate-texto-largo').textContent=SATE.texto(clave);
+    $('saes-open').querySelector('.sate-texto-corto').textContent=SATE.texto(clave+'_corto');
+    const indicador=$('sate-saes-indicador');indicador.classList.toggle('on',hay);
+    const fecha = hay ? new Date(alumno.leido).toLocaleString('es-MX',{dateStyle:'medium',timeStyle:'short'}) : '';
+    const mensaje=SATE.texto(hay?'sate.encabezado.usando_datos':'sate.encabezado.sin_datos',{fecha});
+    indicador.setAttribute('aria-label',mensaje);indicador.title=mensaje;
+    if(conectado){$('saes-status').hidden=!hay;$('saes-steps').hidden=hay;$('saes-clear').hidden=!hay;
+      $('saes-who').textContent=hay?(alumno.carrera_nombre||'')+' · leídos el '+fecha:'';}
+  }
+  const aviso = d => '<p class="muted">Armado con tus datos del SAES; sin seriación ni oferta.</p>'+(d.viejo&&alumno?'<p role="status">Actualiza tus datos con el Lector para ver los nombres de las materias.</p>':'');
+  function tira(d, mini=false) {
+    return '<div class="generico-tira'+(mini?' generico-mini':'')+'">'+d.grupos.map(([g,ms])=>'<section><h3>'+esc(g)+'</h3>'+ms.map(m=>'<div class="generico-materia" style="border-left-color:'+m.color+'"><b>'+esc(m.nombre)+'</b><small>'+esc(m.clave)+' · '+esc(m.estado)+'</small></div>').join('')+'</section>').join('')+'</div>';
+  }
+  function vacio() {return '<p>Usa el Lector desde el SAES de tu unidad y pega tus datos para ver tu trayectoria.</p><button class="btn primary" type="button" data-saes-open>Cargar datos del SAES</button>'}
+  function mapa() {
+    const d=datos(alumno);
+    $('v-tray').innerHTML='<h2>Mapa curricular</h2>'+aviso(d)+(alumno?(d.materias.length?tira(d):'<p>El SAES no informó materias. Actualiza tus datos con el Lector.</p>'):vacio());
+  }
+  function trayectoria() {
+    const d=datos(alumno), a=alumno;
+    if(!a){$('sate-trayectoria').innerHTML='<h2>Mi trayectoria</h2>'+vacio();return}
+    const total=numero(a.carga?.total), obtenidos=numero(a.avance?.obtenidos);
+    const avance=total>0&&obtenidos!=null?'<progress max="'+total+'" value="'+Math.min(total,obtenidos)+'" aria-label="Avance en créditos"></progress> '+Math.round(obtenidos/total*100)+' %':'';
+    const periodos=new Map();
+    for(const r of [...a.acreditadas||[],...a.kardex_reprobadas||[]]){
+      const p=r[2]||'Sin periodo informado';if(!periodos.has(p))periodos.set(p,[]);periodos.get(p).push(r);
+    }
+    const nombres=new Map(d.materias.map(m=>[m.clave,m.nombre]));
+    const kardex=[...periodos].sort((a,b)=>a[0].localeCompare(b[0],'es',{numeric:true})).map(([p,rs])=>'<details class="sate-desp" open><summary>Periodo '+esc(p)+'</summary><div class="generico-calificaciones">'+rs.map(r=>'<p><b>'+esc(nombres.get(r[0])||r[0])+'</b> <small>'+esc(r[0])+'</small><br>Calificación: '+esc(r[1])+' · '+esc(r[3]||'Forma de evaluación sin informar')+'</p>').join('')+'</div></details>').join('');
+    const desfase=(a.desfasadas_saes||[]).length?'<p>Desfasadas según el SAES: '+(a.desfasadas_saes||[]).map(r=>esc(nombres.get(r[0])||r[0])).join(', ')+'.</p>':a.desfasadas_saes!=null?'<p>El SAES no lista materias desfasadas.</p>':'<p>Desfase sin confirmar: actualiza el Estado General con el Lector.</p>';
+    $('sate-trayectoria').innerHTML='<h2>Mi trayectoria</h2><p>'+esc(a.carrera_nombre||'')+(a.plan?' · Plan '+esc(a.plan):'')+'</p>'+aviso(d)+
+      '<section><h3>Avance y promedio</h3>'+avance+'<p>Créditos obtenidos: '+dato(a.avance?.obtenidos)+' · Por obtener: '+dato(a.avance?.faltan)+' · Total: '+dato(a.carga?.total)+'</p><p>Promedio del SAES: '+dato(a.promedio)+'</p></section>'+desfase+(a.desfase_saes?'<p>'+esc(a.desfase_saes)+'</p>':'')+
+      (d.materias.length?'<details class="sate-desp" open><summary>Minimapa de avance</summary>'+tira(d,true)+'</details>':'')+
+      '<section><h3>Plazos y carga del SAES</h3><p>Periodos cursados: '+dato(a.avance?.cursados)+' · Duración: '+dato(a.carga?.duracion)+' · Duración máxima: '+dato(a.carga?.duracion_max)+'</p><p>Carga mínima: '+dato(a.carga?.min)+' · Media: '+dato(a.carga?.media)+' · Máxima: '+dato(a.carga?.max)+'</p>'+(a.avance?.autorizada?'<p>Carga autorizada: '+esc(a.avance.autorizada)+'</p>':'')+'</section>'+
+      '<h3>Kárdex y calificaciones por periodo</h3>'+(kardex||'<p>El SAES no informó calificaciones por periodo.</p>');
+  }
+  document.querySelector('.sate-controles').hidden=true;
+  document.querySelector('.bar-top').hidden=true;
+  const css=document.createElement('style');css.textContent='.generico-tira{display:flex;gap:12px;overflow-x:auto;padding:12px 0;max-width:100%}.generico-tira>section{flex:0 0 230px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px}.generico-tira h3{font-size:1rem;margin:0 0 12px}.generico-materia{border-left:5px solid;margin:8px 0;padding:6px 8px;overflow-wrap:anywhere}.generico-materia small{display:block}.generico-mini>section{flex-basis:180px}.generico-mini{font-size:.85rem}.generico-calificaciones{padding:12px}';document.head.appendChild(css);
+  SATE.presente={avisos(){}};
+  SATE.pestana('mapa',{mostrar:mapa});SATE.pestana('trayectoria',{mostrar:trayectoria});
+  SATE.alumno=()=>alumno;
+  IPNT.set('ipnt.unidad',unidad);
+  SATE.nucleoListo({personal:()=>!!alumno,estado:{},renderTop:estado,renderAviso(){},
+    store:{set:(k,v)=>IPNT.set('hu.'+unidad+'.'+k,JSON.stringify(v))}}).catch(SATE.error);
 })();
-</script>
-</html>
