@@ -6,7 +6,7 @@ alert('Abre este marcador dentro del SAES de tu unidad (por ejemplo, saes.upiita
 return;
 }
 var UNIDAD = UM[1].toLowerCase();
-var SIG = {"esimez": "ESIME Zacatenco", "esime-zac": "ESIME Zacatenco", "esimeazc": "ESIME Azcapotzalco", "esimecul": "ESIME Culhuacán", "esimetic": "ESIME Ticomán", "encb": "ENCB", "upiicsa": "UPIICSA", "esiaz": "ESIA Zacatenco", "esiat": "ESIA Ticomán", "esiatec": "ESIA Tecamachalco", "esfm": "ESFM", "esm": "ESM", "ese": "ESE", "est": "EST", "enba": "ENBA", "enmh": "ENMH", "escasto": "ESCA Santo Tomás", "escatep": "ESCA Tepepan", "eseo": "ESEO", "esiqie": "ESIQIE", "esit": "ESIT", "cicsma": "CICS Milpa Alta", "upiig": "UPIIG", "upiip": "UPIIP", "upiiz": "UPIIZ", "upiem": "UPIEM", "upiih": "UPIIH", "upiic": "UPIIC", "upiit": "UPIIT"}[UNIDAD] || UNIDAD.toUpperCase();
+var SIG = {"cicsma": "CICS Milpa Alta", "enba": "ENBA", "encb": "ENCB", "enmh": "ENMH", "escasto": "ESCA Santo Tomás", "escatep": "ESCA Tepepan", "escom": "ESCOM", "ese": "ESE", "eseo": "ESEO", "esfm": "ESFM", "esiat": "ESIA Ticomán", "esiatec": "ESIA Tecamachalco", "esiaz": "ESIA Zacatenco", "esimeazc": "ESIME Azcapotzalco", "esimecul": "ESIME Culhuacán", "esimetic": "ESIME Ticomán", "esimez": "ESIME Zacatenco", "esime-zac": "ESIME Zacatenco", "esiqie": "ESIQIE", "esit": "ESIT", "esm": "ESM", "est": "EST", "upibi": "UPIBI", "upiem": "UPIEM", "upiic": "UPIIC", "upiicsa": "UPIICSA", "upiig": "UPIIG", "upiih": "UPIIH", "upiip": "UPIIP", "upiit": "UPIIT", "upiita": "UPIITA", "upiiz": "UPIIZ"}[UNIDAD] || UNIDAD.toUpperCase();
 if (TOOL) TOOL = TOOL.replace(/horarios(-[a-z]+)?\.html$/, ["upiita", "escom", "upibi"].includes(UNIDAD) ? 'horarios-' + UNIDAD + '.html' : 'sate/index.html?sateUnidad=' + UNIDAD);
 // claves: letra + 3 dígitos (B101) o con letras (optativas de la ESCOM); siempre con al menos un dígito
 var CLAVE = /^(?=[A-Z0-9]*\d)[A-Z][A-Z0-9]{2,6}$/i;
@@ -56,7 +56,7 @@ var cita = await get('/Alumnos/Reinscripciones/fichas_reinscripcion.aspx');
 var kx = await get('/Alumnos/boleta/kardex.aspx');
 var gen = clean((byId(cita, 'Lbl_General') || {}).textContent);
 var p = pairs(cita);
-var acred = [], kxRep = [], materias = {};
+var acred = [], kxRep = [], materias = {}, creditosMaterias = {};
 var materia = function (k, n, s) {
 if (!CLAVE.test(k || '')) return;
 k = k.toUpperCase();
@@ -83,13 +83,26 @@ var previo = tabla.previousElementSibling;
 while (previo && !clean(previo.textContent)) previo = previo.previousElementSibling;
 if (!titulo && previo && previo.tagName !== 'TABLE') titulo = semestreTitulo(previo.textContent);
 var semestre = titulo || ordenTabla;
+// Algunas unidades informan créditos; solo se leen si el encabezado identifica la columna.
+var columnaCreditos = -1;
+var columnasKardex = {cal: 5, periodo: 3, forma: 4};
+filas.forEach(function (tr) {
+Array.prototype.forEach.call(tr.cells, function (celda, i) {
+if (/^cr[eé]ditos$/i.test(clean(celda.textContent))) columnaCreditos = i;
+if (/^calificaci[oó]n$/i.test(clean(celda.textContent))) columnasKardex.cal = i;
+if (/^periodo$/i.test(clean(celda.textContent))) columnasKardex.periodo = i;
+if (/^forma\s+eval/i.test(clean(celda.textContent))) columnasKardex.forma = i;
+});
+});
 filas.forEach(function (tr) {
 var c = Array.prototype.map.call(tr.cells, function (x) { return clean(x.textContent); });
 if (c.length >= 6 && CLAVE.test(c[0])) {
 materia(c[0], c[1], semestre);
-var cal = num(c[5]);
-if (cal !== null && cal >= 6) acred.push([c[0].toUpperCase(), cal, c[3], c[4]]);
-else if (cal !== null && cal >= 0) kxRep.push([c[0].toUpperCase(), cal, c[3], c[4]]);   // reprobadas que aparecen en el kárdex (cuentan en el promedio oficial)
+var creditos = columnaCreditos >= 0 ? num(c[columnaCreditos]) : null;
+if (creditos !== null && creditos >= 0) creditosMaterias[c[0].toUpperCase()] = creditos;
+var cal = num(c[columnasKardex.cal]);
+if (cal !== null && cal >= 6) acred.push([c[0].toUpperCase(), cal, c[columnasKardex.periodo], c[columnasKardex.forma]]);
+else if (cal !== null && cal >= 0) kxRep.push([c[0].toUpperCase(), cal, c[columnasKardex.periodo], c[columnasKardex.forma]]);   // reprobadas que aparecen en el kárdex (cuentan en el promedio oficial)
 }
 });
 });
@@ -194,9 +207,10 @@ desfasadas_saes: secc ? secc.desfasadas : null,
 en_curso: curso,
 horario_inscrito: horario,
 acreditadas: acred,
+creditos_materias: creditosMaterias,
 kardex_reprobadas: kxRep,
 agenda: agenda,
-lector: 'b9d2142'
+lector: '830de94'
 };
 var json = JSON.stringify(data);
 var row = function (k, v) { return '<tr><td style="color:#52525b;padding:2px 12px 2px 0">' + k + '</td><td style="font-weight:600">' + (v == null || v === '' ? '—' : v) + '</td></tr>'; };

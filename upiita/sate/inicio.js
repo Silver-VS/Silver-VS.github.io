@@ -5,12 +5,13 @@
   const cascaron = document.querySelector('html[data-pestanas]');
   const variante = new URLSearchParams(location.search).get('pestanas');
   if (cascaron && ['v1','v3'].includes(variante)) cascaron.setAttribute('data-pestanas', variante);
-  let api, actual, tabs, barra, version = 0;
+  let api, actual, tabs, barra, version = 0, recalcularPestanas=()=>{};
   const leer = k => { try { return localStorage.getItem(k); } catch { return null; } };
   const solicitada = location.hash.match(/^#\/([a-z0-9-]+)\//)?.[1] || new URLSearchParams(location.search).getAll('sateUnidad').at(-1) || leer('ipnt.unidad');
   if (solicitada && /^[a-z0-9-]+$/.test(solicitada) && !config[solicitada]) {
-    const siglas = SATE_CONFIG.nombresUnidades?.[solicitada] || solicitada.toUpperCase();
-    config[solicitada] = {generica:true,siglas,nombre:siglas,realce:SATE_CONFIG.identidadUnidades?.[solicitada]?.realce,saes:'https://saes.'+solicitada+'.ipn.mx/',
+    const identidad = SATE_CONFIG.identidadUnidades?.[solicitada] || Object.values(SATE_CONFIG.identidadUnidades || {}).find(c=>c.alias?.includes(solicitada));
+    const siglas = identidad?.siglas || solicitada.toUpperCase();
+    config[solicitada] = {generica:true,siglas,nombre:identidad?.nombre || siglas,realce:identidad?.realce,logoUnidad:identidad?.logo,saes:'https://saes.'+solicitada+'.ipn.mx/',
       pestanas:['trayectoria','mapa'],grupos:[['trayectoria'],['mapa']],tramites:[]};
   }
   const inicial = SateRutas.ruta(location.hash, leer('ipnt.unidad') || 'upiita', config);
@@ -30,7 +31,7 @@
     unidadRealce = id;
     const tema = raiz.getAttribute('data-theme') || raiz.getAttribute('data-tema');
     const oscuro = tema ? tema === 'dark' || tema === 'oscuro' : temaSistema.matches;
-    const realce = config[id]?.realce?.[oscuro ? 'oscuro' : 'claro'];
+    const realce = (config[id]?.realce || SATE_CONFIG.identidadUnidades?.[id]?.realce)?.[oscuro ? 'oscuro' : 'claro'];
     // Elegir el mayor contraste evita texto blanco ilegible sobre los realces claros del tema oscuro.
     const luminancia = hex => hex.slice(1).match(/../g).map(h => parseInt(h,16)/255)
       .map(c => c <= .04045 ? c/12.92 : ((c+.055)/1.055)**2.4)
@@ -129,6 +130,7 @@
       else if (escalon !== 'flotante' && !(typeof matchMedia === 'function' && matchMedia('(max-width:720px)').matches) && barra.contains(foco)) tabs.querySelector('[data-id="'+foco.dataset.id+'"]').focus();
     }
     function programar() { if (!pendiente) { pendiente = true; requestAnimationFrame(calcular); } }
+    recalcularPestanas=programar;
     new ResizeObserver(programar).observe(navegacion);
     new MutationObserver(programar).observe(tabs, {childList:true,subtree:true,characterData:true});
     new MutationObserver(programar).observe(document.documentElement, {attributes:true,attributeFilter:['lang','class','style','data-pestanas']});
@@ -140,7 +142,7 @@
     const halo = document.createElement('span'); halo.className = 'sate-logo-halo'; halo.dataset.unidad = id;
     halo.style.setProperty('--halo', colorHalo(id));
     const img = document.createElement('img'); img.className = 'sate-logo-unidad';
-    img.src = '../assets/logos/unidades/' + (SATE_CONFIG.identidadUnidades?.[id]?.logo || 'ipn') + '.webp';
+    img.src = '../assets/logos/unidades/' + (SATE_CONFIG.identidadUnidades?.[id]?.logo || config[id]?.logoUnidad || 'ipn') + '.webp';
     img.alt = nombre; img.onerror = () => { halo.hidden = true; img.hidden = true; };
     halo.appendChild(img);
     return halo;
@@ -149,6 +151,7 @@
     const caja = document.createElement('div');
     for (const [id, c] of Object.entries(config)) {
       const b = document.createElement('button'); b.className = 'btn'; b.textContent = c.siglas;
+      b.title = c.nombre;
       b.className += ' sate-selector-unidad'; b.prepend(logoUnidad(id, c.nombre));
       b.onclick = () => { aplicarRealce(id); if (api) IPNT.set('ipnt.unidad', id); location.hash = '#/' + id + '/mapa'; if (id !== u) location.reload(); else SateUI.cerrarModal(); };
       caja.appendChild(b);
@@ -193,8 +196,8 @@
     api.renderTop(); api.renderAviso(); SATE.presente.avisos(); modulos[actual.pestana].mostrar(actual);
     SATE.calendario?.pintarRecorte(actual.pestana);
     document.body.setAttribute('data-sate-pestana',actual.pestana);
-    document.getElementById('sate-oferta-periodo').hidden=actual.pestana!=='horarios';
-    document.getElementById('notice').hidden=actual.pestana!=='horarios';
+    document.getElementById('sate-oferta-periodo').hidden=cfg.generica||actual.pestana!=='horarios';
+    document.getElementById('notice').hidden=cfg.generica||actual.pestana!=='horarios';
     document.getElementById('mobnote').hidden=true;
   }
   window.SATE = {texto, modulos, error, script, identidadSaes, get actual(){return actual}, pestana(id, m) { modulos[id] = m; }, ir, elegirUnidad, repintar, cargarOferta,
@@ -202,20 +205,28 @@
       api = a; if (!cfg.generica) await script('situacion.js'); SateUI.usarAlmacen({leer,guardar:(k,v)=>IPNT.set(k,v)});
       const r = SateRutas.ruta(location.hash, u, config) ||
         SateRutas.ruta('#/' + u + '/' + (api.personal() && cfg.pestanas.includes('trayectoria') ? 'trayectoria' : 'mapa'), u, config);
-      const items = cfg.pestanas.map(id => ({id,grupo:cfg.grupos.findIndex(g=>g.includes(id)),texto:texto('sate.pestana.'+id+'.titulo'),corto:texto('sate.pestana.'+id+'.corto')}));
-      tabs = SateUI.pestanas({items,activa:r.pestana,alCambiar:id=>{if(actual && actual.pestana!==id)ir(id)}});
-      document.getElementById('sate-tabs').appendChild(tabs);
-      for (const id of cfg.pestanas) tabs.querySelector('[data-id="'+id+'"]').setAttribute('aria-controls',id==='horarios'?'v-hor':id==='tramites'?'sate-tramites':id==='trayectoria'?'sate-trayectoria':id==='calendario'?'sate-calendario':'v-tray');
-      barra = SateUI.barraInferior({items:items.map(it=>({id:it.id,grupo:it.grupo,texto:it.corto,titulo:it.texto})),activa:r.pestana,alElegir:ir});
-      document.body.appendChild(barra);
+      actualizarPestanas(r.pestana);
       adaptarPestanas();
       addEventListener('hashchange',()=>{const r=SateRutas.ruta(location.hash,u,config);if(r)activar(r).catch(error)});
       // Un hash ajeno pertenece a cuenta/tema/demo: nunca se reemplaza por una ruta SATE.
       if (!location.hash) history.replaceState(null,'',location.pathname+location.search+r.hash);
       await activar(r);
       if (!inicial && !recordada && !new URLSearchParams(location.search).has('sateUnidad')) elegirUnidad();
-    }
+    }, actualizarPestanas
   };
+  function actualizarPestanas(activa=actual?.pestana){
+      if(!cfg.pestanas.includes(activa))activa=api.personal()?'trayectoria':'mapa';
+      const items = cfg.pestanas.map(id => ({id,grupo:cfg.grupos.findIndex(g=>g.includes(id)),texto:texto('sate.pestana.'+id+'.titulo'),corto:texto('sate.pestana.'+id+'.corto')}));
+      tabs = SateUI.pestanas({items,activa,alCambiar:id=>{if(actual && actual.pestana!==id)ir(id)}});
+      document.getElementById('sate-tabs').replaceChildren();
+      document.getElementById('sate-tabs').appendChild(tabs);
+      for (const id of cfg.pestanas) tabs.querySelector('[data-id="'+id+'"]').setAttribute('aria-controls',id==='horarios'?'v-hor':id==='tramites'?'sate-tramites':id==='trayectoria'?'sate-trayectoria':id==='calendario'?'sate-calendario':'v-tray');
+      barra?.remove?.();
+      barra = SateUI.barraInferior({items:items.map(it=>({id:it.id,grupo:it.grupo,texto:it.corto,titulo:it.texto})),activa,alElegir:ir});
+      document.body.appendChild(barra);
+      recalcularPestanas();
+      if(actual&&actual.pestana!==activa)activar(SateRutas.ruta('#/'+u+'/'+activa,u,config)).catch(error);
+  }
   const siglasUnidad = document.createElement('span'); siglasUnidad.className = 'sate-unidad'; siglasUnidad.textContent = cfg.siglas;
   document.getElementById('sate-titulo').replaceChildren(logoUnidad(u, cfg.nombre), texto('sate.siglas') + ' ', siglasUnidad);
   if (cfg.leyenda) {

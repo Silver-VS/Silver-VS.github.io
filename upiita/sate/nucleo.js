@@ -25,7 +25,7 @@ const fmtCr=n=>Number.isInteger(+n)?String(+n):(+n).toFixed(2).replace(/0$/,'');
 
 /* ---------- perfil IPN-tools: respaldo y sincronización con la cuenta institucional (tools/cuenta.py) ---------- */
 var IPNT=window.IPNT=(()=>{
-  const CFG={"clientId": "7e8e5a95-4337-4652-8b07-3450306cda8f", "tenant": "common", "googleClientId": "959269733-d3h3qm0dtqpshebnabum1jr2g0l6geoa.apps.googleusercontent.com", "unidades": [{"id": "upiita", "siglas": "UPIITA", "nombre": "Unidad Profesional Interdisciplinaria en Ingenier\u00eda y Tecnolog\u00edas Avanzadas", "disponible": true, "url": "../horarios-upiita.html"}, {"id": "escom", "siglas": "ESCOM", "nombre": "Escuela Superior de C\u00f3mputo", "disponible": true, "url": "../horarios-escom.html"}, {"id": "upibi", "siglas": "UPIBI", "nombre": "Unidad Profesional Interdisciplinaria de Biotecnolog\u00eda", "disponible": true, "url": "../horarios-upibi.html"}], "googlePrueba": true, "contacto": "vacevess1900@alumno.ipn.mx", "institucionalPendiente": true, "version": "1.2.0", "unidad": window.SATE_UNIDAD, "msal": "https://cdn.jsdelivr.net/npm/@azure/msal-browser@4.30.0/lib/msal-browser.min.js", "sri": "sha384-RGxxfG5yRS8DLU7ZJ8OoLhbV/BsJFHyPuMVHrTLbpj3t5Z15LnviJmaznKY/a7LZ"}, FILE='perfil.ipnt.json', MS_SCOPES=['Files.ReadWrite.AppFolder'],
+  const CFG={"clientId": "7e8e5a95-4337-4652-8b07-3450306cda8f", "tenant": "common", "googleClientId": "959269733-d3h3qm0dtqpshebnabum1jr2g0l6geoa.apps.googleusercontent.com", "unidades": [{"id": "upiita", "disponible": true, "url": "../horarios-upiita.html", "siglas": "UPIITA", "nombre": "Unidad Profesional Interdisciplinaria en Ingenier\u00eda y Tecnolog\u00edas Avanzadas"}, {"id": "escom", "disponible": true, "url": "../horarios-escom.html", "siglas": "ESCOM", "nombre": "Escuela Superior de C\u00f3mputo"}, {"id": "upibi", "disponible": true, "url": "../horarios-upibi.html", "siglas": "UPIBI", "nombre": "Unidad Profesional Interdisciplinaria de Biotecnolog\u00eda"}], "googlePrueba": true, "contacto": "vacevess1900@alumno.ipn.mx", "institucionalPendiente": true, "version": "1.2.0", "unidad": window.SATE_UNIDAD, "msal": "https://cdn.jsdelivr.net/npm/@azure/msal-browser@4.30.0/lib/msal-browser.min.js", "sri": "sha384-RGxxfG5yRS8DLU7ZJ8OoLhbV/BsJFHyPuMVHrTLbpj3t5Z15LnviJmaznKY/a7LZ"}, FILE='perfil.ipnt.json', MS_SCOPES=['Files.ReadWrite.AppFolder'],
     GO_SCOPES='openid email profile https://www.googleapis.com/auth/drive.appdata';
   // qué se guarda: todo lo de Horarios (hu.) y Electivas (ue.), menos el estado de pantalla de cada dispositivo
   const SYNC=/^(hu\.|ue\.)|^saes\.alumno$|^perfil\.opciones$/, LOCAL=/^hu\.(?:[a-z]+\.)?(tab|per|tur|niv|view|mview|cview|mobnote)$/;
@@ -931,17 +931,7 @@ function suggestions(){
 let ZOOM=null, MAPSC=1;   // MAPSC: escala con la que se dibujó el mapa por última vez
 /* Bandas de semestre: el centro de cada fila es la mediana de sus bloques (las etiquetas del PDF pueden estar
    corridas) y cada banda llega a la mitad del espacio con la vecina, así ningún bloque se ve en la fila de al lado. */
-function rowBands(L){
-  if(L._bands) return L._bands;
-  const cs=L.rows.map(()=>[]);
-  L.boxes.forEach(b=>{const cy=b[1]+b[3]/2;let j=0;L.rows.forEach((r,i)=>{if(Math.abs(r[1]-cy)<Math.abs(L.rows[j][1]-cy))j=i});cs[j].push(cy)});
-  // Los mapas por áreas tienen filas exactas; solo se ajustan los centros de los PDF.
-  const ys=L.rows.map(([n,y],i)=>{const v=cs[i].sort((a,b)=>a-b);return v.length&&!L.propuesto&&!L.filas_exactas?v[Math.floor(v.length/2)]:y});
-  return L._bands=L.rows.map(([n],i)=>{const y=ys[i];
-    const a=i?(ys[i-1]+y)/2:Math.max(0,y-(ys[1]!=null?(ys[1]-y)/2:L.pitch/2));
-    const b=i<ys.length-1?(y+ys[i+1])/2:Math.min(L.h,y+(i?(y-ys[i-1])/2:L.pitch/2));
-    return [n,y,a,b]});
-}
+function rowBands(L){return SateUI.bandasMapa(L)}
 /* Espacios de optativas del mapa: se llenan con las optativas acreditadas, en curso o elegidas (primero las del
    mismo semestre; si no coincide, en el siguiente espacio libre). Un espacio unido por flecha a otro ya ocupado
    toma la continuación de esa línea (ESCOM ISC: optativa de 6.º -> 7.º) o la sugiere. */
@@ -966,37 +956,7 @@ function slotFill(L,want){
 /* Una sola representación para Mapa y el presente. La prioridad de desfase evita
    que «late fail» se cuente como una reprobada ordinaria. */
 function minimapaCurricular(L=MAP().layout,FILL,op={}){
-  if(!isPersonal())return null;
-  if(!L){
-    const niveles=[...new Set(Object.values(cur()).map(v=>v[2]))].sort((a,b)=>a-b),boxes=[];
-    let cols=1;
-    niveles.forEach((n,i)=>{const keys=Object.keys(cur()).filter(k=>cur()[k][2]===n);cols=Math.max(cols,keys.length);keys.forEach((k,j)=>boxes.push([j*50,i*50,40,40,k]))});
-    L={w:cols*50,h:Math.max(1,niveles.length)*50,boxes,edges:[],rows:niveles.map((n,i)=>[n,i*50+20]),pitch:50,filas_exactas:true};
-  }
-  FILL=FILL||slotFill(L,new Set());
-  const {nPend=0,FOCO=null}=op,bands=rowBands(L);
-  const colores={done:'var(--ipn-ok)',curso:'var(--sate-realce)',pend:'var(--ipn-tenue)',fail:'var(--ipn-reprobada)',late:'var(--ipn-desfasada)'};
-  const cnt={done:0,curso:0,pend:0,fail:0,late:0};
-  const estado=st=>st==='done'?'done':st.startsWith('curso')?'curso':st.startsWith('late')?'late':st.includes('fail')?'fail':'pend';
-  let svg=`<svg viewBox="0 0 ${L.w} ${L.h}" aria-hidden="true" focusable="false">`;
-  bands.forEach(([n,y,a,b],i)=>{
-    if(i%2===0)svg+=`<rect x="0" y="${a}" width="${L.w}" height="${b-a}" fill="var(--ipn-hundido)"/>`;
-    if(i===nPend&&nPend){const fx=FOCO?FOCO.x0:1,fw=FOCO?FOCO.x1-FOCO.x0:L.w-2;svg+=`<rect x="${fx}" y="${a}" width="${fw}" height="${L.h-a-1}" fill="none" stroke="var(--ipn-acento)" stroke-width="4" stroke-dasharray="14 8" rx="8"/>`}
-  });
-  L.edges.forEach(([s,d,pp])=>{const pts=[];for(let i=0;i<pp.length;i+=2)pts.push(pp[i]+','+pp[i+1]);svg+=`<polyline points="${pts.join(' ')}" fill="none" stroke="var(--ipn-tenue)" stroke-opacity=".35" stroke-width="3"/>`});
-  L.boxes.forEach(([x,y,w,h,k,slot],i)=>{
-    const kk=k||FILL.get(i)?.k,cx=x+w/2,cy=y+h/2,r=Math.min(w,h)*.3;
-    if(!kk){if(/^optativa/i.test(slot)){svg+=`<circle data-estado="pend" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${colores.pend}" stroke-width="4" stroke-dasharray="6 5"/>`;cnt.pend++}return}
-    if(isElec(kk))return;
-    const st=estado(statusOf(kk));cnt[st]++;
-    svg+=`<circle data-estado="${st}" cx="${cx}" cy="${cy}" r="${r}" fill="${colores[st]}"/>`;
-  });
-  svg+='</svg>';
-  // leyenda en dos filas centradas: avance (acreditadas, en curso, por cursar) y alertas (reprobadas, desfasadas)
-  const pastilla=st=>`<span><i style="background:${colores[st]}"></i>${esc(SATE.texto('sate.minimapa.'+st,{n:cnt[st]}))}</span>`;
-  const leyenda=[['done','curso','pend'],['fail','late']].map(fila=>fila.filter(st=>st in cnt)).filter(f=>f.length)
-    .map(f=>`<div class="mm-fila">${f.map(pastilla).join('')}</div>`).join('');
-  return {svg,leyenda,cnt};
+  return SateUI.minimapaCurricular({isPersonal,cur,slotFill,isElec,statusOf,esc,SATE},L,FILL,op);
 }
 // modo personal: materias que puedes cursar el siguiente periodo (verde) y las sugeridas para tu carga (contorno)
 let MARK={avail:new Set(),sug:new Set()};
@@ -1049,13 +1009,8 @@ function avisoOptativa(k,otras){
   avisoOpt(t.libre<=0?`El plan pide ${t.total===1?'una optativa':t.total+' optativas'} de nivel ${v} y ya ${t.total===1?'cubriste ese espacio':'cubriste esos espacios'}: ${pretty(cur()[k][0])} no cubre otro espacio, solo suma como materia adicional.`:
     `El plan solo deja ${t.libre===1?'un espacio libre':t.libre+' espacios libres'} de optativa de nivel ${v}: con ${pretty(cur()[k][0])} ya elegiste más de las que cubren ese nivel; las demás no cubren espacio.`);
 }
-function boxHtml(k,x,y,w,h,sc,want,off,hot,sem,req){
-  const [n,cr,niv]=cur()[k]||[k,0,1];
-  const st=statusOf(k), paso=planAsignado(k);
-  const el=isElec(k);
-  const cls=`box ${st}${el?' elec':''}${MARK.avail.has(k)?' avail':''}${MARK.sug.has(k)?' sug':''}${paso!=null?' want plan-'+(paso+1):req&&req.has(k)?' req':''}${hot?(hot.has(k)?(k===S.mapHover?' hot':hot.pre?.has(k)?' hpre':hot.post?.has(k)?' hpost':''):' dim'):''}${off.has(k)||el?'':' offered-no'}`;
-  const tip=`${k} · ${n} · ${fmtCr(cr)} créditos · nivel ${niv}${sem&&!porNiveles()?` · semestre propuesto ${sem}`:''}${el?' · consulta su acreditación con Gestión Escolar':off.has(k)?'':' · sin grupos este periodo'}${st.startsWith('late fail')?' · desfasada (SAES): inscripción obligatoria':st.startsWith('fail')?' · reprobada: por recursar':st==='curso'?' · en curso':st.startsWith('late')?' · atrasada según el semestre propuesto':st.includes('far')?' · más de un año adelante de tu semestre de referencia: aún no puedes inscribirla':st.includes('lock')?' · le faltan requisitos':MARK.avail.has(k)?' · puedes cursarla el siguiente periodo':''}${MARK.sug.has(k)?' · sugerida para tu carga':''}${req&&req.has(k)?' · conviene cursarla antes que una materia elegida':''}`;
-  return `<div class="${cls}" data-box="${k}" role="button" tabindex="0" aria-pressed="${paso===S.planPaso}" aria-label="${esc(tip+(paso==null?'':' · '+SATE.texto('sate.planeacion.'+(PLAN_DOS_PERIODOS?'asignada':'periodo_elegido'),{marca:paso+1,periodo:planEtiqueta(paso)})))}" style="--nv:var(--n${niv});left:${x*sc}px;top:${y*sc}px;width:${w*sc}px;height:${h*sc}px;font-size:${Math.max(5.5,(n.length>34?9:10.5)*sc)}px" title="${esc(tip)}">${esc(n)}${paso==null||!PLAN_DOS_PERIODOS?'':`<span class="plan-marca" aria-hidden="true">${paso+1}</span>`}</div>`;
+function boxHtml(...args){
+  return SateUI.cajaMateria({cur,statusOf,planAsignado,isElec,MARK,S,fmtCr,porNiveles,esc,SATE,PLAN_DOS_PERIODOS,planEtiqueta},...args);
 }
 
 function inspParts(k){
@@ -1109,9 +1064,35 @@ function leyendaMapa(completa=false){
 }
 function renderLegend(){$('#legend').innerHTML=leyendaMapa()}
 function renderSide(){return conSim(usaSim('sugg'),()=>conPlan(renderSide0))}
+const AREA_COLORES=['#8a98c7','#a76987','#577d63','#4d6f8d','#c9a36a','#721e45'];
+function requisitosElegidos(want){
+  const c=cur(), done=new Set(tr().done), pedidos=new Map(), acreditados=new Set(), materias=new Set();
+  // Conserva la seriación transitiva del mapa; cada requisito compartido ocupa una sola fila.
+  want.forEach(m=>ancestors([m]).forEach(k=>{
+    if(!c[k]||k===m)return;
+    if(done.has(k)){acreditados.add(k);return}
+    if(!pedidos.has(k))pedidos.set(k,[]);
+    pedidos.get(k).push(m);materias.add(m);
+  }));
+  return {pedidos,acreditados:acreditados.size,materias:materias.size};
+}
+function requisitosHtml(want){
+  const {pedidos,acreditados,materias}=requisitosElegidos(want), c=cur(), cats=catDe(), grupos=new Map();
+  const tx=(k,v)=>SATE.texto('sate.planeacion.'+k,v);
+  if(!pedidos.size)return `<p class="muted">${esc(tx('requisitos_sin_pendientes'))}</p>`;
+  pedidos.forEach((piden,k)=>{const area=cats[k]||tx('requisitos_sin_area');if(!grupos.has(area))grupos.set(area,[]);grupos.get(area).push([k,piden])});
+  const cols=MAP().layout?.cols||[];
+  return `<details class="chosen-requisitos"><summary><span>${esc(tx('requisitos_resumen',{n:pedidos.size,m:materias}))}</span><span class="req-ver">${esc(tx('requisitos_ver'))}</span></summary>`+
+    `<table class="req-tabla"><thead><tr><th scope="col">${esc(tx('requisitos_materia'))}</th><th scope="col">${esc(tx('requisitos_pide'))}</th></tr></thead>`+
+    [...grupos].sort(([a],[b])=>a.localeCompare(b,'es')).map(([area,filas])=>{
+      const i=cols.findIndex(([n])=>n.split(' · ').includes(area)), color=AREA_COLORES[Math.max(0,i)%AREA_COLORES.length];
+      return `<tbody><tr class="req-area"><th colspan="2" scope="colgroup" style="--area:${color}">${esc(area)}</th></tr>`+
+        filas.sort(([a],[b])=>c[a][0].localeCompare(c[b][0],'es')).map(([k,piden])=>`<tr class="req-fila" tabindex="0" data-req="${esc(k)}" data-piden="${esc(piden.join(' '))}"><th scope="row"><span class="grp">${esc(k)}</span> ${esc(pretty(c[k][0]))}${want.includes(k)?` <small class="req-elegido">${esc(tx('requisitos_elegido'))}</small>`:''}</th><td><span class="req-etiqueta">${esc(tx('requisitos_pide'))}: </span>${piden.map(m=>esc(pretty(c[m][0]))).join('; ')}</td></tr>`).join('')+'</tbody>';
+    }).join('')+'</table>'+(acreditados?`<p class="muted req-acreditados">${esc(tx('requisitos_acreditados',{n:acreditados}))}</p>`:'')+'</details>';
+}
 function renderSide0(){
+  if(S.reqHover){S.reqHover=null;S.mapHover=null;S.mapFocus=false;renderMap()}
   const c=cur(), want=tr().want.filter(k=>c[k]), credWant=want.reduce((s,k)=>s+c[k][1],0), off=offeredClaves();
-  const req=[...ancestors(want)].filter(k=>!want.includes(k)&&!tr().done.includes(k));
   const tx=(k,v)=>SATE.texto('sate.planeacion.'+k,v);
   $('#plan-panel').setAttribute('aria-label',tx('titulo'));$('#map-ayuda').textContent='ⓘ '+tx('leer_mapa');$('#plan-periodos').setAttribute('aria-label',tx('periodos'));
   if(!PLAN_DOS_PERIODOS)S.planPaso=0;
@@ -1148,13 +1129,12 @@ function renderSide0(){
   $('#chosen').innerHTML=planPasos().map(paso=>conPlan(()=>{
     const t=tr(), elegidas=t.want.filter(k=>c[k]), cr=elegidas.reduce((s,k)=>s+c[k][1],0);
     const nuevos=elegidas.filter(k=>!t.fail.includes(k)).reduce((s,k)=>s+c[k][1],0), carga=cargaInfo(nuevos);
-    const pendientes=[...ancestors(elegidas)].filter(k=>!elegidas.includes(k)&&!t.done.includes(k));
     const cuenta=carga?tx('resumen',{n:elegidas.length,creditos:fmtCr(cr),tope:fmtCr(carga.tope)}):tx('cuenta',{n:elegidas.length,creditos:fmtCr(cr)});
     return `<section class="plan-grupo plan-${paso+1}" aria-labelledby="plan-grupo-${paso}"><h4 id="plan-grupo-${paso}">${esc(tx(PLAN_DOS_PERIODOS?'asignada':'periodo_elegido',{marca:paso+1,periodo:planEtiqueta(paso)}))}</h4><p>${esc(cuenta)}</p><p>${esc(carga?tx('carga',{creditos:fmtCr(carga.total),tope:fmtCr(carga.tope),retenidos:fmtCr(carga.ret)}):tx('sin_carga',{creditos:fmtCr(cr)}))}</p><div class="wchips">`+
       elegidas.sort((a,b)=>(semOf()[a]||99)-(semOf()[b]||99)).map(k=>`<span class="wchip"><span class="grp">${k}</span>${esc(pretty(c[k][0]))}${off.has(k)?'':' <small>'+esc(tx('sin_grupos'))+'</small>'}${t.oblig.includes(k)?'<span class="tag bad">'+esc(tx('obligatoria'))+'</span>':`<button class="x" data-unwant="${k}" data-plan-quitar="${paso}" aria-label="${esc(tx('quitar',{materia:c[k][0],periodo:planEtiqueta(paso)}))}">×</button>`}</span>`).join('')+
-      (!elegidas.length?`<p>${esc(tx('vacio'))}</p>`:'')+`</div><small>${esc(pendientes.length?tx('requisitos',{materias:pendientes.map(k=>c[k][0].toLowerCase()).join(', ')}):'')}</small></section>`;
+      (!elegidas.length?`<p>${esc(tx('vacio'))}</p>`:'')+`</div></section>`;
   },paso)).join('');
-  $('#chosen-req').textContent=req.length?tx('requisitos',{materias:req.map(k=>c[k][0].toLowerCase()).join(', ')}):'';
+  $('#chosen-req').innerHTML=requisitosHtml(want);
   $('#h-sugg').innerHTML=esc(tx('sugeridas',{periodo:planEtiqueta(PLAN_PASO)}))+' '+simTag('sugg');
   const propuestas=suggestions();
   const yaElegidas=new Set(tr().want);   // las sugeridas que ya están en el plan del periodo activo llevan ✓
@@ -1178,7 +1158,7 @@ function renderLineas(){
   const ls=MAP().lineas, c=cur(), done=new Set(tr().done), want=new Set(tr().want), off=offeredClaves();
   if(!ls.length){$('#lineas').innerHTML='<p class="muted">Sin líneas de especialización registradas para esta carrera.</p>';return}
   const L=MAP().layout, slots=L?L.boxes.filter(b=>/^optativa/i.test(b[5])).length:0;
-  const AREA=['#8a98c7','#a76987','#577d63','#4d6f8d','#c9a36a','#721e45'], areas=[...new Set(ls.map(l=>l.area))];
+  const AREA=AREA_COLORES, areas=[...new Set(ls.map(l=>l.area))];
   // una optativa puede tener varias claves (una por semestre): se agrupan por nombre
   const group=l=>{const by=new Map();l.claves.forEach(k=>{if(!c[k])return;const n=c[k][0].toUpperCase();const g=by.get(n)||{n,keys:[],niv:c[k][2],cr:c[k][1],done:false,off:false,want:false};g.keys.push(k);g.done||=done.has(k);g.off||=off.has(k);g.want||=want.has(k);g.niv=Math.min(g.niv,c[k][2]);by.set(n,g)});return [...by.values()]};
   const gs=ls.map(group), score=gs.map(g=>g.filter(x=>x.done||x.want).length), best=Math.max(...score);
@@ -1511,11 +1491,13 @@ function toggleBox0(k){
 document.addEventListener('click',e=>{
   const li=e.target.closest('#ac li');if(li){pick(+li.dataset.i);return}
   // táctil: un toque fuera del mapa y del inspector retira el enfoque
-  if(S.mapFocus&&!e.target.closest('#map,#insp,#lineas')){S.mapFocus=false;S.mapHover=null;renderMap()}
+  if((S.mapFocus||S.reqHover)&&!e.target.closest('#map,#insp,#lineas,#chosen-req')){S.mapFocus=false;S.mapHover=null;S.reqHover=null;renderMap()}
+  const requisito=e.target.closest('[data-req]');
+  if(requisito){S.mapHover=requisito.dataset.req;S.reqHover=requisito.dataset.piden.split(' ');S.mapFocus=true;renderMap();return}
   // táctil: el primer toque enfoca la materia (cadena de requisitos + inspector); el segundo la selecciona
   const focus=k=>{if(PLAN_DOS_PERIODOS&&tactil()&&S.mapHover!==k){S.mapHover=k;S.mapFocus=true;renderMap();return true}return false};
-  const bx=e.target.closest('[data-box]');if(bx){if(!focus(bx.dataset.box))toggleBox(bx.dataset.box);return}
-  const ob=e.target.closest('[data-obox]');if(ob){if(!focus(ob.dataset.obox))toggleBox(ob.dataset.obox);return}
+  const bx=e.target.closest('[data-box]');if(bx){S.reqHover=null;if(!focus(bx.dataset.box))toggleBox(bx.dataset.box);return}
+  const ob=e.target.closest('[data-obox]');if(ob){S.reqHover=null;if(!focus(ob.dataset.obox))toggleBox(ob.dataset.obox);return}
   // táctil: tocar un grupo de la oferta muestra (o retira) su vista previa en el horario
   const op=e.target.closest('#offer .opt');if(op&&tactil()&&!e.target.closest('button,input,a,label,select,textarea,summary')){S.hover=S.hover===op.dataset.k?null:op.dataset.k;renderCal();return}
   const t=e.target.closest('button');if(!t)return;
@@ -1524,7 +1506,7 @@ document.addEventListener('click',e=>{
   if(d.lfocus){S.lfocus=S.lfocus===d.lfocus?null:d.lfocus;conSim(usaSim('mapa'),()=>conPlan(renderList,0));return}
   if(d.lwant){toggleBox(d.lwant);return}
   if(d.fwant){toggleBox(d.fwant);return}
-  if(d.fclose){S.mapFocus=false;S.mapHover=null;renderMap();return}
+  if(d.fclose){S.mapFocus=false;S.mapHover=null;S.reqHover=null;renderMap();return}
   if(d.mview){S.mview=d.mview;store.set('mview',S.mview);renderTray();return}
   if(d.cview){S.cview=d.cview;store.set('cview',S.cview);renderCal();return}
   if(t.id==='b-filt'){const f=t.closest('.filters');f.classList.toggle('open');t.setAttribute('aria-expanded',String(f.classList.contains('open')));return}
@@ -1556,8 +1538,14 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('keydown',e=>{const bx=e.target.closest?.('[data-box]');if(bx&&(e.key==='Enter'||e.key===' ')){e.preventDefault();const k=bx.dataset.box;toggleBox(k);document.querySelector(`[data-box="${CSS.escape(k)}"]`)?.focus()}});
 document.addEventListener('change',e=>{if(e.target.dataset.note){const k=e.target.dataset.note,m=ws().marks;m[k]={...(m[k]||{}),n:e.target.value.trim()};save()}});
-$('#map').addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')return;const b=e.target.closest('[data-box]');const k=b?b.dataset.box:null;if(k!==S.mapHover){S.mapHover=k;renderMap()}});
-$('#lineas').addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')return;const b=e.target.closest('[data-obox]');const k=b?b.dataset.obox:null;if(k!==S.mapHover){S.mapHover=k;renderMap()}});
+$('#chosen-req').addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')return;const fila=e.target.closest('[data-req]');if(fila){S.mapHover=fila.dataset.req;S.reqHover=fila.dataset.piden.split(' ');S.mapFocus=false;renderMap()}});
+$('#chosen-req').addEventListener('focusin',e=>{const fila=e.target.closest('[data-req]');if(fila){S.mapHover=fila.dataset.req;S.reqHover=fila.dataset.piden.split(' ');S.mapFocus=false;renderMap()}});
+const salirRequisitos=()=>{if(S.reqHover&&!S.mapFocus){S.mapHover=null;S.reqHover=null;renderMap()}};
+$('#chosen-req').addEventListener('toggle',e=>{if(!e.target.open&&S.reqHover){S.mapFocus=false;salirRequisitos()}},true);
+$('#chosen-req').addEventListener('pointerleave',salirRequisitos);
+$('#chosen-req').addEventListener('focusout',e=>{if(!e.relatedTarget?.closest('[data-req]'))salirRequisitos()});
+$('#map').addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')return;const b=e.target.closest('[data-box]');const k=b?b.dataset.box:null;if(k!==S.mapHover||S.reqHover){S.reqHover=null;S.mapHover=k;renderMap()}});
+$('#lineas').addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')return;const b=e.target.closest('[data-obox]');const k=b?b.dataset.obox:null;if(k!==S.mapHover||S.reqHover){S.reqHover=null;S.mapHover=k;renderMap()}});
 $('#lineas').addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'&&S.mapHover&&!S.mapFocus){S.mapHover=null;renderMap()}});
 $('#map').addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'&&S.mapHover&&!S.mapFocus){S.mapHover=null;renderMap()}});
 /* globo de ayuda inmediato (el «title» nativo tarda ~1 s): un solo elemento fijo, colocado junto al ⓘ sin salirse de la
