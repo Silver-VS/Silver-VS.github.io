@@ -42,7 +42,7 @@ function metaResumen(D,H,incluyeActual){
   // equivalencia aproximada en materias: promedio de créditos de las materias del plan que te faltan
   let porMat=null;try{const c=cur(),hechas=new Set(tr().done),cr=Object.keys(c).filter(k=>!hechas.has(k)&&!isElec(k)&&c[k][1]>0).map(k=>c[k][1]);if(cr.length)porMat=cr.reduce((a,b)=>a+b,0)/cr.length}catch(e){}
   const nMat=porMat?Math.max(1,Math.round(M.necesarios/porMat)):null;
-  return `<p class="mt-h"><b>${fmtCr(M.necesarios)} créditos por periodo</b>${nMat?` <span class="mt-mat">≈ ${nMat} ${nMat===1?'materia':'materias'} por periodo ${info(`Aproximado con el promedio de créditos de las materias que te faltan (${porMat.toFixed(1)} créditos por materia).`)}</span>`:''}${M.fin!=null?` · de ${perName(M.inicio)} a ${perName(M.fin)}`:''}</p>
+  return `<p class="mt-h"><b>${fmtCr(M.necesarios)} créditos por periodo</b> ${ayudaCreditos()}${nMat?` <span class="mt-mat">≈ ${nMat} ${nMat===1?'materia':'materias'} por periodo ${info(`Aproximado con el promedio de créditos de las materias que te faltan (${porMat.toFixed(1)} créditos por materia).`)}</span>`:''}${M.fin!=null?` · de ${perName(M.inicio)} a ${perName(M.fin)}`:''}</p>
     <div class="mt-regla${M.supera?' supera':''}" aria-hidden="true"><i class="mt-zona" style="width:${M.autorizada!=null?x(M.autorizada):'100%'}"></i>
       ${marca(M.necesarios,'nec','necesitas','arriba',pos(M.necesarios)>82)}${ab.map(([v,c,t],j)=>marca(v,c,t,lugar[j].fila2?'abajo fila2':'abajo',lugar[j].izq)).join('')}</div>
     <p class="mt-e${M.supera?' warn':''}">${estado}${M.bajoMin?' Es menos que la carga mínima; requiere autorización.':''} ${info('Promedio de créditos que necesitas aprobar por periodo, no una lista exacta de materias. Tu carga autorizada puede cambiar cada periodo; los periodos se estiman con tu cita de reinscripción y tu kárdex.')}</p>`;
@@ -149,28 +149,29 @@ async function renderStatsVista(){
     <details class="trayectoria-plegable" id="trayectoria-kardex"><summary>${esc(SATE.texto('sate.trayectoria.kardex'))}<small>${esc(SATE.texto('sate.trayectoria.kardex_resumen',{n:Dk.rows.length}))}</small></summary><div class="charts">
       <figure class="ch-wide"><figcaption>${simTag('kardex')}${ley([['grado','','Calificación'],...[['E','Extraordinario'],['T','ETS'],['R','Recurse']].filter(([l])=>Dk.rows.some(r=>({EXT:'E',ETS:'T',REC:'R'})[r.codigo]===l)).map(([l,t])=>['letra',l,t]),...(Dk.rows.some(r=>r.sim)?[['simulada','var(--fg)','Simulada']]:[])])}</figcaption><div id="ch-kx"></div></figure>
     </div></details>
-    <details class="trayectoria-plegable" id="trayectoria-escenario"><summary id="trayectoria-escenario-titulo">${esc(SATE.texto('sate.trayectoria.y_si'))}</summary><div>
+    <div id="trayectoria-sim-slot"></div>
+    <details class="trayectoria-plegable" id="trayectoria-escenario"><summary id="trayectoria-escenario-titulo">${esc(SATE.texto('sate.trayectoria.y_si'))}<small>${esc(SATE.texto('sate.trayectoria.y_si_resumen'))}</small></summary><div>
       ${conSim(usaSim('meta'),()=>metaPanel(statsDatos()))}
       ${conSim(usaSim('pm'),()=>promMetaPanel(statsDatos()))}
     </div></details>
-    <div id="trayectoria-sim-slot"></div>
     <details class="trayectoria-plegable" id="trayectoria-areas"><summary>${esc(SATE.texto('sate.trayectoria.areas'))}<small id="trayectoria-areas-resumen"></small></summary><div class="charts">
-      <figure class="ch-wide"><figcaption>${simTag('areas')}${ley([['vertical','var(--fg)',`Tu promedio sin reprobadas: ${Da.media!=null?Da.media.toFixed(2):'—'}`],['cuadro','var(--ok)','Por arriba'],['cuadro','var(--muted)','Similar (±0.25)'],['cuadro','var(--ch-alert)','Por debajo']])}</figcaption><div id="ch-cat"></div></figure>
+      <figure class="ch-wide trayectoria-afinidades"><figcaption>${simTag('areas')}<span>${esc(SATE.texto('sate.trayectoria.areas_media',{promedio:f2(Da.media)}))}</span></figcaption><div id="ch-cat" aria-hidden="true"></div><details class="trayectoria-areas-detalle"><summary>${esc(SATE.texto('sate.trayectoria.areas_detalle'))}</summary><p id="trayectoria-areas-lectura"></p><div id="trayectoria-areas-datos"></div></details></figure>
     </div></details>
     <details class="trayectoria-plegable" id="trayectoria-observaciones"><summary>${esc(SATE.texto('sate.trayectoria.observaciones'))}</summary><div class="kanal" id="kanal"></div></details>
     ${D.rows.some(r=>r.eqv)?`<p class="st-note">${D.rows.filter(r=>r.eqv).length} ${D.rows.filter(r=>r.eqv).length===1?'materia reconocida':'materias reconocidas'} por equivalencia, revalidación o dictamen (${D.crEqv==null?'créditos incompletos':fmtCr(D.crEqv)+' créditos'}) ${info('Equivalencia: materia de otra carrera o plan del IPN (por ejemplo, cambio de carrera). Revalidación: materia cursada en otra institución, incluida la movilidad académica nacional o internacional. Dictamen: reconocimiento por resolución académica. Todas cuentan en tus promedios, áreas y créditos; como el SAES las registra al reconocerlas y no en el periodo en que se cursaron, no entran en el promedio por periodo ni en tu ritmo de créditos.')}</p>`:''}`;
   $('#trayectoria-sim-slot').appendChild($('#desempeno-simulacion'));
+  montarAyudasCreditos();
   if(focoSim)focoSim.focus();
   prepararSeccion($('#trayectoria-escenario'),'escenario');
   prepararSeccion($('#trayectoria-observaciones'),'observaciones',()=>conSim(usaSim('obs'),()=>renderAnalisis(statsDatos())));
   const cs=getComputedStyle(document.documentElement), tok=n=>cs.getPropertyValue(n).trim();
-  const ACC=tok('--accent'), OK=tok('--ok'), MUT=tok('--muted'), LINE=tok('--line');
-  const base=el=>({width:Math.max(260,$(el).clientWidth),style:{background:'transparent',color:tok('--fg'),fontSize:'11px',fontFamily:'inherit',overflow:'visible'},marginLeft:40,marginBottom:32});
+  const base=el=>({width:$(el).clientWidth,style:{background:'transparent',color:tok('--ipn-texto'),fontSize:'11px',fontFamily:'inherit'},marginLeft:40,marginBottom:32});
   const put=(id,fig)=>montarGrafica($(id),fig);
   const tickPer=d=>perName(d);
   // 1) camino en la carrera: regla del plan completo con lo acreditado, lo que está en curso y la estimación por periodo
   $('#ch-camino').innerHTML=SateUI.caminoTrayectoria(Dc,A,plazo,totalPer,{esc,fmtCr,perName,proyeccionCreditos,
     ec:Dc.simulado?0:[...new Set(tr().enCurso)].reduce((t,k)=>t+(cur()[k]?.[1]||0),0),info},$('#ch-camino').clientWidth);
+  montarAyudasCreditos();
   // 2) kárdex por periodo: cada materia es un cuadro con su calificación; encabezado con promedio y créditos
   prepararSeccion($('#trayectoria-kardex'),'kardex',()=>{const host=$('#ch-kx');
     const col=(t,sub,rs)=>SateUI.fichasKardex(t,sub,rs,esc);
@@ -180,26 +181,30 @@ async function renderStatsVista(){
       Dk.porPer.filter(d=>d.n).map(d=>{const rs=Dk.rows.filter(r=>!r.eqv&&r.per===d.per), dif=prev!=null?d.prom-prev:null;prev=d.prom;
         return col(d.lbl,`${f2(d.prom)}${dif!=null&&Math.abs(dif)>=.01?` <em class="${dif>0?'up':'down'}">${dif>0?'▲':'▼'}</em>`:''} · ${d.cr!=null?fmtCr(d.cr)+' cr':''}`,rs)}).join('')+
       (sinP.length?col('Sin periodo',`${sinP.length} materias`,sinP):'')+`</div>`});
-  // 3) áreas frente a tu promedio: barras divergentes alrededor de tu promedio de aprobadas
-  const grupos=new Map();for(const r of Da.rows){if(!grupos.has(r.cat))grupos.set(r.cat,[]);grupos.get(r.cat).push(r.cal)}
-  const porArea=[...grupos].map(([cat,v])=>({cat,media:v.reduce((a,b)=>a+b,0)/v.length,n:v.length})).map(d=>({...d,dif:d.media-Da.media})).sort((a,b)=>b.dif-a.dif);
-  $('#trayectoria-areas-resumen').textContent=porArea.length?SATE.texto('sate.trayectoria.areas_resumen',{area:porArea[0].cat,promedio:porArea[0].media.toFixed(1)}):'';
+  // Dos materias evitan presentar una sola calificación como una afinidad consolidada.
+  const grupos=new Map();for(const r of Da.rows){if(!grupos.has(r.cat))grupos.set(r.cat,[]);grupos.get(r.cat).push(r)}
+  const porArea=[...grupos].map(([cat,v])=>({cat,media:v.reduce((a,r)=>a+r.cal,0)/v.length,n:v.length,
+    cr:v.every(r=>r.cr!=null)?v.reduce((a,r)=>a+r.cr,0):null})).sort((a,b)=>b.media-a.media||a.cat.localeCompare(b.cat,'es'));
+  const mejores=porArea.filter(d=>d.n>=2).slice(0,2), tx=(k,v)=>SATE.texto('sate.trayectoria.areas_'+k,v);
+  const lectura=mejores.length?tx(mejores.length===2?'mejores':'mejor',{primera:`${mejores[0].cat} (${mejores[0].media.toFixed(1)})`,segunda:mejores[1]?`${mejores[1].cat} (${mejores[1].media.toFixed(1)})`:''}):tx(porArea.length?'muestra':'vacio');
+  $('#trayectoria-areas-resumen').textContent=mejores.length?tx('resumen',{area:mejores[0].cat,promedio:mejores[0].media.toFixed(1)}):'';
+  $('#trayectoria-areas-lectura').textContent=lectura;
   return prepararSeccion($('#trayectoria-areas'),'areas',async(abierta)=>{
   const vigente=()=>revision===ST_RENDER&&SATE.actual?.pestana==='trayectoria'&&abierta();
   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))); // Medir después de abrir el details.
-  if(!vigente()||!porArea.length)return;
+  if(!vigente())return;
+  // La lista conserva todos los nombres y datos, incluso si la biblioteca no carga.
+  $('#trayectoria-areas-datos').innerHTML=porArea.length?`<ol class="trayectoria-areas-ranking">${porArea.map(d=>`<li${d.n===1?' class="area-muestra"':''}><b>${esc(d.cat)}${d.n===1?' '+esc(tx('una')):''}</b><span>${esc(tx('datos',{promedio:f2(d.media),creditos:d.cr==null?tx('creditos_desconocidos'):fmtCr(d.cr)+' cr',materias:SATE.texto('sate.desempeno.materias',{n:d.n})}))}</span></li>`).join('')}</ol>`:'';
+  if(!porArea.length)return;
   try{await cargarPlot()}catch(e){if(vigente())$('#ch-cat').innerHTML=`<p class="muted">${esc(e.message)}</p>`;throw e}
   if(!vigente())return;
   const P=window.Plot;
-  // escala fija de al menos ±2.5 puntos: diferencias pequeñas se ven pequeñas; ±0.25 se considera similar (gris)
-  const lim=Math.max(2.5,...porArea.map(d=>Math.abs(d.dif)*1.2)), ALT=tok('--ch-alert')||'#d9480f', SIM_=Math.abs, col=d=>SIM_(d.dif)<.25?MUT:d.dif>0?OK:ALT;
-  put('#ch-cat',P.plot({...base('#ch-cat'),height:Math.max(150,porArea.length*28+50),marginLeft:$('#ch-cat').clientWidth<480?118:160,marginRight:20,
-    x:{axis:null,domain:[-lim,lim]},y:{label:null,domain:porArea.map(d=>d.cat),padding:.3},
-    marks:[P.rectX([0],{x1:-.25,x2:.25,fill:MUT,fillOpacity:.06}),
-      P.barX(porArea,{x:'dif',y:'cat',fill:col,fillOpacity:.6,rx:3,tip:true,title:d=>`${d.cat}\npromedio ${f2(d.media)} (${d.n} ${d.n>1?'materias':'materia'})\n${d.dif>=0?'+':''}${d.dif.toFixed(2)} frente a tu promedio`}),
-      P.text(porArea.filter(d=>d.dif>=0),{x:'dif',y:'cat',text:d=>`${d.media.toFixed(1)} (${d.n})`,dx:6,textAnchor:'start',fill:tok('--fg'),fontWeight:600}),
-      P.text(porArea.filter(d=>d.dif<0),{x:'dif',y:'cat',text:d=>`${d.media.toFixed(1)} (${d.n})`,dx:-6,textAnchor:'end',fill:tok('--fg'),fontWeight:600}),
-       P.ruleX([0],{stroke:tok('--fg'),strokeWidth:1.5})]}));
+  const col=d=>tok(mejores.includes(d)?'--ipn-acento':'--ipn-tenue');
+  put('#ch-cat',P.plot({...base('#ch-cat'),height:porArea.length*24+32,marginTop:0,marginBottom:32,marginLeft:$('#ch-cat').clientWidth<480?118:160,marginRight:20,
+    x:{label:null,domain:[6,10],ticks:[6,7,8,9,10]},y:{label:null,domain:porArea.map(d=>d.cat),padding:0,tickSize:0,tickFormat:d=>d.length>18?d.slice(0,17)+'…':d},
+    marks:[P.ruleY(porArea,{y:'cat',x1:6,x2:10,stroke:tok('--ipn-linea')}),
+      P.ruleX(Da.media==null?[]:[Da.media],{stroke:tok('--ipn-tenue'),strokeOpacity:.4,strokeWidth:1}),
+      P.dot(porArea,{x:'media',y:'cat',fill:col,fillOpacity:d=>d.n===1?.6:1,r:4.5})]}));
   });
 }
 

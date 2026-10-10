@@ -1,9 +1,10 @@
 const DATA=window.SATE_DATA;
-const UNIDAD=DATA.unidad||'upiita';window.IPNT_UNIDAD=UNIDAD;   // la UPIITA conserva el prefijo hu.; otras unidades, hu.<unidad>.
+const UNIDAD=DATA.unidad||window.SATE_UNIDAD;window.IPNT_UNIDAD=UNIDAD;
+const CAPACIDADES=window.SATE_CONFIG?.unidades?.[UNIDAD]||{};
 const PLAN_DOS_PERIODOS=window.SATE_CONFIG?.unidades?.[UNIDAD]?.planDosPeriodos===true;
 const planPasos=()=>PLAN_DOS_PERIODOS?[0,1]:[0];
 const DAYS=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'], DAYN=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
-/* Dispositivo: en planeación anual, tocar enfoca y un segundo toque selecciona; en un periodo basta un toque.
+/* Dispositivo: tocar selecciona; las materias del otro periodo abren sus acciones explícitas.
    En teléfono vertical la trayectoria se muestra en lista y el horario como agenda por día (el usuario puede cambiarlo). */
 const MQ_PHONE=matchMedia('(max-width: 720px)'), MQ_NOHOVER=matchMedia('(hover: none)');
 let PT=MQ_NOHOVER.matches?'touch':'mouse';
@@ -12,7 +13,7 @@ const tactil=()=>PT!=='mouse';
 const TURNOS={M:'Matutino',V:'Vespertino'};
 const TIPO={O:'Obligatoria',P:'Optativa',T:'Taller'};
 // Carga en créditos confirmada en SAES (Cita de reinscripción). Las demás carreras se agregan cuando se capturen.
-const CARGA=UNIDAD==='upiita'?{B:{min:27,media:40,max:80}}:{};
+const CARGA=CAPACIDADES.carga||{};
 const LETRAS='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const START=7*60, END=22*60, SLOT=30, SLOTPX=22, BLOCK=90;  // una clase dura 1:30
 const $=s=>document.querySelector(s);
@@ -22,6 +23,23 @@ const hm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2
 const toMin=t=>{const[h,m]=t.split(':').map(Number);return h*60+m};
 const pretty=t=>{const l=String(t).toLowerCase().replace(/\b(i{1,3}|iv|vi{0,3}|ix|x)\b/g,m=>m.toUpperCase());return l.charAt(0).toUpperCase()+l.slice(1)};
 const fmtCr=n=>Number.isInteger(+n)?String(+n):(+n).toFixed(2).replace(/0$/,'');
+function textoCreditos(k,valor,detalle=false){
+  const d=cur()[k]?.[4]||{}, cr=(d.cr_calculado?'≈ ':'')+fmtCr(valor??d.cr??cur()[k]?.[1]??0);
+  return detalle&&d.satca!=null?SATE.texto('sate.creditos.detalle',{cr,satca:fmtCr(d.satca)}):cr+' '+SATE.texto('sate.creditos.rotulo');
+}
+function ayudaCreditos(k){
+  return `<span data-ayuda-creditos="${cur()[k]?.[4]?.cr_calculado?'calculado':'escala'}"></span>`;
+}
+function montarAyudasCreditos(){
+  document.querySelectorAll('[data-ayuda-creditos]').forEach(n=>{
+    if(n.dataset.montada)return;
+    n.dataset.montada='1';
+    n.appendChild(SateUI.ayuda('sate.creditos.contexto',{
+      escala:SATE.texto('sate.creditos.escala')+(n.dataset.ayudaCreditos==='calculado'?'. '+SATE.texto('sate.creditos.calculado'):''),
+      explicacion:SATE.texto('sate.creditos.ayuda')
+    }));
+  });
+}
 
 /* ---------- perfil IPN-tools: respaldo y sincronización con la cuenta institucional (tools/cuenta.py) ---------- */
 var IPNT=window.IPNT=(()=>{
@@ -613,7 +631,7 @@ const tr=()=>{
     curso:base.curso.filter(k=>!ya.has(k)),cursados:base.cursados==null?null:base.cursados+1};
   PLAN_CACHE={base,t};return t;
 };
-// El mapa usa el estado del primer periodo; la opción anual conserva su selección independiente.
+// Cada vista conserva su selección; la segunda supone acreditadas las materias de la primera.
 function planElegidas(){return new Set(planPasos().flatMap(p=>conPlan(()=>tr().want,p)))}
 function planAsignado(k){return conPlan(()=>tr().want.includes(k),0)?0:PLAN_DOS_PERIODOS&&conPlan(()=>tr().want.includes(k),1)?1:null}
 /* "dd/mm/aaaa hh:mm:ss p. m." del SAES → ¿la cita (fin) ya pasó? */
@@ -660,7 +678,7 @@ function perMeta(){const p=perMetaBase();return p==null?null:p+PLAN_PASO}
 /* Desfase OFICIAL (regla del SAES): una reprobada se desfasa cuando pasan más de 2 periodos sin acreditarla.
    El "atraso" respecto al semestre propuesto solo aplica a planes por semestre (Energía); en los planes 2009
    (por niveles) el orden de la trayectoria es una recomendación y llevar otro orden no es desfase. */
-const SEMESTRAL=()=>MAP()?.modelo==='semestral'||(UNIDAD==='upiita'&&S.car==='E');
+const SEMESTRAL=()=>MAP()?.modelo==='semestral'||(CAPACIDADES.carrerasSemestrales||[]).includes(S.car);
 const DESFASE_SEM={has:()=>SEMESTRAL()};   // compatibilidad con los usos anteriores
 /* Modelo por semestres: no se pueden inscribir materias de más de un año (dos semestres) adelante del semestre de
    referencia, que es el más bajo con materias obligatorias pendientes (sin acreditar ni en curso). */
@@ -673,23 +691,40 @@ function semRef(){
 /* Calendario de Gestión Escolar: Ventanilla y modal de Situación comparten render y selección. */
 // Las fechas civiles se comparan como ISO para evitar cambios de día por zona horaria.
 SATE.calendario={
-  categorias:['academico','gestion','becas','servicios','tt','feriado'],
+  categorias:['inscripcion','ordinaria','extraordinaria','inscripcion_ets','ets','vacaciones','saberes','descanso','sindical','suspension','reanudacion','inicio','inicio_nms','fin','politecnico','induccion','induccion_nms','nivelacion','planeacion','posgrado','grado_posgrado','academico','gestion','becas','servicios','tt','feriado'],
   hoy(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')},
   cita(){
     if(typeof isPersonal!=='function'||!isPersonal())return null;
     const iso=s=>{const m=String(s||'').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);return m?m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0'):null}, desde=iso(ALUMNO.cita?.inicio);
     return desde?{desde,hasta:iso(ALUMNO.cita.fin)||desde,titulo:SATE.texto('sate.calendario.tu_cita'),categoria:'gestion',periodo:perName(perDeFecha(ALUMNO.cita.inicio)),fuente:SATE.texto('sate.calendario.fuente_saes'),nota:ALUMNO.cita.inicio,personal:true}:null;
   },
-  eventos(){const c=DATA.calendario, cita=this.cita();return c?[...(c.actividades||[]).map(a=>({...a,hasta:a.hasta||a.desde,categoria:'gestion',fuente:a.fuente||c.fuente,periodo:c.periodo})),...(c.eventos||[]),...(cita?[cita]:[])]:[]},
+  fusion(base,unidad){
+    const locales=[...(unidad?.actividades||[]),...(unidad?.eventos||[])].map(e=>({...e,hasta:e.hasta||e.desde,periodo:e.periodo||unidad.periodo,audiencia:e.audiencia||['alumnos'],fuente:e.fuente||unidad.fuente,origen:'unidad'}));
+    // Un calendario propio sustituye sus periodos completos; los avisos aislados conservan la base restante.
+    const clave=e=>[e.categoria,e.periodo,[...(e.audiencia||['alumnos'])].sort().join(','),['descanso','sindical','politecnico'].includes(e.categoria)?e.desde:''].join('|');
+    const reemplazos=new Set(locales.filter(e=>e.reemplaza).map(clave));
+    return [...(base?.eventos||[]).filter(e=>!unidad?.periodosPropios?.includes(e.periodo)&&!reemplazos.has(clave(e))).map(e=>({...e,fuente:base.fuente,url:base.url,origen:'ipn'})),...locales];
+  },
+  filtrarAudiencia(eventos,ampliar=false,alumno=null){
+    const nuevo=!alumno||!Number(alumno.avance?.cursados)||Number(alumno.avance.cursados)<=1;
+    return eventos.filter(e=>(e.audiencia||['alumnos']).some(a=>a==='alumnos'||a==='nuevo_ingreso'&&nuevo||ampliar&&['docentes','posgrado','nms'].includes(a)));
+  },
+  eventos(ampliar=false){
+    const base=typeof SATE_CONFIG==='undefined'?null:SATE_CONFIG.calendarioBase;
+    const c=(typeof DATA==='undefined'?null:DATA.calendario)||(typeof SATE_CONFIG==='undefined'?null:SATE_CONFIG.calendariosUnidad?.[SATE_UNIDAD]);
+    const alumno=typeof ALUMNO!=='undefined'?ALUMNO:SATE.alumno?.(), cita=this.cita();
+    return this.filtrarAudiencia([...this.fusion(base,c),...(cita?[cita]:[])],ampliar,alumno);
+  },
   proximos(n=5,categorias=this.categorias){const hoy=this.hoy();return this.eventos().filter(a=>a.hasta>=hoy&&categorias.includes(a.categoria)).sort((a,b)=>a.desde.localeCompare(b.desde)||a.hasta.localeCompare(b.hasta)).slice(0,Math.max(0,n))},
   recorte(pestana){
-    if(!SATE_CONFIG.unidades[SATE_UNIDAD].pestanas.includes('calendario')||!['horarios','mapa','trayectoria'].includes(pestana))return [];
-    const todos=this.proximos(Infinity,pestana==='trayectoria'?this.categorias:['gestion','academico']);
+    if(SATE_CONFIG.unidades[SATE_UNIDAD].generica||!SATE_CONFIG.unidades[SATE_UNIDAD].pestanas.includes('calendario')||!['horarios','mapa','trayectoria'].includes(pestana))return [];
+    const todos=this.proximos(Infinity,pestana==='trayectoria'?this.categorias:['gestion','academico','inscripcion','inicio','ets','inscripcion_ets']);
     const adeudos=pestana==='mapa'&&isPersonal()&&conSim(false,()=>tr().fail.length>0);
-    return todos.filter(e=>pestana==='trayectoria'||(pestana==='horarios'?(e.personal||/citas publicadas|inscripci[oó]n/i.test(e.titulo)&&!/ETS/i.test(e.titulo)):(/^Inicio del periodo/i.test(e.titulo)||adeudos&&/ETS/i.test(e.titulo)))).slice(0,2);
+    return todos.filter(e=>pestana==='trayectoria'||(pestana==='horarios'?(e.personal||/citas publicadas|inscripci[oó]n/i.test(e.titulo)&&!['ets','inscripcion_ets'].includes(e.categoria)&&!/ETS/i.test(e.titulo)):(/^Inicio del periodo/i.test(e.titulo)||adeudos&&(['ets','inscripcion_ets'].includes(e.categoria)||/ETS/i.test(e.titulo))))).slice(0,2);
   },
   abrirProceso(evento){this.procesoPendiente=evento;SATE.ir('calendario')},
   pintarRecorte(pestana){
+    if(SATE_CONFIG.unidades[SATE_UNIDAD].generica)return;
     // Mi trayectoria reutiliza el próximo proceso dentro de su resumen personal.
     const panel=document.getElementById(pestana==='horarios'?'v-hor':pestana==='mapa'?'v-tray':'sate-trayectoria');
     if(!panel||!['horarios','mapa','trayectoria'].includes(pestana))return;
@@ -810,7 +845,8 @@ function actualizarOferta(){for(const p in DATA.periodos){const m=new Map();DATA
 actualizarOferta();
 const byKey=k=>KEYMAP[S.per].get(k);
 const selected=()=>plan().sel.map(byKey).filter(Boolean);
-const ownAsClasses=()=>plan().own.map((o,i)=>({own:true,i,n:o.n,h:o.d.map(d=>[d,o.a,o.b])}));
+const ownAsClasses=()=>plan().own.map((o,i)=>o.oculto?null:{own:true,i,n:o.n,tipo:o.tipo,h:o.d.map(d=>[d,o.a,o.b])}).filter(Boolean);
+const ownVis=()=>plan().own.filter(o=>!o.oculto);
 const slots=x=>x.own?x.h:x[6];
 const offeredClaves=()=>new Set(classes().filter(c=>c[0]===S.car).map(c=>c[8]));
 
@@ -825,7 +861,7 @@ function pattern(c){
    TRAYECTORIA
    ========================================================= */
 const MAP=()=>DATA.mapas[S.car];
-const cur=()=>MAP().cur;                       // clave -> [nombre, créditos, nivel, tipo]
+const cur=()=>MAP().cur;                       // clave -> [nombre, créditos TEPIC, nivel, tipo, {cr, satca?, cr_calculado?}]
 function prereqs(){                             // clave -> [claves requisito directas]: tutorías + flechas de la trayectoria
   if(MAP().req) return MAP().req;
   const L=MAP().layout, out={};
@@ -872,13 +908,13 @@ function statusOf(k){
   const sn=semNow(), sp=semOf()[k];
   let st='rest';
   // Con datos del SAES manda su lista de desfasadas (ya aplicada arriba con desfS): una materia de un semestre anterior
-  // que no se ha cursado va atrasada respecto al plan, no desfasada (el SAES de ESCOM no la marca así).
+  // que no se ha cursado va atrasada respecto al plan, no desfasada (el SAES no siempre la marca así).
   const saesDesfase=isPersonal()&&!!ALUMNO&&('desfasadas_saes' in ALUMNO||!!ALUMNO.desfase_saes);
   if(sn&&sp){if(sp<sn)st=DESFASE_SEM.has(S.car)&&!saesDesfase?'late':'prev';else if(sp===sn)st='now'}
   const r=semRef(), far=r!=null&&sp!=null&&sp>r+2;   // fuera de la ventana de un año
   return st+(lock?' lock':'')+(far?' far':'');
 }
-// Las electivas se acreditan por horas de actividades (DIE-03, Electivas UPIITA), nunca con un grupo del horario:
+// Las electivas se acreditan por horas de actividades (DIE-03, Electivas de la unidad), nunca con un grupo del horario:
 // no se eligen para cursar, no suman créditos a la selección ni se sugieren.
 function isElec(k){return /^ELECTIVA/i.test(cur()[k]?.[0]||'')}
 /* Perfil ficticio para conocer la herramienta sin datos del SAES: a partir del mapa de la carrera elegida, ~45 % de las
@@ -938,7 +974,7 @@ let ZOOM=null, MAPSC=1;   // MAPSC: escala con la que se dibujó el mapa por úl
 function rowBands(L){return SateUI.bandasMapa(L)}
 /* Espacios de optativas del mapa: se llenan con las optativas acreditadas, en curso o elegidas (primero las del
    mismo semestre; si no coincide, en el siguiente espacio libre). Un espacio unido por flecha a otro ya ocupado
-   toma la continuación de esa línea (ESCOM ISC: optativa de 6.º -> 7.º) o la sugiere. */
+   toma la continuación de esa línea (optativa de 6.º -> 7.º) o la sugiere. */
 function slotFill(L,want){
   const out=new Map(), c=cur(), t=isPersonal()?tr():{done:[],curso:[]};
   const rank=k=>t.done.includes(k)?0:t.curso.includes(k)?1:want.has(k)?2:9;
@@ -946,7 +982,7 @@ function slotFill(L,want){
   const slots=L.boxes.map((b,i)=>[i,b]).filter(([,b])=>!b[4]&&/^optativa/i.test(b[5])).sort((a,b)=>a[1][6]-b[1][6]||a[1][0]-b[1][0]);
   const used=new Set(), dep=dependents(), next=i=>L.edges.filter(e=>e[0]===i).map(e=>e[1]);
   const put=(i,k)=>{out.set(i,{k});used.add(k)};
-  // el espacio con nivel conocido (b[7], UPIITA) solo lo cubre una optativa de ese nivel; N espacios del nivel, N optativas
+  // el espacio con nivel conocido (b[7]) solo lo cubre una optativa de ese nivel; N espacios del nivel, N optativas
   for(const [i,b] of slots){if(out.has(i))continue;const k=cands.find(k=>!used.has(k)&&c[k][2]===(b[7]||b[6]));if(k)put(i,k)}
   for(const [i,b] of slots){if(out.has(i)||b[7])continue;const k=cands.find(k=>!used.has(k));if(k)put(i,k)}
   // continuación de la línea en el espacio siguiente (flecha entre espacios)
@@ -965,7 +1001,7 @@ function minimapaCurricular(L=MAP().layout,FILL,op={}){
 // modo personal: materias que puedes cursar el siguiente periodo (verde) y las sugeridas para tu carga (contorno)
 let MARK={avail:new Set(),sug:new Set()};
 let SHOWSUG=store.get('verSug',false);   // apagadas por defecto: el alumno las activa a propósito
-// planes por niveles (UPIBI 2006): las filas del mapa son niveles, no semestres
+// planes por niveles (según el modelo del plan): las filas del mapa son niveles, no semestres
 const porNiveles=()=>MAP().modelo==='niveles';
 // vista del mapa con datos del SAES: 'todo' (mapa completo), 'pend' (pendientes, por defecto) o 'sigue' (recomendaciones)
 const mapVista=()=>store.get('mapVista',store.get('mapFull',false)?'todo':'pend');
@@ -979,7 +1015,7 @@ function rutaRedonda(P,r=7){
     d+=` L${+p[0].toFixed(1)} ${+p[1].toFixed(1)} Q${b[0]} ${b[1]} ${+q[0].toFixed(1)} ${+q[1].toFixed(1)}`}
   const z=P.at(-1);return d+` L${z[0]} ${z[1]}`;
 }
-/* Cupo de optativas por nivel (planes cuyo mapa indica el nivel de cada espacio, como la UPIITA): {nivel:{total,hechas,libre}}.
+/* Cupo de optativas por nivel (planes cuyo mapa indica el nivel de cada espacio): {nivel:{total,hechas,libre}}.
    «hechas» son las acreditadas o en curso; «libre» = espacios del nivel aún sin cubrir. null si el plan no lo indica. */
 function optCupo(){
   const L=MAP().layout;if(!L)return null;
@@ -1014,23 +1050,24 @@ function avisoOptativa(k,otras){
     `El plan solo deja ${t.libre===1?'un espacio libre':t.libre+' espacios libres'} de optativa de nivel ${v}: con ${pretty(cur()[k][0])} ya elegiste más de las que cubren ese nivel; las demás no cubren espacio.`);
 }
 function boxHtml(...args){
-  return SateUI.cajaMateria({cur,statusOf,planAsignado,isElec,MARK,S,fmtCr,porNiveles,esc,SATE,PLAN_DOS_PERIODOS,planEtiqueta},...args);
+  return SateUI.cajaMateria({cur,statusOf,planAsignado,isElec,MARK,S,fmtCr,textoCreditos,porNiveles,esc,SATE,PLAN_DOS_PERIODOS,planEtiqueta},...args);
 }
 
 function inspParts(k){
   const c=cur(), [n,cr,niv]=c[k], pre=(prereqs()[k]||[]).filter(x=>c[x]), post=(dependents()[k]||[]).filter(x=>c[x]);
   const all=ancestors([k]), sem=semOf()[k], off=offeredClaves().has(k);
   const nm=x=>esc(pretty(c[x][0]));
-  const meta=`${fmtCr(cr)} créditos · nivel ${niv}${sem&&!porNiveles()?' · semestre propuesto '+sem:''}`;
+  const meta=`${esc(textoCreditos(k,cr,true))} ${ayudaCreditos(k)} · nivel ${niv}${sem&&!porNiveles()?' · semestre propuesto '+sem:''}`;
   const l1=`<b>${esc(n)}</b> <span class="mono">${k}</span><span class="insp-meta">${meta}</span>`;
   // con datos del SAES: su estado y qué le falta (en lugar de marcarlo en el mapa)
   let st='';
-  if(isPersonal()){const s0=statusOf(k),dn=new Set([...tr().done,...tr().curso]);
+  if(PLAN_DOS_PERIODOS&&PLAN_PASO===1&&planAsignado(k)===0)st=`Planeada en ${esc(planEtiqueta(0))}. Se supone acreditada para planear ${esc(planEtiqueta(1))}.`;
+  else if(isPersonal()){const s0=statusOf(k),dn=new Set([...tr().done,...tr().curso]);
     const miss=pre.filter(x=>!dn.has(x)), lv=levelOpen(niv);
     st=s0==='done'?'Ya la acreditaste.':s0==='curso'?'La estás cursando.':s0.includes('fail')?'<b>Por recursar.</b>':
       s0.includes('lock')?`<b>Aún no puedes cursarla:</b> te falta ${miss.map(nm).join(', ')}.`:
       `<b>Puedes cursarla.</b>${lv.ok?'':` Seriación recomendada por nivel: ${lv.miss.join(', ')}.`}`}
-  if(isElec(k))return {l1,l2:(st?`<p class="insp-st">${st}</p>`:'')+`<p>${UNIDAD==='upiita'?'Se acredita con actividades validadas por horas (cursos, idiomas, congresos, prácticas, entre otras), no con un grupo del horario. Prepara tu solicitud en <a href="#/upiita/tramites/electivas">Ventanilla de Electivas</a>.':'Consulta con Gestión Escolar de tu unidad los requisitos y actividades para acreditar esta electiva.'}</p>`};
+  if(isElec(k))return {l1,l2:(st?`<p class="insp-st">${st}</p>`:'')+`<p>${SATE.texto(CAPACIDADES.electivas?.texto||'sate.electivas.acreditacion_consulta',{enlace:'#/'+UNIDAD+'/tramites/'+CAPACIDADES.electivas?.tramite})}</p>`};
   const l2=(st?`<p class="insp-st">${st}</p>`:'')+
     `<p><span class="tag-rel pre">Antes</span><b>Requisitos:</b> ${pre.length?pre.map(nm).join(', '):'ninguno registrado'}${all.size>pre.length?` <span class="muted">(${all.size} materias en toda su cadena)</span>`:''}</p>`+
     `<p><span class="tag-rel post">Después</span><b>Es requisito de:</b> ${post.length?post.map(nm).join(', '):'ninguna materia'}</p>`+
@@ -1049,13 +1086,23 @@ function renderEqvHorario(A){
   box.innerHTML=`<h3>Equivalencias en tu horario ${info('Materias inscritas de otra carrera o plan (por ejemplo, por movilidad/flexibilidad académica o cambio de carrera). En el mapa y en la simulación cuentan como su materia equivalente de tu plan; en tus créditos oficiales, cuando el SAES las reconozca. Correspondencia según la tabla de Equivalencias del SAES.')}</h3><div class="eqv-fichas">`+
     ext.map(h=>{const m=eq(h[1]);return `<span class="eqv-f${m.length?'':' sin'}" title="${esc(pretty(h[2]||h[1]))} ${esc(h[1])}${h[0]?' · grupo '+esc(h[0]):''}"><b>${esc(pretty(h[2]||h[1]))}</b> <span class="mono">${esc(h[1])}</span><i aria-hidden="true">→</i>${m.length?m.map(k=>`<b>${esc(pretty(c[k][0]))}</b> <span class="mono">${esc(k)}</span>`).join(' o '):'<em>sin equivalencia registrada</em>'}</span>`}).join('')+'</div>';
 }
+function planAcciones(k){
+  const paso=planAsignado(k), base=conPlan(()=>tr(),0);
+  if(isElec(k)||base.done.includes(k)||base.curso.includes(k))return '';
+  const ob=paso!=null&&conPlan(()=>tr().oblig.includes(k),paso);
+  const boton=(clave,texto,atributos='')=>`<button class="btn primary" type="button" data-${clave}="${k}"${atributos}>${esc(texto)}</button>`;
+  if(paso==null)return boton('fwant',`Agregar a ${planEtiqueta(S.planPaso)}`);
+  return (ob?'':boton('unwant',`Quitar de ${planEtiqueta(paso)}`,` data-plan-quitar="${paso}"`))+
+    (ob&&paso===0?'':boton('fmover',`Mover a ${planEtiqueta(1-paso)}`));
+}
 function renderInsp(){
   const k=S.mapHover, c=cur(), el=$('#insp');
   el.classList.toggle('act',!!(S.mapFocus&&k&&c[k]));
   el.hidden=!k||!c[k];
   if(el.hidden){el.innerHTML='';return}
   const {l1,l2}=inspParts(k), w=planAsignado(k)===S.planPaso, ob=tr().oblig.includes(k), done=statusOf(k)==='done';
-  el.innerHTML=`<div class="insp-t">${l1}</div><div class="insp-b">${l2}</div>`+(S.mapFocus?`<div class="insp-act">${ob||done||isElec(k)?'':`<button class="btn primary" type="button" data-fwant="${k}">${w?'Quitar de mi plan':'Quiero cursarla'}</button>`}<button class="btn" type="button" data-fclose="1">Cerrar</button></div>`:'');
+  el.innerHTML=`<div class="insp-t">${l1}</div><div class="insp-b">${l2}</div>`+(S.mapFocus?`<div class="insp-act">${PLAN_DOS_PERIODOS?planAcciones(k):ob||done||isElec(k)?'':`<button class="btn primary" type="button" data-fwant="${k}">${w?'Quitar de mi plan':'Quiero cursarla'}</button>`}<button class="btn" type="button" data-fclose="1">Cerrar</button></div>`:'');
+  montarAyudasCreditos();
 }
 function leyendaMapa(completa=false){
   const tx=k=>esc(SATE.texto('sate.planeacion.'+k));
@@ -1067,7 +1114,7 @@ function leyendaMapa(completa=false){
     `<span><i class="l-req"></i>${tx('estado_requisito')}</span><span><i class="l-slot"></i>${tx('estado_libre')}</span><span><i class="l-late"></i>${tx('estado_desfase')}</span>`;
 }
 function renderLegend(){$('#legend').innerHTML=leyendaMapa()}
-function renderSide(){return conSim(usaSim('sugg'),()=>conPlan(renderSide0))}
+function renderSide(){const r=conSim(usaSim('sugg'),()=>conPlan(renderSide0));montarAyudasCreditos();return r}
 const AREA_COLORES=['#8a98c7','#a76987','#577d63','#4d6f8d','#c9a36a','#721e45'];
 function requisitosElegidos(want){
   const c=cur(), done=new Set(tr().done), pedidos=new Map(), acreditados=new Set(), materias=new Set();
@@ -1111,30 +1158,32 @@ function renderSide0(){
   $('#b-sugg').textContent=tx('agregar');$('#b-go').hidden=false;
   const periodoConocido=planInicio()!=null;
   etiqueta('#b-go',tx(periodoConocido?'horarios':'horarios_neutro',{periodo:planEtiqueta(0)}),tx('horarios_corto'));etiqueta('#b-none',tx(periodoConocido?'quitar_activo':'quitar_corto',{periodo:planEtiqueta(PLAN_PASO)}),tx('quitar_corto'));
-  $('#plan-activo').hidden=$('#plan-leyenda').hidden=!PLAN_DOS_PERIODOS;
+  if(PLAN_DOS_PERIODOS)etiqueta('#b-go',tx('horarios',{periodo:planEtiqueta(0)}),`Horarios de ${planEtiqueta(0)}`);
+  $('#plan-activo').hidden=$('#plan-leyenda').hidden=true;
+  $('#plan-periodos').hidden=!PLAN_DOS_PERIODOS;$('#plan-vista-etiqueta').hidden=!PLAN_DOS_PERIODOS;
   $('#chosen').classList.toggle('un-periodo',!PLAN_DOS_PERIODOS);
   for(const id of ['#plan-simular','#b-go','#b-none'])$(id).disabled=!want.length;
   if(PLAN_DOS_PERIODOS)$('#b-go').disabled=!conPlan(()=>tr().want.length,0);
   $('#plan-deshacer').textContent=tx('deshacer');
   if(PLAN_UNDO&&(PLAN_UNDO.car!==S.car||PLAN_UNDO.clave!==planClave(0)))PLAN_UNDO=null;
   $('#plan-deshacer').hidden=!PLAN_UNDO;
-  $('#plan-activo').textContent=tx('activo',{periodo:planEtiqueta(PLAN_PASO)});
-  $('#plan-leyenda').innerHTML=[0,1].map(p=>`<span class="plan-${p+1}">${esc(tx('asignada',{marca:p+1,periodo:planEtiqueta(p)}))}</span>`).join('');
+  $('#plan-activo').textContent='';$('#plan-leyenda').innerHTML='';
   const nuevos=want.filter(k=>!tr().fail.includes(k)).reduce((s,k)=>s+c[k][1],0), ci=cargaInfo(nuevos);
   $('#plan-resumen').innerHTML=planPasos().map(paso=>conPlan(()=>{
     const t=tr(), elegidas=t.want.filter(k=>c[k]), cr=elegidas.reduce((s,k)=>s+c[k][1],0);
     const carga=cargaInfo(elegidas.filter(k=>!t.fail.includes(k)).reduce((s,k)=>s+c[k][1],0));
     const v={periodo:planEtiqueta(paso),n:elegidas.length,creditos:fmtCr(cr),tope:carga?fmtCr(carga.tope):''};
+    if(PLAN_DOS_PERIODOS)return `<span class="plan-${paso+1}${paso===S.planPaso?' plan-vista':''}"${paso===S.planPaso?' aria-current="true"':''}>${esc(planEtiqueta(paso))}: ${elegidas.length} ${elegidas.length===1?'materia':'materias'} · ${fmtCr(cr)} cr</span>`;
     return `<span class="plan-${paso+1} sate-texto-largo">${esc(elegidas.length?tx(carga?'bandeja':'bandeja_sin_tope',v):tx('bandeja_vacia',v))}</span>`+
       (paso===PLAN_PASO?`<span class="sate-texto-corto">${esc(elegidas.length?tx(carga?'bandeja_corta':'bandeja_corta_sin_tope',v):tx('bandeja_corta_vacia'))}</span>`:'');
   },paso)).join('');
-  $('#plan-carga').textContent=ci?tx('carga',{creditos:fmtCr(ci.total),tope:fmtCr(ci.tope),retenidos:fmtCr(ci.ret)}):tx('sin_carga',{creditos:fmtCr(credWant)});
+  $('#plan-carga').innerHTML=ayudaCreditos()+esc(ci?tx('carga',{creditos:fmtCr(ci.total),tope:fmtCr(ci.tope),retenidos:fmtCr(ci.ret)}):tx('sin_carga',{creditos:fmtCr(credWant)}));
   $('#chosen-help').textContent=want.length?tx('cuenta',{n:want.length,creditos:fmtCr(credWant)}):tx('vacio');
   $('#chosen').innerHTML=planPasos().map(paso=>conPlan(()=>{
     const t=tr(), elegidas=t.want.filter(k=>c[k]), cr=elegidas.reduce((s,k)=>s+c[k][1],0);
     const nuevos=elegidas.filter(k=>!t.fail.includes(k)).reduce((s,k)=>s+c[k][1],0), carga=cargaInfo(nuevos);
     const cuenta=carga?tx('resumen',{n:elegidas.length,creditos:fmtCr(cr),tope:fmtCr(carga.tope)}):tx('cuenta',{n:elegidas.length,creditos:fmtCr(cr)});
-    return `<section class="plan-grupo plan-${paso+1}" aria-labelledby="plan-grupo-${paso}"><h4 id="plan-grupo-${paso}">${esc(tx(PLAN_DOS_PERIODOS?'asignada':'periodo_elegido',{marca:paso+1,periodo:planEtiqueta(paso)}))}</h4><p>${esc(cuenta)}</p><p>${esc(carga?tx('carga',{creditos:fmtCr(carga.total),tope:fmtCr(carga.tope),retenidos:fmtCr(carga.ret)}):tx('sin_carga',{creditos:fmtCr(cr)}))}</p><div class="wchips">`+
+    return `<section class="plan-grupo plan-${paso+1}" aria-labelledby="plan-grupo-${paso}"><h4 id="plan-grupo-${paso}">${esc(tx('periodo_elegido',{periodo:planEtiqueta(paso)}))}</h4><p>${esc(cuenta)}</p><p>${esc(carga?tx('carga',{creditos:fmtCr(carga.total),tope:fmtCr(carga.tope),retenidos:fmtCr(carga.ret)}):tx('sin_carga',{creditos:fmtCr(cr)}))}</p><div class="wchips">`+
       elegidas.sort((a,b)=>(semOf()[a]||99)-(semOf()[b]||99)).map(k=>`<span class="wchip"><span class="grp">${k}</span>${esc(pretty(c[k][0]))}${off.has(k)?'':' <small>'+esc(tx('sin_grupos'))+'</small>'}${t.oblig.includes(k)?'<span class="tag bad">'+esc(tx('obligatoria'))+'</span>':`<button class="x" data-unwant="${k}" data-plan-quitar="${paso}" aria-label="${esc(tx('quitar',{materia:c[k][0],periodo:planEtiqueta(paso)}))}">×</button>`}</span>`).join('')+
       (!elegidas.length?`<p>${esc(tx('vacio'))}</p>`:'')+`</div></section>`;
   },paso)).join('');
@@ -1142,7 +1191,7 @@ function renderSide0(){
   $('#h-sugg').innerHTML=esc(tx('sugeridas',{periodo:planEtiqueta(PLAN_PASO)}))+' '+simTag('sugg');
   const propuestas=suggestions();
   const yaElegidas=new Set(tr().want);   // las sugeridas que ya están en el plan del periodo activo llevan ✓
-  $('#sugg').innerHTML=propuestas.list.map(k=>`<label${yaElegidas.has(k)?' class="ya"':''}><span class="grp">${k}</span><span>${esc(pretty(c[k][0]))}${yaElegidas.has(k)?' <span class="ya-marca" aria-label="ya elegida">✓</span>':''}</span><span class="cr">${fmtCr(c[k][1])}</span></label>`).join('')+`<small>${esc(tx('meta',{creditos:fmtCr(propuestas.cr),meta:fmtCr(propuestas.target),retenidos:fmtCr(propuestas.ret)}))}</small>`;
+  $('#sugg').innerHTML=propuestas.list.map(k=>`<label${yaElegidas.has(k)?' class="ya"':''}><span class="grp">${k}</span><span>${esc(pretty(c[k][0]))}${yaElegidas.has(k)?' <span class="ya-marca" aria-label="ya elegida">✓</span>':''}</span><span class="cr">${esc(textoCreditos(k,c[k][1]))} ${ayudaCreditos(k)}</span></label>`).join('')+`<small>${esc(tx('meta',{creditos:fmtCr(propuestas.cr),meta:fmtCr(propuestas.target),retenidos:fmtCr(propuestas.ret)}))}</small>`;
   document.querySelectorAll('[data-personal]').forEach(e=>e.hidden=!isPersonal());
   if(isPersonal()){
     const situacion=situacionDatos();
@@ -1173,7 +1222,7 @@ function renderLineas(){
     const byNiv={};g.forEach(x=>(byNiv[x.niv]=byNiv[x.niv]||[]).push(x));
     const rows=Object.keys(byNiv).sort((a,b)=>a-b).map(n=>`<div class="ol-row"><span class="ol-niv">Nivel ${n}</span><div class="ol-boxes">${byNiv[n].map(x=>{
       const k=x.keys.find(k=>off.has(k))||x.keys[0];
-      return `<button class="obox${x.want?' want':''}${x.done?' done':''}${x.off?'':' offno'}" data-obox="${k}" aria-pressed="${x.want}" title="${esc(x.n)} · ${fmtCr(x.cr)} créditos${x.off?'':' · sin grupos este periodo'}">${esc(x.n.replace(/\s*\(([^()]*)\)$/,(m,g)=>norm(g)===norm(l.linea)?'':m).toLowerCase())}</button>`}).join('')}</div></div>`).join('');
+      return `<button class="obox${x.want?' want':''}${x.done?' done':''}${x.off?'':' offno'}" data-obox="${k}" aria-pressed="${x.want}" title="${esc(x.n)} · ${esc(textoCreditos(k,x.cr,true))}${x.off?'':' · sin grupos este periodo'}">${esc(x.n.replace(/\s*\(([^()]*)\)$/,(m,g)=>norm(g)===norm(l.linea)?'':m).toLowerCase())}</button>`}).join('')}</div></div>`).join('');
     return `<article class="ol-card" style="--area:${color}">
       <header><span class="ol-area">${esc(l.area)}</span><h4>${esc(l.linea!==l.area?l.linea:l.area)}</h4>
         <span class="ol-stat">${nOff} de ${g.length} con grupos${nWant?` · <b>${nWant} elegida${nWant>1?'s':''}</b>`:''}${best>0&&score[i]===best?' · <span class="tag good">línea con mayor avance</span>':''}</span></header>
@@ -1248,9 +1297,9 @@ function promOficialSim(){
   return {antes:P,despues:(P*W+extra)/(W+k),exacto:false,reprobadasEstimadas:nf};
 }
 const creditoValido=v=>v==null||String(v).trim()===''||!Number.isFinite(+v)||+v<0?null:+v;
-// En UPIBI la duración capturada no concuerda con las cargas: usar una referencia explícita, no un plazo reglamentario.
+// Con cargaCalculada la duración capturada no concuerda con las cargas: usar una referencia explícita, no un plazo reglamentario.
 function plazoReferencia(A){
-  const c=A.carga||{}, calculado=UNIDAD==='upibi'&&c.total>0&&c.min>0;
+  const c=A.carga||{}, calculado=CAPACIDADES.cargaCalculada===true&&c.total>0&&c.min>0;
   return {dur:calculado?null:c.duracion,max:calculado?Math.ceil(c.total/c.min):c.duracion_max,calculado};
 }
 function proyeccionCreditos(D){
@@ -1404,9 +1453,9 @@ function analisis(){
 function renderTray(){
   renderSimGlobal();
   if(SATE.actual?.pestana==='trayectoria'){renderStats();return}
-  if(SATE.modulos.mapa){renderMap();conSim(usaSim('mapa'),()=>conPlan(renderList,0))}renderSide();
+  if(SATE.modulos.mapa){renderMap();conSim(usaSim('mapa'),()=>conPlan(renderList))}renderSide();
 }
-function renderHor(){if(isPersonal())renderEqvHorario(ALUMNO);else $('#est-eqv').hidden=true;renderHFilters();renderOffer();renderPlans();renderCal();renderOwnForm();renderGen();renderEquiv()}
+function renderHor(){if(isPersonal())renderEqvHorario(ALUMNO);else $('#est-eqv').hidden=true;renderHFilters();renderOffer();renderPlans();renderCal();renderOwnForm();renderGen();renderEquiv();montarAyudasCreditos()}
 /* Equivalencias con otras carreras de la misma unidad (tabla «Equivalencia de Materias» del SAES): solo consulta.
    Cada unidad decide cómo aplicarlas; no cambian el avance, la seriación ni el generador de horarios. */
 function renderEquiv(){
@@ -1442,7 +1491,7 @@ function renderEquiv(){
 function render(){return SATE.repintar()}
 // perfil del SAES de otra carrera: se avisa y se ofrece volver; nada del perfil se aplica aquí
 function renderAviso(){SAES.mismatch(S.car,k=>DATA.carreras[k],c=>{if(!DATA.carreras[c])return;S.car=c;store.set('car',c);S.chips=[];S.gen=null;ZOOM=null;render()},carreraPerfil)}
-function refresh(){save();renderOffer();renderPlans();renderCal()}
+function refresh(){save();renderOffer();renderPlans();renderCal();if(S.gen&&typeof generate==='function'){S.gen=generate();renderGen()}}
 function addClass(c){const pl=plan();pl.sel=pl.sel.filter(x=>byKey(x)?.[4]!==c[4]);pl.sel.push(keyOf(c))}
 function toggle(k){const pl=plan(),i=pl.sel.indexOf(k);if(i>=0)pl.sel.splice(i,1);else{const c=byKey(k);addClass(c);
     avisoOptativa(c[8],pl.sel.map(x=>byKey(x)?.[8]).filter(Boolean));
@@ -1469,14 +1518,18 @@ $('#plan-deshacer').addEventListener('click',()=>{
   renderTray();
 });
 function toggleBox(k){return conSim(usaSim('sugg'),()=>conPlan(()=>toggleBox0(k)))}
-function toggleBox0(k){
+function toggleBox0(k,mover=false){
   if(isElec(k)){S.mapHover=k;S.mapFocus=true;renderMap();if(mview()==='lista'){S.lfocus=k;renderList()}return}   // se explica en el inspector
   const paso=PLAN_PASO, base=conPlan(()=>tr(),0), otro=planAsignado(k);
+  if(PLAN_DOS_PERIODOS&&otro!=null&&otro!==paso&&!mover){S.mapHover=k;S.mapFocus=true;S.lfocus=k;renderMap();conPlan(renderList);return}
+  if(mover&&(!PLAN_DOS_PERIODOS||otro==null||otro===paso))return;
+  if(PLAN_DOS_PERIODOS){S.mapHover=k;S.mapFocus=true}
   // Una obligatoria no puede quitarse ni posponerse a un periodo posterior; sí adelantarse (N+1 → N), que evita el desfase.
   if(otro!=null&&conPlan(()=>tr().oblig.includes(k),otro)&&!(otro===1&&paso===0)){$('#insp').innerHTML=`<span>${esc(cur()[k][0])}: ${esc(SATE.texto('sate.planeacion.obligatoria'))}</span>`;return}
   // Consultar el estado real de N permite mover una materia que N+1 proyecta acreditada.
   if(otro==null&&(base.done.includes(k)||base.curso.includes(k)))return;
   planRecordar(k,otro!==paso);
+  if(mover){$('#plan-anuncio').textContent=`${pretty(cur()[k][0])} movida de ${planEtiqueta(otro)} a ${planEtiqueta(paso)}.`;console.debug('SATE: mover materia',{unidad:UNIDAD,carrera:S.car,clave:k,origen:planEtiqueta(otro),destino:planEtiqueta(paso),antes:{primero:[...base.want],segundo:conPlan(()=>[...tr().want],1)}})}
   if(!PLAN_DOS_PERIODOS){
     base.want=base.want.filter(x=>x!==k);if(otro!==paso)base.want.push(k);
     if(otro!==paso)avisoOptativa(k,base.want);
@@ -1498,18 +1551,17 @@ document.addEventListener('click',e=>{
   if((S.mapFocus||S.reqHover)&&!e.target.closest('#map,#insp,#lineas,#chosen-req')){S.mapFocus=false;S.mapHover=null;S.reqHover=null;renderMap()}
   const requisito=e.target.closest('[data-req]');
   if(requisito){S.mapHover=requisito.dataset.req;S.reqHover=requisito.dataset.piden.split(' ');S.mapFocus=true;renderMap();return}
-  // táctil: el primer toque enfoca la materia (cadena de requisitos + inspector); el segundo la selecciona
-  const focus=k=>{if(PLAN_DOS_PERIODOS&&tactil()&&S.mapHover!==k){S.mapHover=k;S.mapFocus=true;renderMap();return true}return false};
-  const bx=e.target.closest('[data-box]');if(bx){S.reqHover=null;if(!focus(bx.dataset.box))toggleBox(bx.dataset.box);return}
-  const ob=e.target.closest('[data-obox]');if(ob){S.reqHover=null;if(!focus(ob.dataset.obox))toggleBox(ob.dataset.obox);return}
+  const bx=e.target.closest('[data-box]');if(bx){S.reqHover=null;toggleBox(bx.dataset.box);return}
+  const ob=e.target.closest('[data-obox]');if(ob){S.reqHover=null;toggleBox(ob.dataset.obox);return}
   // táctil: tocar un grupo de la oferta muestra (o retira) su vista previa en el horario
   const op=e.target.closest('#offer .opt');if(op&&tactil()&&!e.target.closest('button,input,a,label,select,textarea,summary')){S.hover=S.hover===op.dataset.k?null:op.dataset.k;renderCal();return}
   const t=e.target.closest('button');if(!t)return;
   const d=t.dataset;
   if(d.expand!==undefined){const k=+d.expand;S.expand.has(k)?S.expand.delete(k):S.expand.add(k);renderOffer();return}
-  if(d.lfocus){S.lfocus=S.lfocus===d.lfocus?null:d.lfocus;conSim(usaSim('mapa'),()=>conPlan(renderList,0));return}
+  if(d.lfocus){S.lfocus=S.lfocus===d.lfocus?null:d.lfocus;conSim(usaSim('mapa'),()=>conPlan(renderList));return}
   if(d.lwant){toggleBox(d.lwant);return}
   if(d.fwant){toggleBox(d.fwant);return}
+  if(d.fmover){const otro=planAsignado(d.fmover);if(otro!=null)conSim(usaSim('sugg'),()=>conPlan(()=>toggleBox0(d.fmover,true),1-otro));return}
   if(d.fclose){S.mapFocus=false;S.mapHover=null;S.reqHover=null;renderMap();return}
   if(d.mview){S.mview=d.mview;store.set('mview',S.mview);renderTray();return}
   if(d.cview){S.cview=d.cview;store.set('cview',S.cview);renderCal();return}
@@ -1532,12 +1584,12 @@ document.addEventListener('click',e=>{
   else if(d.delplan){const id=d.delplan;if(t.dataset.confirm!=='1'){t.dataset.confirm='1';t.textContent='¿Eliminar?';t.classList.add('warn');setTimeout(()=>{if(t.isConnected){t.dataset.confirm='';t.textContent='×';t.classList.remove('warn')}},3000);return}
     delete ws().plans[id];ws().plan=planIds()[0];S.hover=null;refresh()}
   else if('dup' in d){const id=nextPlan();ws().plans[id]=JSON.parse(JSON.stringify(plan()));ws().plan=id;refresh()}
-  else if(d.unown){plan().own.splice(+d.unown,1);refresh()}
+  else if(d.unown){eliminarPropia(+d.unown)}
   else if(d.oday){const i=+d.oday;S.ownDays=S.ownDays.includes(i)?S.ownDays.filter(x=>x!==i):[...S.ownDays,i];renderOwnForm()}
   else if(d.gt){S.gt=d.gt;renderHFilters()}
   else if(d.ungp){S.gpref.splice(+d.ungp,1);renderGPrefs()}
   else if(d.unga){S.gavoid.splice(+d.unga,1);store.set('excl',S.gavoid);renderActive();renderOffer()}
-  else if(d.useg!==undefined){const r=S.gen.top[+d.useg], to=d.to==='+'?nextPlan():d.to;ws().plans[to]=ws().plans[to]||{sel:[],own:[]};ws().plans[to].sel=r.cs.map(keyOf);ws().plan=to;refresh();renderGen()}
+  else if(d.useg!==undefined){const r=S.gen.top[+d.useg], to=d.to==='+'?nextPlan():d.to;ws().plans[to]=ws().plans[to]||{sel:[],own:JSON.parse(JSON.stringify(plan().own))};ws().plans[to].sel=r.cs.map(keyOf);ws().plan=to;refresh();renderGen()}
   else if(d.peekg!==undefined){const r=S.gen.top[+d.peekg];S.hover=null;const keep=plan().sel;plan().sel=r.cs.map(keyOf);renderCal();plan().sel=keep;$('#stats').insertAdjacentHTML('afterbegin','<span class="warn">Vista previa, no guardada.</span>')}
 });
 document.addEventListener('keydown',e=>{const bx=e.target.closest?.('[data-box]');if(bx&&(e.key==='Enter'||e.key===' ')){e.preventDefault();const k=bx.dataset.box;toggleBox(k);document.querySelector(`[data-box="${CSS.escape(k)}"]`)?.focus()}});
@@ -1597,7 +1649,7 @@ $('#b-none').addEventListener('click',()=>{planOlvidar();conSim(usaSim('sugg'),(
 document.querySelectorAll('[data-plan-paso]').forEach(b=>b.addEventListener('click',()=>{S.planPaso=PLAN_DOS_PERIODOS?+b.dataset.planPaso:0;S.mapHover=null;S.mapFocus=false;renderTray()}));
 $('#map-ayuda').addEventListener('click',()=>{
   const cuerpo=document.createElement('div'), intro=document.createElement('p'), notas=document.createElement('ul');
-  intro.textContent=SATE.texto('sate.planeacion.'+(tactil()?(PLAN_DOS_PERIODOS?'explorar_tactil_anual':'explorar_tactil'):'explorar_cursor'));
+  intro.textContent=PLAN_DOS_PERIODOS?`Elige el periodo que quieres planear. Toca una materia para agregarla o quitarla de ${planEtiqueta(S.planPaso)}. Las del otro periodo abren el inspector; usa «Mover a» para cambiarlas.`:SATE.texto('sate.planeacion.'+(tactil()?'explorar_tactil':'explorar_cursor'));
   const leyenda=document.createElement('div');leyenda.className='legend';leyenda.innerHTML=leyendaMapa(true);
   notas.innerHTML=$('#mapnote').innerHTML;cuerpo.appendChild(intro);cuerpo.appendChild(leyenda);cuerpo.appendChild(notas);
   SateUI.modal(SATE.texto('sate.planeacion.leer_mapa'),cuerpo);
