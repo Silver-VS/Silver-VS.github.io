@@ -1,93 +1,60 @@
 <!doctype html>
 <html lang="es">
+<head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Aviso de privacidad · IPN-tools</title>
-<link rel="icon" href="assets/icono/favicon.ico">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://guinda-labs.github.io/privacidad.html">
+<title>SATE se mudó · GuindaLabs</title>
 <style>
-:root{--bg:#fafafa;--surface:#fff;--fg:#18181b;--muted:#52525b;--line:#d9d9de;--accent:#750946}
-@media (prefers-color-scheme:dark){:root{--bg:#09090b;--surface:#18181b;--fg:#e4e4e7;--muted:#a1a1aa;--line:#323237;--accent:#ec9cbf;color-scheme:dark}}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 "Noto Sans",system-ui,sans-serif;padding-inline:16px}
-main{max-width:720px;margin:0 auto;padding-block:48px 56px}
-.brand{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-.brand img{width:44px;height:44px}
-.brand span{font-weight:700;font-size:1.05rem}
-h1{margin:0 0 4px;font-size:1.9rem;letter-spacing:-.02em;text-wrap:balance}
-.upd{color:var(--muted);margin:0 0 28px;font-size:.92rem}
-h2{font-size:1.15rem;margin:32px 0 8px;text-wrap:balance}
-p,li{margin:0 0 10px}
-ul{padding-left:1.2rem;margin:0 0 10px}
-a{color:var(--accent)}
-.box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:16px 0}
-table{width:100%;border-collapse:collapse;font-size:.92rem;margin:8px 0 12px}
-th,td{text-align:left;vertical-align:top;padding:8px 10px;border-top:1px solid var(--line)}
-th{font-weight:600;color:var(--muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
-.tw{overflow-x:auto}
-footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;display:flex;flex-wrap:wrap;gap:8px 18px}
+:root{--fondo:#fafafa;--texto:#18181b;--tenue:#71717a;--linea:#e4e4e7;--acento:#7a1f45;--sobre:#fff}
+@media (prefers-color-scheme:dark){:root{--fondo:#18181b;--texto:#fafafa;--tenue:#a1a1aa;--linea:#3f3f46;--acento:#f0a3c4;--sobre:#18181b}}
+body{margin:0;background:var(--fondo);color:var(--texto);font:16px/1.5 system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;padding:16px;box-sizing:border-box}
+main{max-width:480px;border:1px solid var(--linea);border-radius:16px;padding:24px}
+h1{font-size:1.25rem;margin:0 0 8px}p{color:var(--tenue);margin:8px 0}
+button{font:inherit;border:0;border-radius:999px;padding:10px 18px;background:var(--acento);color:var(--sobre);cursor:pointer;font-weight:600}
+a{color:var(--acento)}
 </style>
-<main>
-  <div class="brand"><img src="assets/icono/ipn-tools-icono-192.png" alt=""><span>IPN-tools</span></div>
-  <h1>Aviso de privacidad</h1>
-  <p class="upd">Última actualización: 3 de octubre de 2026</p>
-
-  <div class="box"><b>En resumen:</b> IPN-tools no tiene servidor ni base de datos. Lo que generas se guarda en tu navegador y, si inicias sesión, en tu propio OneDrive o Google Drive, en un espacio al que solo tiene acceso la herramienta. Nadie más, incluido quien la desarrolla, puede ver tu información. La única excepción es la encuesta de satisfacción, que es voluntaria y anónima (punto 2).</div>
-
-  <h2>1. Quién es responsable</h2>
-  <p>IPN-tools (Horarios y Electivas) es una herramienta independiente desarrollada por Víctor Serrano, alumno de Ingeniería Biónica de la UPIITA-IPN. Por ahora no es un servicio oficial del IPN. Contacto: <a href="mailto:vacevess1900@alumno.ipn.mx">vacevess1900@alumno.ipn.mx</a>.</p>
-
-  <h2>2. Qué información se usa y dónde se guarda</h2>
-  <div class="tw"><table>
-    <tr><th>Información</th><th>Para qué</th><th>Dónde se guarda</th></tr>
-    <tr><td>Carrera, materias que quieres cursar, planes de horario, marcas, filtros y preferencias</td><td>Armar tu trayectoria y tus horarios</td><td>Tu navegador (almacenamiento local)</td></tr>
-    <tr><td>Actividades de Electivas y los datos que escribes para los formatos (nombre, boleta, correo)</td><td>Llenar el DIE-03 y el formulario</td><td>Tu navegador</td></tr>
-    <tr><td>Datos del SAES que tú decides traer con el Lector: kárdex, estado general, horario inscrito y cita de reinscripción</td><td>Mostrar tu avance, reprobadas, desfases y carga</td><td>Tu navegador</td></tr>
-    <tr><td>Si inicias sesión: tu nombre y correo de la cuenta de Microsoft o Google</td><td>Mostrar con qué cuenta estás conectado</td><td>Tu navegador</td></tr>
-    <tr><td>Si contestas la encuesta de satisfacción: tus respuestas y datos de uso anónimos (unidad, carrera, si usaste el modo demostración o tus datos del SAES, número de materias elegidas, tipo de dispositivo, minutos de uso, exportaciones y un identificador aleatorio del navegador). No incluye nombre, boleta, correo ni calificaciones.</td><td>Evaluar en la fase de pruebas si la herramienta es útil y qué mejorar</td><td>Una hoja de cálculo de Google del responsable (punto 1), a la que solo él tiene acceso. Los resultados se comparten únicamente de forma agregada</td></tr>
-    <tr><td>Si inicias sesión: una copia de todo lo anterior (archivo <code>perfil.ipnt.json</code>). Los datos del SAES solo se incluyen si activas la casilla correspondiente.</td><td>Usar tus datos en varios dispositivos</td><td>Tu OneDrive (carpeta Aplicaciones › IPN-tools) o el espacio privado de la aplicación en tu Google Drive</td></tr>
-  </table></div>
-  <p>El Lector se ejecuta dentro de tu propia sesión del SAES, solo consulta (no inscribe ni modifica nada) y te muestra el resultado para que tú lo pegues en la herramienta. No envía tu información a ningún servidor.</p>
-
-  <h2>3. Permisos que se solicitan al iniciar sesión</h2>
-  <ul>
-    <li><b>Microsoft:</b> iniciar sesión y leer tu perfil básico (nombre y correo), y acceso únicamente a la carpeta de la aplicación en tu OneDrive (<code>Files.ReadWrite.AppFolder</code>).</li>
-    <li><b>Google:</b> tu nombre y correo (<code>openid</code>, <code>email</code>, <code>profile</code>) y acceso únicamente al espacio de datos de la aplicación en tu Google Drive (<code>drive.appdata</code>).</li>
-  </ul>
-  <p>La herramienta no puede ver ni modificar tus demás archivos, tu correo, tus contactos ni tu calendario. El acceso se usa solo desde tu navegador; no pasa por servidores de IPN-tools.</p>
-  <p>El uso que hace IPN-tools de la información recibida de las API de Google cumple con la <a href="https://developers.google.com/terms/api-services-user-data-policy">Política de Datos de Usuario de los Servicios de API de Google</a>, incluidos los requisitos de Uso Limitado.</p>
-
-  <h2>4. Lo que no hacemos</h2>
-  <ul>
-    <li>No tenemos servidor ni base de datos, y no recibimos copia de tu información. Solo recibimos las respuestas de la encuesta si decides contestarla.</li>
-    <li>No usamos cookies de rastreo, analítica ni publicidad.</li>
-    <li>No vendemos, compartimos ni transferimos tu información a nadie.</li>
-    <li>No usamos tu información para entrenar modelos de inteligencia artificial.</li>
-  </ul>
-
-  <h2>5. Servicios de terceros</h2>
-  <p>Para funcionar, la página se descarga de estos servicios. Como cualquier sitio web, pueden registrar datos técnicos como tu dirección IP, conforme a sus propias políticas:</p>
-  <ul>
-    <li>GitHub Pages (alojamiento del sitio).</li>
-    <li>Google Fonts (tipografía), cdnjs y jsDelivr (bibliotecas para generar PDF e iniciar sesión).</li>
-    <li>Plataforma de identidad de Microsoft y Microsoft Graph, si inicias sesión con Microsoft.</li>
-    <li>Google Identity Services y la API de Google Drive, si inicias sesión con Google.</li>
-    <li>Google Apps Script y Hojas de cálculo de Google, si contestas la encuesta de satisfacción.</li>
-  </ul>
-
-  <h2>6. Cómo controlar o borrar tu información</h2>
-  <ul>
-    <li><b>En el navegador:</b> en el diálogo de cuenta, «Cerrar sesión y borrar mis datos de este navegador». En Horarios también puedes borrar solo los datos del SAES desde «Actualizar mis datos del SAES».</li>
-    <li><b>Respaldo:</b> «Descargar respaldo» te entrega todo en un archivo que puedes revisar.</li>
-    <li><b>En OneDrive:</b> borra la carpeta Aplicaciones › IPN-tools.</li>
-    <li><b>En Google Drive:</b> Configuración › Administrar apps › IPN-tools › Eliminar datos ocultos de la app.</li>
-    <li><b>Retirar el acceso:</b> en <a href="https://myaccount.microsoft.com/">myaccount.microsoft.com</a> (Aplicaciones) o en <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>.</li>
-  </ul>
-  <p>Como IPN-tools no conserva tu información, no tiene datos tuyos que entregar, corregir o cancelar; esos controles están en tus manos. Si tienes dudas o quieres ejercer tus derechos de acceso, rectificación, cancelación u oposición, escribe al contacto del punto 1.</p>
-
-  <h2>7. Cambios a este aviso</h2>
-  <p>Si cambia la forma en que la herramienta usa la información, se actualizará este aviso y su fecha. Si en el futuro la herramienta pasa a operarse a nombre del IPN, se publicará el aviso que corresponda.</p>
-
-  <footer><a href="index.html">Inicio</a><a href="condiciones.html">Condiciones de uso</a><a href="https://github.com/Silver-VS/IPN-tools">Código fuente</a></footer>
+</head>
+<body>
+<main hidden id="aviso">
+  <h1>IPN-tools ahora es SATE en GuindaLabs</h1>
+  <p>La herramienta cambió de dirección. Tienes datos guardados en este navegador (tus horarios, tu mapa y lo que leíste del SAES); llévalos a la nueva dirección con un clic.</p>
+  <p><button type="button" id="llevar">Llevar mis datos y continuar</button></p>
+  <p id="estado" role="status" aria-live="polite"></p>
+  <p><a id="sin" href="https://guinda-labs.github.io/privacidad.html">Continuar sin mis datos</a></p>
 </main>
+<noscript><p><a href="https://guinda-labs.github.io/privacidad.html">Ir a la nueva dirección</a></p></noscript>
+<script>
+(function(){
+  'use strict';
+  const NUEVO='https://guinda-labs.github.io/', RUTA='privacidad.html', PREFIJOS=['hu.','ue.','saes.','ipnt.'];
+  const resto=location.search+location.hash, destino=NUEVO+RUTA+resto;
+  document.getElementById('sin').href=destino;
+  let claves=[];
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(PREFIJOS.some(p=>k.startsWith(p)))claves.push(k)}}catch(e){}
+  let migrado=false;try{migrado=!!localStorage.getItem('ipnt.migrado.guinda')}catch(e){}
+  if(!claves.length||migrado){location.replace(destino);return}
+  document.getElementById('aviso').hidden=false;
+  const estado=document.getElementById('estado');
+  document.getElementById('llevar').onclick=()=>{
+    const origen=new URL(NUEVO).origin;
+    const w=window.open(NUEVO+'migrar.html?destino='+encodeURIComponent(RUTA+resto),'_blank');
+    if(!w){estado.textContent='El navegador bloqueó la nueva pestaña. Permítela y vuelve a pulsar el botón.';return}
+    estado.textContent='Abriendo la nueva dirección…';
+    window.addEventListener('message',e=>{
+      if(e.origin!==origen||e.source!==w)return;
+      if(e.data&&e.data.tipo==='ipnt.migrar.listo'){
+        const datos={};for(const k of claves){try{datos[k]=localStorage.getItem(k)}catch(x){}}
+        w.postMessage({tipo:'ipnt.migrar.datos',v:1,datos},origen);
+      }
+      if(e.data&&e.data.tipo==='ipnt.migrar.hecho'){
+        try{localStorage.setItem('ipnt.migrado.guinda',new Date().toISOString())}catch(x){}
+        estado.textContent='Listo. Tus datos ya están en la nueva dirección; puedes cerrar esta pestaña.';
+      }
+    });
+  };
+})();
+</script>
+</body>
 </html>

@@ -1,2 +1,60 @@
-<!doctype html><html lang="es"><meta charset="utf-8"><title>Iniciando sesión…</title>
-<body style="font:16px system-ui,sans-serif;padding:24px;color:#52525b">Iniciando sesión…</body></html>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://guinda-labs.github.io/auth.html">
+<title>SATE se mudó · GuindaLabs</title>
+<style>
+:root{--fondo:#fafafa;--texto:#18181b;--tenue:#71717a;--linea:#e4e4e7;--acento:#7a1f45;--sobre:#fff}
+@media (prefers-color-scheme:dark){:root{--fondo:#18181b;--texto:#fafafa;--tenue:#a1a1aa;--linea:#3f3f46;--acento:#f0a3c4;--sobre:#18181b}}
+body{margin:0;background:var(--fondo);color:var(--texto);font:16px/1.5 system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;padding:16px;box-sizing:border-box}
+main{max-width:480px;border:1px solid var(--linea);border-radius:16px;padding:24px}
+h1{font-size:1.25rem;margin:0 0 8px}p{color:var(--tenue);margin:8px 0}
+button{font:inherit;border:0;border-radius:999px;padding:10px 18px;background:var(--acento);color:var(--sobre);cursor:pointer;font-weight:600}
+a{color:var(--acento)}
+</style>
+</head>
+<body>
+<main hidden id="aviso">
+  <h1>IPN-tools ahora es SATE en GuindaLabs</h1>
+  <p>La herramienta cambió de dirección. Tienes datos guardados en este navegador (tus horarios, tu mapa y lo que leíste del SAES); llévalos a la nueva dirección con un clic.</p>
+  <p><button type="button" id="llevar">Llevar mis datos y continuar</button></p>
+  <p id="estado" role="status" aria-live="polite"></p>
+  <p><a id="sin" href="https://guinda-labs.github.io/auth.html">Continuar sin mis datos</a></p>
+</main>
+<noscript><p><a href="https://guinda-labs.github.io/auth.html">Ir a la nueva dirección</a></p></noscript>
+<script>
+(function(){
+  'use strict';
+  const NUEVO='https://guinda-labs.github.io/', RUTA='auth.html', PREFIJOS=['hu.','ue.','saes.','ipnt.'];
+  const resto=location.search+location.hash, destino=NUEVO+RUTA+resto;
+  document.getElementById('sin').href=destino;
+  let claves=[];
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(PREFIJOS.some(p=>k.startsWith(p)))claves.push(k)}}catch(e){}
+  let migrado=false;try{migrado=!!localStorage.getItem('ipnt.migrado.guinda')}catch(e){}
+  if(!claves.length||migrado){location.replace(destino);return}
+  document.getElementById('aviso').hidden=false;
+  const estado=document.getElementById('estado');
+  document.getElementById('llevar').onclick=()=>{
+    const origen=new URL(NUEVO).origin;
+    const w=window.open(NUEVO+'migrar.html?destino='+encodeURIComponent(RUTA+resto),'_blank');
+    if(!w){estado.textContent='El navegador bloqueó la nueva pestaña. Permítela y vuelve a pulsar el botón.';return}
+    estado.textContent='Abriendo la nueva dirección…';
+    window.addEventListener('message',e=>{
+      if(e.origin!==origen||e.source!==w)return;
+      if(e.data&&e.data.tipo==='ipnt.migrar.listo'){
+        const datos={};for(const k of claves){try{datos[k]=localStorage.getItem(k)}catch(x){}}
+        w.postMessage({tipo:'ipnt.migrar.datos',v:1,datos},origen);
+      }
+      if(e.data&&e.data.tipo==='ipnt.migrar.hecho'){
+        try{localStorage.setItem('ipnt.migrado.guinda',new Date().toISOString())}catch(x){}
+        estado.textContent='Listo. Tus datos ya están en la nueva dirección; puedes cerrar esta pestaña.';
+      }
+    });
+  };
+})();
+</script>
+</body>
+</html>

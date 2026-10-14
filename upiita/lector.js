@@ -1,5 +1,5 @@
 (async function () {
-var TOOL = 'https://silver-vs.github.io/upiita/horarios-upiita.html';
+var TOOL = 'https://guinda-labs.github.io/horarios-upiita.html';
 var UM = location.hostname.match(/(?:^|\.)saes\.([a-z0-9-]+)\.ipn\.mx$/i);
 if (!UM) {
 alert('Abre este marcador dentro del SAES de tu unidad (por ejemplo, saes.upiita.ipn.mx), con tu sesión iniciada.');
