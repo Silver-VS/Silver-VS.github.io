@@ -1,4 +1,4 @@
-document.getElementById('v-hor').innerHTML="\n    <div class=\"est-eqv\" id=\"est-eqv\" hidden></div>\n    <section class=\"filters\" aria-label=\"Filtros\">\n      <div class=\"field\"><span>Turno</span><div class=\"chips\" id=\"f-turno\"></div></div>\n      <div class=\"field\"><span>Nivel</span><div class=\"chips\" id=\"f-nivel\"></div></div>\n      <div class=\"field search\">\n        <span id=\"q-lbl\">Buscar</span>\n        <input id=\"f-q\" type=\"search\" role=\"combobox\" aria-autocomplete=\"list\" aria-expanded=\"false\" aria-controls=\"ac\" aria-labelledby=\"q-lbl\" placeholder=\"Materia, clave, profesor o grupo\" autocomplete=\"off\">\n        <ul class=\"ac\" id=\"ac\" role=\"listbox\" hidden></ul>\n      </div>\n      <label class=\"check\"><input type=\"checkbox\" id=\"f-want\"> <span id=\"f-want-l\">Solo las elegidas en el Mapa curricular</span></label>\n      <details id=\"f-more\"><summary id=\"f-more-title\" data-htexto=\"mas_filtros\">Más filtros</summary><div class=\"more-filters\">\n      <div class=\"field\"><span>Ver por</span><div class=\"seg\" role=\"group\" aria-label=\"Agrupar oferta\">\n        <button data-view=\"materia\">Materia</button><button data-view=\"grupo\">Grupo</button>\n      </div></div>\n      <label class=\"check\"><input type=\"checkbox\" id=\"f-hide\"> Ocultar las marcadas como No</label>\n      <label class=\"check\"><input type=\"checkbox\" id=\"f-done\" checked> <span data-htexto=\"ocultar_acreditadas\">Ocultar las ya acreditadas</span></label>\n      <label class=\"check\" title=\"Muestra los grupos de la carrera compatibles con el horario actual\"><input type=\"checkbox\" id=\"f-fit\"> Solo lo que cabe en mi horario</label>\n      <div class=\"field\"><span>En la escuela</span><div class=\"trange\"><input type=\"time\" id=\"g-from\" step=\"1800\" aria-label=\"Llegar desde\"><span>a</span><input type=\"time\" id=\"g-to\" step=\"1800\" aria-label=\"Salir a más tardar\"></div></div>\n      <label class=\"field\"><span>Excluir profesores</span><input type=\"text\" id=\"g-avoid\" list=\"proflist\" autocomplete=\"off\"></label>\n      <button type=\"button\" class=\"btn\" id=\"b-reset\" title=\"Regresa a su valor inicial los filtros de la oferta, los profesores excluidos, el horario en la escuela y las preferencias del generador, y quita las marcas «Sí / Quizá / No». No borra tus horarios.\">Restablecer filtros</button>\n      </div></details>\n      <div class=\"active\" id=\"active\"></div>\n    </section>\n\n    <div class=\"hlayout\">\n      <section aria-labelledby=\"h-offer\">\n        <details class=\"box2\" id=\"mi-semana\" hidden>\n          <summary id=\"semana-resumen\" data-htexto=\"semana_titulo\"></summary>\n          <p data-htexto=\"semana_subtitulo\"></p>\n          <p data-htexto=\"semana_privacidad\"></p>\n          <div id=\"semana-campos\">\n            <div id=\"semana-principales\" class=\"semana-campos\"></div>\n            <div id=\"semana-form\"></div>\n            <details id=\"semana-opciones\">\n              <summary data-htexto=\"semana_mas_opciones\"></summary>\n              <div id=\"semana-secundarios\" class=\"semana-campos\"></div>\n            </details>\n          </div>\n          <div id=\"semana-bloques\"></div>\n          <div id=\"semana-presupuesto\" aria-live=\"polite\"></div>\n          <div class=\"ownrow\"><button type=\"button\" class=\"btn\" id=\"semana-borrar\" data-htexto=\"semana_borrar\"></button><span id=\"semana-borrar-ayuda\"></span></div>\n        </details>\n        <details class=\"box2\" id=\"gen\" style=\"margin-bottom:12px\">\n          <summary>Generar horarios automáticamente</summary>\n          <p style=\"font-size:.84rem;margin:8px 0 0\">Genera combinaciones sin traslapes con los grupos de las materias seleccionadas. Prioriza los grupos marcados con «Sí» y los profesores indicados; omite los marcados con «No», los profesores excluidos y los grupos fuera del horario definido en los filtros.</p>\n          <div class=\"genrow\">\n            <div class=\"field\"><span>Turno preferido</span><div class=\"seg\" role=\"group\" aria-label=\"Turno preferido\">\n              <button data-gt=\"*\">Cualquiera</button><button data-gt=\"M\">Matutino</button><button data-gt=\"V\">Vespertino</button>\n            </div></div>\n            <label class=\"field\"><span>Priorizar profesor</span><input type=\"text\" id=\"g-pref\" list=\"proflist\" autocomplete=\"off\"></label>\n            <datalist id=\"proflist\"></datalist>\n            <label class=\"check\" title=\"Prioriza horarios con menos tiempo libre entre clases y menos días en la escuela\"><input type=\"checkbox\" id=\"g-compact\" checked> Menos tiempo libre entre clases</label>\n            <button class=\"btn primary\" id=\"b-gen\">Generar</button>\n          </div>\n          <div class=\"gtime\">\n            <div class=\"field\"><span>Días a la semana</span><div class=\"seg\" role=\"group\" aria-label=\"Días a la semana en la escuela\" id=\"g-days\">\n              <button type=\"button\" data-gdays=\"\">Sin límite</button><button type=\"button\" data-gdays=\"3\">3</button><button type=\"button\" data-gdays=\"4\">4</button><button type=\"button\" data-gdays=\"5\">5</button></div></div>\n            <div class=\"field\"><span>Base para generar</span><div class=\"seg\" role=\"group\" aria-label=\"Base para generar\" id=\"g-src\">\n              <button type=\"button\" data-gsrc=\"\" title=\"Usa las materias y grupos que muestra la oferta con los filtros actuales\">Filtros de la oferta</button><button type=\"button\" data-gsrc=\"todo\" title=\"Usa todas las materias elegidas y todos sus grupos, sin los filtros de la oferta (se respetan las marcas «No» y los profesores excluidos)\">Todas las elegidas</button></div></div>\n            <div class=\"field\"><span>Materias por horario</span><div class=\"seg\" role=\"group\" aria-label=\"Materias por horario\" id=\"g-n\">\n              <button type=\"button\" data-gn=\"auto\" title=\"El generador elige cuántas y cuáles materias, buscando la carga media y un horario saludable: permanencia razonable, espacio para comer y sin bloques largos sin descanso\">Automático</button><button type=\"button\" data-gn=\"\">Todas</button><button type=\"button\" data-gn=\"3\">3</button><button type=\"button\" data-gn=\"4\">4</button><button type=\"button\" data-gn=\"5\">5</button><button type=\"button\" data-gn=\"6\">6</button><button type=\"button\" data-gn=\"7\">7</button><button type=\"button\" data-gn=\"8\">8</button></div></div>\n            <div class=\"field\"><span>Descansos</span><div class=\"gbreaks\" id=\"gbreaks\"></div></div>\n          </div>\n          <div class=\"active\" id=\"gprefs\" style=\"padding-top:8px\"></div>\n          <div class=\"genres\" id=\"genres\"></div>\n        </details>\n        <details class=\"box2\" id=\"equiv\" style=\"margin-bottom:12px\" hidden>\n          <summary>Ver equivalencias con otras carreras de tu unidad académica</summary>\n          <div id=\"equiv-body\"></div>\n        </details>\n        <div class=\"colhead\"><h2 id=\"h-offer\">Oferta</h2><span class=\"count\" id=\"offer-count\"></span></div>\n        <div class=\"offer\" id=\"offer\"></div>\n      </section>\n      <section class=\"planner\" aria-labelledby=\"h-plan\">\n        <div class=\"colhead\"><h2 id=\"h-plan\">Mi horario</h2>\n          <div class=\"actions\">\n            <div class=\"seg calview\" role=\"group\" aria-label=\"Vista del horario\"><button type=\"button\" data-cview=\"semana\">Semana</button><button type=\"button\" data-cview=\"dia\">Por día</button></div>\n            <label class=\"check\"><input type=\"checkbox\" id=\"f-weekend\"> Mostrar fin de semana</label>\n            <button class=\"btn primary\" id=\"b-export\" type=\"button\" aria-haspopup=\"dialog\">Exportar horario</button>\n            <button class=\"btn\" id=\"b-saeshor\" hidden title=\"Carga en la versión seleccionada el horario inscrito según el SAES\">Traer horario inscrito (SAES)</button>\n            <button class=\"btn\" id=\"b-clear\">Vaciar</button>\n          </div>\n        </div>\n        <p class=\"muted\" id=\"exp-msg\" aria-live=\"polite\" style=\"margin:0 0 6px;font-size:.84rem;min-height:1.3em\"></p>\n        <div class=\"plans\" id=\"plans\" role=\"group\" aria-label=\"Versiones de horario\"></div>\n        <div class=\"calwrap\"><div class=\"cal\" id=\"cal\"></div></div>\n        <div class=\"agenda\" id=\"agenda\" hidden></div>\n        <div class=\"summary\">\n          <div class=\"stats\" id=\"stats\"></div>\n          <div class=\"load\" id=\"load\"></div>\n          <div class=\"sel\" id=\"sel\"></div>\n          <div class=\"aviso-deshacer\" id=\"own-deshacer\" role=\"status\" aria-live=\"polite\" hidden><span id=\"own-deshacer-txt\"></span> <button type=\"button\" class=\"link\" id=\"own-deshacer-b\" data-htexto=\"semana_deshacer\"></button></div>\n          <details class=\"box2\" id=\"ownform\">\n            <summary>Agregar actividad extracurricular</summary>\n            <form class=\"ownrow\" id=\"own-f\">\n              <label class=\"field\"><span>Nombre</span><input type=\"text\" id=\"own-n\" placeholder=\"Inglés CELEX\" required></label>\n              <div class=\"field\"><span>Días</span><div class=\"daypick\" id=\"own-d\"></div></div>\n              <label class=\"field\"><span>De</span><input type=\"time\" id=\"own-a\" value=\"09:00\" step=\"1800\" required></label>\n              <label class=\"field\"><span>A</span><input type=\"time\" id=\"own-b\" value=\"12:00\" step=\"1800\" required></label>\n              <button class=\"btn primary\" type=\"submit\">Agregar</button>\n            </form>\n          </details>\n          <textarea class=\"copy\" id=\"copybox\" readonly hidden></textarea>\n        </div>\n      </section>\n    </div>\n  ";
+document.getElementById('v-hor').innerHTML="\n    <div class=\"est-eqv\" id=\"est-eqv\" hidden></div>\n    <section class=\"filters\" aria-label=\"Filtros\">\n      <div class=\"field\"><span>Turno</span><div class=\"chips\" id=\"f-turno\"></div></div>\n      <div class=\"field\"><span>Nivel</span><div class=\"chips\" id=\"f-nivel\"></div></div>\n      <div class=\"field search\">\n        <span id=\"q-lbl\">Buscar</span>\n        <input id=\"f-q\" type=\"search\" role=\"combobox\" aria-autocomplete=\"list\" aria-expanded=\"false\" aria-controls=\"ac\" aria-labelledby=\"q-lbl\" placeholder=\"Materia, clave, profesor o grupo\" autocomplete=\"off\">\n        <ul class=\"ac\" id=\"ac\" role=\"listbox\" hidden></ul>\n      </div>\n      <label class=\"check\"><input type=\"checkbox\" id=\"f-want\"> <span id=\"f-want-l\">Solo las elegidas en el Mapa curricular</span></label>\n      <details id=\"f-more\"><summary id=\"f-more-title\" data-htexto=\"mas_filtros\">Más filtros</summary><div class=\"more-filters\">\n      <div class=\"field\"><span>Ver por</span><div class=\"seg\" role=\"group\" aria-label=\"Agrupar oferta\">\n        <button data-view=\"materia\">Materia</button><button data-view=\"grupo\">Grupo</button>\n      </div></div>\n      <label class=\"check\"><input type=\"checkbox\" id=\"f-hide\"> Ocultar las marcadas como No</label>\n      <label class=\"check\"><input type=\"checkbox\" id=\"f-done\" checked> <span data-htexto=\"ocultar_acreditadas\">Ocultar las ya acreditadas</span></label>\n      <label class=\"check\" title=\"Muestra los grupos de la carrera compatibles con el horario actual\"><input type=\"checkbox\" id=\"f-fit\"> Solo lo que cabe en mi horario</label>\n      <div class=\"field\"><span>En la escuela</span><div class=\"trange\"><input type=\"time\" id=\"g-from\" step=\"1800\" aria-label=\"Llegar desde\"><span>a</span><input type=\"time\" id=\"g-to\" step=\"1800\" aria-label=\"Salir a más tardar\"></div></div>\n      <label class=\"field\"><span>Excluir profesores</span><input type=\"text\" id=\"g-avoid\" list=\"proflist\" autocomplete=\"off\"></label>\n      <button type=\"button\" class=\"btn\" id=\"b-reset\" title=\"Regresa a su valor inicial los filtros de la oferta, los profesores excluidos, el horario en la escuela y las preferencias del generador, y quita las marcas «Sí / Quizá / No». No borra tus horarios.\">Restablecer filtros</button>\n      </div></details>\n      <div class=\"active\" id=\"active\"></div>\n    </section>\n\n    <div class=\"hlayout\">\n      <section aria-labelledby=\"h-offer\">\n        <details class=\"box2\" id=\"mi-semana\" hidden>\n          <summary id=\"semana-resumen\" data-htexto=\"semana_titulo\"></summary>\n          <p data-htexto=\"semana_subtitulo\"></p>\n          <p data-htexto=\"semana_privacidad\"></p>\n          <div id=\"semana-campos\">\n            <div id=\"semana-principales\" class=\"semana-campos\"></div>\n            <div id=\"semana-form\"></div>\n            <details id=\"semana-opciones\">\n              <summary data-htexto=\"semana_mas_opciones\"></summary>\n              <div id=\"semana-secundarios\" class=\"semana-campos\"></div>\n            </details>\n          </div>\n          <div id=\"semana-bloques\"></div>\n          <div id=\"semana-presupuesto\" aria-live=\"polite\"></div>\n          <div class=\"ownrow\"><button type=\"button\" class=\"btn\" id=\"semana-borrar\" data-htexto=\"semana_borrar\"></button><span id=\"semana-borrar-ayuda\"></span></div>\n        </details>\n        <details class=\"box2\" id=\"gen\" style=\"margin-bottom:12px\">\n          <summary>Generar horarios automáticamente</summary>\n          <p style=\"font-size:.84rem;margin:8px 0 0\">Genera combinaciones sin traslapes con los grupos de las materias seleccionadas. Prioriza los grupos marcados con «Sí» y los profesores indicados; omite los marcados con «No», los profesores excluidos y los grupos fuera del horario definido en los filtros.</p>\n          <div class=\"genrow\">\n            <div class=\"field\"><span>Turno preferido</span><div class=\"seg\" role=\"group\" aria-label=\"Turno preferido\">\n              <button data-gt=\"*\">Cualquiera</button><button data-gt=\"M\">Matutino</button><button data-gt=\"V\">Vespertino</button>\n            </div></div>\n            <label class=\"field\"><span>Priorizar profesor</span><input type=\"text\" id=\"g-pref\" list=\"proflist\" autocomplete=\"off\"></label>\n            <datalist id=\"proflist\"></datalist>\n            <label class=\"check\" title=\"Prioriza horarios con menos tiempo libre entre clases y menos días en la escuela\"><input type=\"checkbox\" id=\"g-compact\" checked> Menos tiempo libre entre clases</label>\n            <button class=\"btn primary\" id=\"b-gen\">Generar</button>\n            <button class=\"btn\" type=\"button\" id=\"b-gen-clear\" data-htexto=\"generador_borrar\" hidden>Borrar opciones generadas</button>\n          </div>\n          <div class=\"gtime\">\n            <div class=\"field\"><span>Días a la semana</span><div class=\"seg\" role=\"group\" aria-label=\"Días a la semana en la escuela\" id=\"g-days\">\n              <button type=\"button\" data-gdays=\"\">Sin límite</button><button type=\"button\" data-gdays=\"3\">3</button><button type=\"button\" data-gdays=\"4\">4</button><button type=\"button\" data-gdays=\"5\">5</button></div></div>\n            <div class=\"field\"><span>Base para generar</span><div class=\"seg\" role=\"group\" aria-label=\"Base para generar\" id=\"g-src\">\n              <button type=\"button\" data-gsrc=\"\" title=\"Usa las materias y grupos que muestra la oferta con los filtros actuales\">Filtros de la oferta</button><button type=\"button\" data-gsrc=\"todo\" title=\"Usa todas las materias elegidas y todos sus grupos, sin los filtros de la oferta (se respetan las marcas «No» y los profesores excluidos)\">Todas las elegidas</button></div></div>\n            <div class=\"field\"><span>Materias por horario</span><div class=\"seg\" role=\"group\" aria-label=\"Materias por horario\" id=\"g-n\">\n              <button type=\"button\" data-gn=\"auto\" title=\"El generador elige cuántas y cuáles materias, buscando la carga media y un horario saludable: permanencia razonable, espacio para comer y sin bloques largos sin descanso\">Automático</button><button type=\"button\" data-gn=\"\">Todas</button><button type=\"button\" data-gn=\"3\">3</button><button type=\"button\" data-gn=\"4\">4</button><button type=\"button\" data-gn=\"5\">5</button><button type=\"button\" data-gn=\"6\">6</button><button type=\"button\" data-gn=\"7\">7</button><button type=\"button\" data-gn=\"8\">8</button></div></div>\n            <div class=\"field\"><span>Descansos</span><div class=\"gbreaks\" id=\"gbreaks\"></div></div>\n          </div>\n          <div class=\"active\" id=\"gprefs\" style=\"padding-top:8px\"></div>\n          <p id=\"gen-status\" role=\"status\" aria-live=\"polite\"></p>\n          <div class=\"genres\" id=\"genres\"></div>\n        </details>\n        <details class=\"box2\" id=\"equiv\" style=\"margin-bottom:12px\" hidden>\n          <summary>Ver equivalencias con otras carreras de tu unidad académica</summary>\n          <div id=\"equiv-body\"></div>\n        </details>\n        <div class=\"colhead\"><h2 id=\"h-offer\">Oferta</h2><span class=\"count\" id=\"offer-count\"></span></div>\n        <div class=\"offer\" id=\"offer\"></div>\n      </section>\n      <section class=\"planner\" aria-labelledby=\"h-plan\">\n        <div class=\"colhead\"><h2 id=\"h-plan\">Mi horario</h2>\n          <div class=\"actions\">\n            <div class=\"seg calview\" role=\"group\" aria-label=\"Vista del horario\"><button type=\"button\" data-cview=\"semana\">Semana</button><button type=\"button\" data-cview=\"dia\">Por día</button></div>\n            <label class=\"check\"><input type=\"checkbox\" id=\"f-weekend\"> Mostrar fin de semana</label>\n            <button class=\"btn primary\" id=\"b-export\" type=\"button\" aria-haspopup=\"dialog\">Exportar horario</button>\n            <button class=\"btn\" id=\"b-saeshor\" hidden title=\"Carga en la versión seleccionada el horario inscrito según el SAES\">Traer horario inscrito (SAES)</button>\n            <button class=\"btn\" id=\"b-clear\">Vaciar</button>\n          </div>\n        </div>\n        <p class=\"muted\" id=\"exp-msg\" aria-live=\"polite\" style=\"margin:0 0 6px;font-size:.84rem;min-height:1.3em\"></p>\n        <div class=\"plans\" id=\"plans\" role=\"group\" aria-label=\"Versiones de horario\"></div>\n        <div class=\"calwrap\"><div class=\"cal\" id=\"cal\"></div></div>\n        <div class=\"agenda\" id=\"agenda\" hidden></div>\n        <div class=\"summary\">\n          <div class=\"stats\" id=\"stats\"></div>\n          <div class=\"load\" id=\"load\"></div>\n          <div class=\"sel\" id=\"sel\"></div>\n          <div class=\"aviso-deshacer\" id=\"own-deshacer\" role=\"status\" aria-live=\"polite\" hidden><span id=\"own-deshacer-txt\"></span> <button type=\"button\" class=\"link\" id=\"own-deshacer-b\" data-htexto=\"semana_deshacer\"></button></div>\n          <details class=\"box2\" id=\"ownform\">\n            <summary>Agregar actividad extracurricular</summary>\n            <form class=\"ownrow\" id=\"own-f\">\n              <label class=\"field\"><span>Nombre</span><input type=\"text\" id=\"own-n\" placeholder=\"Inglés CELEX\" required></label>\n              <div class=\"field\"><span>Días</span><div class=\"daypick\" id=\"own-d\"></div></div>\n              <label class=\"field\"><span>De</span><input type=\"time\" id=\"own-a\" value=\"09:00\" step=\"1800\" required></label>\n              <label class=\"field\"><span>A</span><input type=\"time\" id=\"own-b\" value=\"12:00\" step=\"1800\" required></label>\n              <button class=\"btn primary\" type=\"submit\">Agregar</button>\n            </form>\n          </details>\n          <textarea class=\"copy\" id=\"copybox\" readonly hidden></textarea>\n        </div>\n      </section>\n    </div>\n    <button type=\"button\" class=\"btn primary horario-flotante\" id=\"b-horario\" data-htexto=\"horario_ver\" aria-haspopup=\"dialog\">Ver horario</button>\n    <dialog class=\"horario-compacto\" id=\"horario-compacto\" aria-labelledby=\"horario-compacto-titulo\">\n      <div class=\"dl-head\"><h2 id=\"horario-compacto-titulo\" data-htexto=\"horario_ver\">Ver horario</h2><button class=\"btn\" type=\"button\" id=\"horario-compacto-cerrar\" data-htexto=\"horario_cerrar\">Cerrar</button></div>\n      <div id=\"horario-compacto-cuerpo\"></div>\n    </dialog>\n  ";
 const txH=(clave,vars)=>SATE.texto('sate.horarios.'+clave,vars);
 $('#offer').addEventListener('click',e=>{
   if(e.target.closest('[data-oferta-mapa]'))SATE.ir('mapa');
@@ -28,7 +28,7 @@ for(const [id,list] of [['#g-pref','gpref'],['#g-avoid','gavoid']]){
   $(id).addEventListener('input',e=>{const v=e.target.value.trim();if(v&&[...$('#proflist').options].some(o=>o.value===v))add(e.target)});
 }
 // horario en la escuela y descansos (se vuelven a generar las opciones si ya había resultados)
-const gtChanged=()=>{gtSave();renderOffer();if(S.gen){S.gen=generate();renderGen()}};
+const gtChanged=()=>{gtSave();renderOffer();if(S.gen||generacion)iniciarGeneracion()};
 $('#g-from').addEventListener('change',e=>{GT.a=e.target.value;gtChanged()});
 $('#g-to').addEventListener('change',e=>{GT.b=e.target.value;gtChanged()});
 $('#b-reset').addEventListener('click',()=>{
@@ -47,7 +47,26 @@ $('#gbreaks').addEventListener('click',e=>{
     if(v==='all')b.days=[];else{const d=+v,ds=new Set(b.days||[]);ds.has(d)?ds.delete(d):ds.add(d);b.days=[...ds].sort()}
     renderGTime();gtChanged()}});
 $('#gbreaks').addEventListener('change',e=>{const r=e.target.closest('[data-brk]'),f=e.target.dataset.f;if(!r||!f)return;GT.breaks[+r.dataset.brk][f]=e.target.value;gtChanged()});
-$('#b-gen').addEventListener('click',()=>{S.gen=generate();renderGen();window.ENCUESTA?.marcar('gen')});
+$('#b-gen').addEventListener('click',iniciarGeneracion);
+$('#b-gen-clear').addEventListener('click',()=>{cancelarGeneracion();S.gen=null;renderGen();renderCal();$('#gen-status').textContent='';$('#b-gen').focus()});
+// Un cambio de contexto invalida el cálculo antes de que otro lote lea preferencias nuevas.
+document.addEventListener('change',()=>cancelarGeneracion(),true);
+document.addEventListener('input',()=>cancelarGeneracion(),true);
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');
+  if(b&&b.id!=='b-gen')cancelarGeneracion();
+},true);
+$('#b-horario').addEventListener('click',()=>{
+  const dlg=$('#horario-compacto');
+  // Mover la vista real conserva la selección, los eventos y la vista previa sin duplicar ids.
+  for(const s of ['.calwrap','#agenda'])$('#horario-compacto-cuerpo').appendChild($(s));
+  dlg.showModal();
+});
+$('#horario-compacto-cerrar').addEventListener('click',()=>$('#horario-compacto').close());
+$('#horario-compacto').addEventListener('close',()=>{
+  for(const s of ['.calwrap','#agenda'])$('.planner').insertBefore($(s),$('.planner .summary'));
+  $('#b-horario').focus();
+});
 $('#offer').addEventListener('pointerover',e=>{if(e.pointerType!=='mouse'||e.target.closest('.note'))return;const o=e.target.closest('.opt');const k=o?o.dataset.k:null;if(k!==S.hover){S.hover=k;renderCal()}});
 $('#offer').addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'&&S.hover){S.hover=null;renderCal()}});
 for(const id of ['#cal','#agenda'])$(id).addEventListener('keydown',bloquePropioEvento);
@@ -234,7 +253,7 @@ function resumenSemana(){
   }
   $('#semana-resumen').textContent=partes.join(' · ');
 }
-function semanaCambiar(){renderCal();if(S.gen){S.gen=generate();renderGen()}}
+function semanaCambiar(){renderCal();if(S.gen||generacion)iniciarGeneracion()}
 function semanaTraslados(cs){
   const clases=cs.flatMap(c=>c[6]||[]).concat(plan().own.filter(o=>o.saes).flatMap(o=>o.d.map(d=>[d,o.a,o.b])));
   return [...new Set(clases.map(b=>b[0]))].flatMap(d=>{
@@ -393,7 +412,60 @@ function breaksOk(cs){
 function renderGPrefs(){
   $('#gprefs').innerHTML=S.gpref.map((p,i)=>`<span class="pill"><i>${esc(txH('priorizar'))}</i>${esc(p)}<button data-ungp="${i}" aria-label="${esc(txH('quitar',{nombre:p}))}">×</button></span>`).join('');
 }
-function generate(){
+let generacion=null;
+const GEN_MS=3000, GEN_NODOS=250000;
+function presupuestoGenerador(dispositivo=typeof navigator==='undefined'?{}:navigator){
+  const bajo=(dispositivo.hardwareConcurrency>0&&dispositivo.hardwareConcurrency<=4)||(dispositivo.deviceMemory>0&&dispositivo.deviceMemory<=4)||dispositivo.connection?.saveData;
+  const alto=dispositivo.hardwareConcurrency>=8&&dispositivo.deviceMemory>=8;
+  // Señales ausentes: conservar el presupuesto histórico; no adivinar la RAM.
+  const medio=!bajo&&!alto&&(dispositivo.hardwareConcurrency>0||dispositivo.deviceMemory>0);
+  return {clase:bajo?'baja':medio?'media':'alta',ms:GEN_MS,nodos:bajo?60000:medio?140000:GEN_NODOS};
+}
+function cancelarGeneracion(){
+  if(!generacion)return;
+  generacion.cancelada=true;generacion=null;
+  $('#b-gen').textContent=txH('generar');$('#b-gen').disabled=false;
+  $('#genres').removeAttribute('aria-busy');$('#gen-status').textContent='';
+}
+function* pasoGen(run){
+  // También cuentan las ramas rechazadas por carga u optativas: antes escapaban del límite.
+  if(++run.nodes%128===0)yield;
+  const presupuesto=run.presupuesto||(run.presupuesto=presupuestoGenerador());
+  if(run.nodes>presupuesto.nodos||performance.now()-run.start>=presupuesto.ms)run.limited=true;
+}
+async function iniciarGeneracion(){
+  cancelarGeneracion();
+  const run={start:performance.now(),nodes:0,limited:false,cancelada:false,presupuesto:presupuestoGenerador()};generacion=run;
+  const medida=window.SateMedicion?.iniciar('generacion',GT.n==='auto'?'automatico':'todas');
+  const boton=$('#b-gen');
+  try{
+    S.gen=null;renderGen();boton.disabled=false;boton.textContent=txH('generar_reiniciar');
+    $('#genres').setAttribute('aria-busy','true');$('#gen-status').textContent=txH('generando');
+    const iter=generarPasos(run);
+    let next;
+    do{
+      await new Promise(resolve=>setTimeout(resolve,0));
+      if(run.cancelada)return;
+      // Varios pasos por cuadro reducen el coste de los temporizadores sin bloquear la interacción.
+      const hasta=performance.now()+12;
+      do{next=iter.next()}while(!next.done&&performance.now()<hasta);
+    }while(!next.done);
+    if(run.cancelada)return;
+    S.gen=next.value;run.resultado=next.value;renderGen();
+    $('#gen-status').textContent=S.gen.trunc?txH(run.limited&&run.presupuesto.clase==='baja'?'generador_limite_modesto':'generador_limite'):'';
+    window.ENCUESTA?.marcar('gen');
+  }catch(error){
+    run.error=error.name;
+    if(!run.cancelada){S.gen=null;$('#genres').innerHTML='';$('#b-gen-clear').hidden=true;$('#gen-status').textContent=txH('generador_error');
+      console.error('Generador de horarios: fallo', {error,nodos:run.nodes,ms:performance.now()-run.start,periodo:S.per,carrera:S.car})}
+  }finally{
+    window.SateMedicion?.terminar(medida,{pasos:run.nodes,trunco:!!run.resultado?.trunc,cancelada:run.cancelada,error:run.error||null,opciones:run.resultado?.top?.length||0,presupuesto:run.presupuesto});
+    if(generacion===run){generacion=null;boton.disabled=false;boton.textContent=txH('generar');$('#genres').removeAttribute('aria-busy')}
+  }
+}
+// La API síncrona se conserva para las invariantes del motor; consume el mismo algoritmo.
+function generate(){const iter=generarPasos({start:performance.now(),nodes:0,limited:false});let r;do{r=iter.next()}while(!r.done);return r.value}
+function* generarPasos(run){
   // materias y grupos: los mismos que muestra la oferta con sus filtros (turno, nivel, búsqueda, materia, profesor, grupo,
   // «solo las elegidas», horario en la escuela, excluidos). «Solo lo que cabe» y la búsqueda de huecos no aplican aquí.
   const todo=GT.src==='todo';   // «Todas las elegidas»: sin los filtros de la oferta
@@ -415,11 +487,11 @@ function generate(){
   // optativas por nivel: una opción no lleva más optativas de un nivel que espacios libres tenga el plan en ese nivel
   const oq=optCupo(), oex=optExceso(subj.map(s=>s.k),oq);
   const conAviso=r=>{if(Object.keys(oex).length)r.optExceso=oex;return r};
-  if(GT.n==='auto') return conAviso(generateBank(subj,'auto',{marks,pscore,oq}));
+  if(GT.n==='auto') return conAviso(yield* generateBank(subj,'auto',{marks,pscore,oq,run}));
   const N=+GT.n||0;
-  if(N&&N<subj.length) return conAviso(generateBank(subj,N,{marks,pscore,oq}));
+  if(N&&N<subj.length) return conAviso(yield* generateBank(subj,N,{marks,pscore,oq,run}));
   subj.sort((a,b)=>a.opts.length-b.opts.length);
-  const res=[];let nodes=0, minDays=Infinity;const maxD=+GT.days||0;
+  const res=[];let minDays=Infinity;const maxD=+GT.days||0;
   const pick=[];
   const score=()=>{
     const cs=pick.filter(Boolean);let s=cs.length*100;
@@ -427,8 +499,8 @@ function generate(){
     if($('#g-compact').checked){for(let d=0;d<6;d++){const b=cs.flatMap(c=>c[6].filter(x=>x[0]===d)).sort((x,y)=>x[1]-y[1]);if(b.length)s-=2;for(let i=1;i<b.length;i++)s-=Math.max(0,b[i][1]-b[i-1][2])/30}}
     return s-semanaPena(cs);
   };
-  const rec=i=>{
-    if(++nodes>250000) return;
+  const rec=function*(i){
+    yield* pasoGen(run);if(run.limited)return;
     if(i===subj.length){const cs=pick.filter(Boolean);if(!cs.length||!breaksOk(cs)||!semanaOk(cs))return;
       const nd=daysOf(cs).length;
       // mínimo de días posible llevando todas las materias que tienen grupos (antes de aplicar el límite)
@@ -436,13 +508,13 @@ function generate(){
       if(maxD&&nd>maxD)return;
       res.push({cs:cs.slice(),s:score(),miss:subj.filter((x,j)=>!pick[j]).map(x=>x.k),days:daysOf(cs)});return}
     const nv=nivOpt(subj[i].k,oq), llena=nv&&pick.slice(0,i).filter((p,j)=>p&&nivOpt(subj[j].k,oq)===nv).length>=oq[nv].libre;   // espacio del nivel ya cubierto
-    if(!llena)for(const c of subj[i].opts){if(pick.some(p=>p&&overlaps(p,c)))continue;pick[i]=c;rec(i+1)}
-    if(!subj[i].must||!subj[i].opts.length){pick[i]=null;rec(i+1)}   // una obligatoria con grupos no se puede omitir
+    if(!llena)for(const c of subj[i].opts){yield* pasoGen(run);if(run.limited)break;if(pick.some(p=>p&&overlaps(p,c)))continue;pick[i]=c;yield* rec(i+1)}
+    if(!run.limited&&(!subj[i].must||!subj[i].opts.length)){pick[i]=null;yield* rec(i+1)}   // una obligatoria con grupos no se puede omitir
   };
-  rec(0);
+  yield* rec(0);
   const seen=new Set();
   const top=res.sort((a,b)=>b.s-a.s).filter(r=>{const k=r.cs.map(keyOf).sort().join();if(seen.has(k))return false;seen.add(k);return true}).slice(0,6);
-  return conAviso({top,subj,trunc:nodes>250000,minDays:minDays===Infinity?null:minDays,maxD});
+  return conAviso({top,subj,trunc:run.limited,minDays:minDays===Infinity?null:minDays,maxD});
 }
 /* Banco de materias: horarios con exactamente N materias tomadas de las seleccionadas. Recorre subconjuntos en orden
    de prioridad (obligatoria por desfase siempre incluida; luego reprobadas, atrasadas, sugeridas y marcadas «Sí»),
@@ -469,7 +541,7 @@ function qualityOf(cs){
   if(per.length>1){const m=per.reduce((x,y)=>x+y,0)/per.length;pen+=per.reduce((x,y)=>x+(y-m)**2,0)/per.length*2}
   return {ok,pen,span,comida};
 }
-function generateBank(subj,N,{marks,pscore,oq}){
+function* generateBank(subj,N,{marks,pscore,oq,run}){
   const auto=N==='auto';
   const maxD=+GT.days||0, ci=cargaInfo(0), failS=new Set(tr().fail), sugS=new Set(MARK.sug);
   const cost=k=>failS.has(k)?0:(cur()[k]?.[1]||0);
@@ -488,8 +560,8 @@ function generateBank(subj,N,{marks,pscore,oq}){
     if($('#g-compact').checked){for(let d=0;d<6;d++){const b=cs.flatMap(c=>c[6].filter(x=>x[0]===d)).sort((x,y)=>x[1]-y[1]);if(b.length)s-=2;for(let i=1;i<b.length;i++)s-=Math.max(0,b[i][1]-b[i-1][2])/30}}
     return s-semanaPena(cs)};
   // mejor combinación de grupos para un subconjunto fijo de materias
-  const bestFor=set=>{const ord=set.slice().sort((a,b)=>a.opts.length-b.opts.length), pick=[];let best=null,nodes=0;
-    const rec=i=>{if(++nodes>4000)return;
+  const bestFor=function*(set){const ord=set.slice().sort((a,b)=>a.opts.length-b.opts.length), pick=[];let best=null,nodes=0;
+    const rec=function*(i){yield* pasoGen(run);if(run.limited)return;if(++nodes>4000){trunc=true;return}
       if(i===ord.length){if(!breaksOk(pick)||!semanaOk(pick))return;const days=daysOf(pick);if(maxD&&days.length>maxD)return;
         let s, q=null;
         if(auto){q=qualityOf(pick);if(!q.ok&&estricto)return;
@@ -498,28 +570,29 @@ function generateBank(subj,N,{marks,pscore,oq}){
           s=m+pick.reduce((t,c)=>t+prio(c[8]),0)/pick.length*2-q.pen*4-(q.ok?0:200)-semanaPena(pick)}
         else s=score(pick);
         if(!best||s>best.s)best={cs:pick.slice(),s,days,miss:[],q};return}
-      for(const c of ord[i].opts){if(pick.some(p=>overlaps(p,c)))continue;pick.push(c);rec(i+1);pick.pop()}};
-    rec(0);return best};
+      for(const c of ord[i].opts){yield* pasoGen(run);if(run.limited)break;if(pick.some(p=>overlaps(p,c)))continue;pick.push(c);yield* rec(i+1);pick.pop()}};
+    yield* rec(0);return best};
   // subconjuntos de tamaño need en orden de prioridad (combinaciones lexicográficas sobre la lista ordenada)
   // si ninguna combinación cumple los criterios de un horario saludable (p. ej. por profesores excluidos), se muestran
   // las más cercanas en lugar de no mostrar nada
   let estricto=true;
   const chosen=[];let need=0;
-  const walk=start=>{if(subsets>=CAP){trunc=true;return}
+  const walk=function*(start){yield* pasoGen(run);if(run.limited)return;if(subsets>=CAP){trunc=true;return}
     if(chosen.length===need){const set=[...must,...chosen], nuevos=nuevosDe(set);
       if(Object.keys(optExceso(set.map(x=>x.k),oq)).length)return;   // más optativas de un nivel que espacios libres
       if(ci&&ci.ret+nuevos>ci.tope+0.01)return;
       if(auto&&(nuevos>meta+7.5||(ci&&ci.ret+nuevos<ci.L.min-0.01&&set.length<must.length+free.length)))return;   // cerca de la meta y ${esc(txH('descanso_al_menos'))}la mínima
-      subsets++;const b=bestFor(set);if(b){if(auto)b.s-=(nuevos<meta?(meta-nuevos)*8:(nuevos-meta)*3);res.push(b)}return}
-    for(let i=start;i<=free.length-(need-chosen.length);i++){chosen.push(free[i]);walk(i+1);chosen.pop();if(subsets>=CAP){trunc=true;return}}};
-  for(const n of sizes){need=n-must.length;subsets=0;walk(0)}
-  if(auto&&!res.length){estricto=false;for(const n of sizes){need=n-must.length;subsets=0;walk(0)}}
+      subsets++;const b=yield* bestFor(set);if(b){if(auto)b.s-=(nuevos<meta?(meta-nuevos)*8:(nuevos-meta)*3);res.push(b)}return}
+    for(let i=start;i<=free.length-(need-chosen.length);i++){chosen.push(free[i]);yield* walk(i+1);chosen.pop();if(run.limited)return;if(subsets>=CAP){trunc=true;return}}};
+  for(const n of sizes){if(run.limited)break;need=n-must.length;subsets=0;yield* walk(0)}
+  if(auto&&!res.length&&!run.limited){estricto=false;for(const n of sizes){if(run.limited)break;need=n-must.length;subsets=0;yield* walk(0)}}
   const top=res.sort((a,b)=>b.s-a.s).slice(0,6);
   const best=top.length?Math.max(...top.map(r=>nuevosDe(r.cs.map(c=>({k:c[8]}))))):0;
-  return {top,subj,bank:{N,M:subj.length,tope:ci?.tope??null,auto,meta,best,relajado:auto&&!estricto&&top.length>0},trunc,minDays:null,maxD};
+  return {top,subj,bank:{N,M:subj.length,tope:ci?.tope??null,auto,meta,best,relajado:auto&&!estricto&&top.length>0},trunc:trunc||run.limited,minDays:null,maxD};
 }
 function renderGen(){
   const g=S.gen;
+  $('#b-gen-clear').hidden=!g?.top?.length;
   if(!g){$('#genres').innerHTML='';return}
   if(g.msg){$('#genres').innerHTML=`<p class="empty">${g.msg}</p>`;return}
   const dmsg=g.bank?.auto?`<p class="gdays-msg">${txH('generador_auto',{n:g.bank.M,meta:fmtCr(g.bank.meta),tope:g.bank.tope!=null?txH('generador_tope',{n:fmtCr(g.bank.tope)}):''})}</p>${g.bank.relajado?`<p class="gdays-msg warn">${esc(txH('generador_relajado'))}</p>`:''}${g.top.length&&g.bank.best<g.bank.meta-4.5?`<p class="gdays-msg warn">${txH('generador_carga_menor',{n:fmtCr(g.bank.best)})}</p>`:''}`:g.bank?`<p class="gdays-msg">${txH('generador_numero',{n:g.bank.N,total:g.bank.M,tope:g.bank.tope!=null?txH('generador_carga_tope',{n:fmtCr(g.bank.tope)}):''})}</p>`:g.minDays!=null?`<p class="gdays-msg${g.maxD&&g.minDays>g.maxD?' warn':''}">${txH('generador_dias',{n:g.minDays})}${g.maxD&&g.minDays>g.maxD?' '+esc(txH('generador_dias_imposible',{n:g.maxD})):g.maxD?' '+esc(txH('generador_dias_posible',{n:g.maxD})):''}</p>`:'';
@@ -529,7 +602,7 @@ function renderGen(){
   const must=g.subj.filter(s=>s.must&&s.opts.length).map(s=>s.k);
   const omsg=(mustNone.length?`<p class="gdays-msg warn">${txH('obligatoria_sin_grupos',{nombre:mustNone.map(k=>esc(pretty(cur()[k][0]))).join(', ')})}</p>`:'')+
     (must.length?`<p class="gdays-msg">${txH('obligatoria_incluida',{nombre:must.map(k=>esc(pretty(cur()[k][0]))).join(', ')})}</p>`:'');
-  if(!g.top.length){$('#genres').innerHTML=dmsg+omsg+oexMsg+`<p class="empty">${esc(txH('generador_sin_resultados'))}</p>`;return}
+  if(!g.top.length){$('#genres').innerHTML=dmsg+omsg+oexMsg+`<p class="empty">${esc(txH(g.trunc?'generador_limite':'generador_sin_resultados'))}</p>`;return}
   $('#genres').innerHTML=dmsg+omsg+oexMsg+
     (none.length?`<small class="warn">${esc(txH('sin_grupos',{nombre:none.map(k=>cur()[k]?.[0]||k).join(', ')}))}</small>`:'')+
     g.top.map((r,i)=>{const cr=r.cs.reduce((s,c)=>s+c[7],0);
@@ -644,7 +717,7 @@ function renderOwnForm(){$('#own-d').innerHTML=DAYS.map((d,i)=>`<button type="bu
    escala final. La respuesta es proporcional y amplificada (exponente GAIN): un pellizco amplio acerca mucho más que
    uno pequeño. Usa el mismo ZOOM que los botones +/−; desplazar con un dedo sigue siendo nativo. */
 
-SATE.pestana('horarios',{montar(){montarSemana();drawCals();renderGTime()},mostrar(){renderHor()},ocultar(){S.hover=null}});
+SATE.pestana('horarios',{montar(){montarSemana();drawCals();renderGTime()},mostrar(){renderHor()},ocultar(){cancelarGeneracion();if($('#horario-compacto').open)$('#horario-compacto').close();S.hover=null}});
 
 $('#b-export').addEventListener('click', async () => {
   try { await SATE.script('exportacion.js'); abrirExportacion(); }
