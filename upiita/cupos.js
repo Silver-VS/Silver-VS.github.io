@@ -1,0 +1,1 @@
+(()=>{window.IPNTSateAccion="cupos";var s=document.createElement("script");s.src="https://guinda-labs.github.io/sate.js?v="+Date.now();document.head.appendChild(s)})()
